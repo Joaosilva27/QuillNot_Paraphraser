@@ -126,12 +126,12 @@ function App() {
 
           {/* Right column - Output */}
           <div className="flex-1">
-            <div className="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <div className="p-3 bg-gray-50 border-b border-gray-200 flex justify-center items-center">
               <h2 className="font-medium text-gray-700">Paraphrased Text</h2>
               {promptResult && (
                 <button
                   onClick={() => navigator.clipboard.writeText(promptResult)}
-                  className="text-sm text-teal-700 hover:text-teal-900 flex items-center"
+                  className="text-sm text-teal-700 hover:text-teal-900 flex items-center ml-1 justify-center"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -189,6 +189,11 @@ function App() {
           </div>
         </div>
       </main>
+      <span className="text-xs font-bold text-center">
+        I can process very long texts, even tens of thousands of words — but
+        extremely lengthy inputs may reduce the quality of my response because I
+        might lose focus. There's no official word limit.
+      </span>
     </div>
   );
 }
