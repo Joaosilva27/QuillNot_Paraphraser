@@ -7,9 +7,7 @@ function App() {
     "AIzaSyAThR2xsb5E_ra5OfeWhqsBy3wiJZch-so"
   );
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const [prompt, setPrompt] = useState<string>(
-    "I like burguers but rn im eating a pastel de nata wow!!"
-  );
+  const [prompt, setPrompt] = useState<string>("");
   const [promptResult, setPromptResult] = useState<any>("");
 
   const onParaphrase = () => {
@@ -23,6 +21,8 @@ function App() {
         const result = await model.generateContent(newPrompt);
         setPromptResult(result.response.text());
         console.log(result.response.text());
+
+        setPrompt("");
       } catch (err) {
         console.log(err);
       }
@@ -45,6 +45,12 @@ function App() {
       </h1>
       <div className="flex flex-col">
         <button onClick={onParaphrase}>Paraphrase</button>
+        <input
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          className="w-fit"
+          placeholder="Write your text..."
+        ></input>
         {promptResult}
       </div>
     </div>
