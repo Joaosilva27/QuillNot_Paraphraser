@@ -92,11 +92,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-teal-600 text-white py-4 px-6 shadow-md">
+      <header className="bg-[#7A9E7E] text-white py-4 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
           <a
-            className="text-teal-100 hover:text-white text-sm underline"
+            className="text-[#E8F5E9] hover:text-white text-sm underline"
             href="https://www.joaoportfolio.com/"
             target="_blank"
             rel="noopener noreferrer"
@@ -115,7 +115,7 @@ function App() {
               className={`px-6 py-2 rounded font-medium text-white ${
                 isLoading || !prompt.trim()
                   ? "bg-gray-400"
-                  : "bg-teal-600 hover:bg-teal-700"
+                  : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
             >
               {isLoading ? (
@@ -165,7 +165,7 @@ function App() {
                 onClick={() => setSelectedStyle("")}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === ""
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -175,7 +175,7 @@ function App() {
                 onClick={() => selectStyle(academicStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === academicStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -185,7 +185,7 @@ function App() {
                 onClick={() => selectStyle(fluentStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === fluentStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -195,7 +195,7 @@ function App() {
                 onClick={() => selectStyle(humanizeStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === humanizeStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -205,7 +205,7 @@ function App() {
                 onClick={() => selectStyle(formalStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === formalStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -215,7 +215,7 @@ function App() {
                 onClick={() => selectStyle(expandStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === expandStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -225,7 +225,7 @@ function App() {
                 onClick={() => selectStyle(shortStyle)}
                 className={`px-3 py-1 text-sm rounded ${
                   selectedStyle === shortStyle
-                    ? "bg-teal-600 text-white"
+                    ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
               >
@@ -265,14 +265,16 @@ function App() {
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-full p-4 focus:outline-none resize-none z-10"
-                placeholder={"Enter your text here to paraphrase..."}
+                className="w-full h-full p-4 focus:outline-none resize-none"
+                placeholder={
+                  prompt ? "Enter your text here to paraphrase..." : ""
+                }
               />
               {!prompt && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm pointer-events-none">
                   <button
                     onClick={handlePaste}
-                    className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors pointer-events-auto"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -308,7 +310,7 @@ function App() {
                 {promptResult && (
                   <button
                     onClick={() => navigator.clipboard.writeText(promptResult)}
-                    className="text-sm text-teal-700 hover:text-teal-900 flex items-center"
+                    className="text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -334,7 +336,7 @@ function App() {
                 <div className="flex items-center justify-center h-full text-gray-500">
                   <div className="text-center">
                     <svg
-                      className="animate-spin h-8 w-8 mx-auto mb-4 text-teal-600"
+                      className="animate-spin h-8 w-8 mx-auto mb-4 text-[#7A9E7E]"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
