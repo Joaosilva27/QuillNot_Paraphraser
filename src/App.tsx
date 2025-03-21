@@ -266,12 +266,10 @@ function App() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full h-full p-4 focus:outline-none resize-none"
-                placeholder={
-                  prompt ? "Enter your text here to paraphrase..." : ""
-                }
+                placeholder={"Enter your text here to paraphrase..."}
               />
               {!prompt && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <button
                     onClick={handlePaste}
                     className="flex items-center gap-2 px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto"
