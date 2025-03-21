@@ -11,30 +11,37 @@ function App() {
   const [prompt, setPrompt] = useState("");
   const [promptResult, setPromptResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [academicStyle, setAcademicStyle] = useState(
+  const [academicStyle] = useState(
     "Academic, meaning you must express the text in a more technical and scholarly way."
   );
-  const [fluentStyle, setFluentStyle] = useState(
+  const [fluentStyle] = useState(
     "Fluent, meaning you must improve the clarity and readability of the text."
   );
-  const [humanizeStyle, setHumanizeStyle] = useState(
+  const [humanizeStyle] = useState(
     "Human, meaning you must re-write the text in a more human, authentic way."
   );
-  const [formalStyle, setFormalStyle] = useState(
+  const [formalStyle] = useState(
     "Formal, meaning you must sound more sophisticated."
   );
-  const [expandStyle, setExpandStyle] = useState(
+  const [expandStyle] = useState(
     "Extended, meaning you must rephrase this text using a higher word count."
   );
-  const [shortStyle, setShortStyle] = useState(
+  const [shortStyle] = useState(
     "Shortened, meaning you must rephrase this text using a lower word count."
   );
-  const [customStyle, setCustomStyle] = useState(undefined);
   const [selectedStyle, setSelectedStyle] = useState("");
 
-  // Function to calculate word count
   const getWordCount = (text) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
+  };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setPrompt(text);
+    } catch (error) {
+      console.error("Failed to paste text:", error);
+    }
   };
 
   const onParaphrase = () => {
@@ -57,7 +64,6 @@ function App() {
         
         Paraphrase this: `;
         const newPrompt = promptInstructions + prompt;
-        console.log(newPrompt);
         const result = await model.generateContent(newPrompt);
         const responseText = result.response.text();
 
@@ -66,10 +72,7 @@ function App() {
           .replace(/\n\n\n\n/g, "\n\n");
 
         setPromptResult(processedText);
-        console.log(responseText); // Log the original
-        console.log(processedText); // Log the processed text
       } catch (err) {
-        console.log(err);
         setPromptResult("An error occurred. Please try again.");
       } finally {
         setIsLoading(false);
@@ -89,7 +92,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-teal-600 text-white py-4 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
@@ -104,9 +106,7 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto p-4 md:p-6">
-        {/* Controls */}
         <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-4">
           <div className="flex flex-wrap gap-3 items-center mb-4">
             <button
@@ -155,7 +155,6 @@ function App() {
             </button>
           </div>
 
-          {/* Style Selection Buttons */}
           <div className="mt-2">
             <p className="text-sm font-medium text-gray-700 mb-2">
               Select Paraphrasing Style:
@@ -236,27 +235,25 @@ function App() {
             {selectedStyle && (
               <div className="mt-2 text-sm text-gray-600 italic">
                 {selectedStyle === academicStyle &&
-                  "Style: Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
+                  "Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
                 {selectedStyle === fluentStyle &&
-                  "Style: Fluent - Enhances the clarity and flow of your text while maintaining your original message."}
+                  "Fluent - Enhances the clarity and flow of your text while maintaining your original message."}
                 {selectedStyle === humanizeStyle &&
-                  "Style: Human - Makes your text sound more natural and conversational, as if written by a person."}
+                  "Human - Makes your text sound more natural and conversational, as if written by a person."}
                 {selectedStyle === formalStyle &&
-                  "Style: Formal - Elevates your text with sophisticated language and proper structure without being overly technical."}
+                  "Formal - Elevates your text with sophisticated language and proper structure without being overly technical."}
                 {selectedStyle === expandStyle &&
-                  "Style: Extended - Elaborates on your original text with additional details and explanations."}
+                  "Extended - Elaborates on your original text with additional details and explanations."}
                 {selectedStyle === shortStyle &&
-                  "Style: Shortened - Condenses your text while preserving the key points and meaning."}
+                  "Shortened - Condenses your text while preserving the key points and meaning."}
                 {!selectedStyle.trim() &&
-                  "Style: Standard - Maintains your original meaning with natural-sounding variations."}
+                  "Standard - Maintains your original meaning with natural-sounding variations."}
               </div>
             )}
           </div>
         </div>
 
-        {/* Two-column editor */}
         <div className="flex flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm">
-          {/* Left column - Input */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-200">
             <div className="p-3 flex bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700">Original Text</h2>
@@ -264,15 +261,40 @@ function App() {
                 {getWordCount(prompt)} words / {prompt.length} characters
               </div>
             </div>
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="w-full h-64 md:h-96 p-4 focus:outline-none resize-none"
-              placeholder="Enter your text here to paraphrase..."
-            />
+            <div className="relative h-64 md:h-96">
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                className="w-full h-full p-4 focus:outline-none resize-none z-10"
+                placeholder={"Enter your text here to paraphrase..."}
+              />
+              {!prompt && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                  <button
+                    onClick={handlePaste}
+                    className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors pointer-events-auto"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                    Paste Text
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Right column - Output */}
           <div className="flex-1">
             <div className="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
               <h2 className="font-medium text-gray-700">Paraphrased Text</h2>
