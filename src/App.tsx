@@ -32,6 +32,11 @@ function App() {
   const [customStyle, setCustomStyle] = useState(undefined);
   const [selectedStyle, setSelectedStyle] = useState("");
 
+  // Function to calculate word count
+  const getWordCount = (text) => {
+    return text.trim() ? text.trim().split(/\s+/).length : 0;
+  };
+
   const onParaphrase = () => {
     const getParaphrasingData = async () => {
       if (!prompt.trim()) return;
@@ -148,10 +153,6 @@ function App() {
             >
               Clear All
             </button>
-
-            <div className="ml-auto text-sm text-gray-500">
-              {prompt.length} characters
-            </div>
           </div>
 
           {/* Style Selection Buttons */}
@@ -257,8 +258,11 @@ function App() {
         <div className="flex flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm">
           {/* Left column - Input */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-200">
-            <div className="p-3 bg-gray-50 border-b border-gray-200">
+            <div className="p-3 flex bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700">Original Text</h2>
+              <div className="ml-auto text-sm text-gray-500">
+                {getWordCount(prompt)} words / {prompt.length} characters
+              </div>
             </div>
             <textarea
               value={prompt}
@@ -272,28 +276,36 @@ function App() {
           <div className="flex-1">
             <div className="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
               <h2 className="font-medium text-gray-700">Paraphrased Text</h2>
-              {promptResult && (
-                <button
-                  onClick={() => navigator.clipboard.writeText(promptResult)}
-                  className="text-sm text-teal-700 hover:text-teal-900 flex items-center"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              <div className="flex items-center">
+                {promptResult && (
+                  <div className="text-sm text-gray-500 mr-2">
+                    {getWordCount(promptResult)} words / {promptResult.length}{" "}
+                    characters
+                  </div>
+                )}
+                {promptResult && (
+                  <button
+                    onClick={() => navigator.clipboard.writeText(promptResult)}
+                    className="text-sm text-teal-700 hover:text-teal-900 flex items-center"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                    />
-                  </svg>
-                  Copy
-                </button>
-              )}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 mr-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                      />
+                    </svg>
+                    Copy
+                  </button>
+                )}
+              </div>
             </div>
             <div className="w-full h-64 md:h-96 p-4 overflow-y-auto bg-white">
               {isLoading ? (
