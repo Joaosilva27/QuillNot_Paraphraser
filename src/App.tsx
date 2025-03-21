@@ -31,7 +31,7 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState("");
 
-  const getWordCount = (text) => {
+  const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
   };
 
@@ -73,7 +73,7 @@ function App() {
 
         setPromptResult(processedText);
       } catch (err) {
-        setPromptResult("An error occurred. Please try again.");
+        setPromptResult("An error occurred. Please try again." + err);
       } finally {
         setIsLoading(false);
       }
@@ -86,7 +86,7 @@ function App() {
     setPromptResult("");
   };
 
-  const selectStyle = (style) => {
+  const selectStyle = (style: string) => {
     setSelectedStyle(style);
   };
 
