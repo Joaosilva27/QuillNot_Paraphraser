@@ -30,8 +30,9 @@ function App() {
     "Shortened, meaning you must rephrase this text using a lower word count."
   );
   const [selectedStyle, setSelectedStyle] = useState("");
+  const [customDescription, setCustomDescription] = useState("");
 
-  const getWordCount = (text: string) => {
+  const getWordCount = (text) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
   };
 
@@ -86,7 +87,7 @@ function App() {
     setPromptResult("");
   };
 
-  const selectStyle = (style: string) => {
+  const selectStyle = (style) => {
     setSelectedStyle(style);
   };
 
@@ -160,7 +161,7 @@ function App() {
               Select Paraphrasing Style:
             </p>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 items-center">
               <button
                 onClick={() => setSelectedStyle("")}
                 className={`px-3 py-1 text-sm rounded ${
@@ -231,6 +232,31 @@ function App() {
               >
                 Shortened
               </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => selectStyle(customDescription)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === customDescription
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Custom
+                </button>
+                {selectedStyle === customDescription && (
+                  <input
+                    type="text"
+                    value={customDescription}
+                    onChange={(e) => {
+                      const newDesc = e.target.value;
+                      setCustomDescription(newDesc);
+                      setSelectedStyle(newDesc);
+                    }}
+                    placeholder="Describe style..."
+                    className="px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-48"
+                  />
+                )}
+              </div>
             </div>
             {selectedStyle && (
               <div className="mt-2 text-sm text-gray-600 italic">
@@ -246,6 +272,8 @@ function App() {
                   "Extended - Elaborates on your original text with additional details and explanations."}
                 {selectedStyle === shortStyle &&
                   "Shortened - Condenses your text while preserving the key points and meaning."}
+                {selectedStyle === customDescription &&
+                  "Custom - Rewrites your text to match the unique description provided."}
                 {!selectedStyle.trim() &&
                   "Standard - Maintains your original meaning with natural-sounding variations."}
               </div>
