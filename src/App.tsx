@@ -56,9 +56,7 @@ function App() {
         const result = await model.generateContent(newPrompt);
         const responseText = result.response.text();
 
-        // Process response to ensure line breaks are preserved
-        // Option 1: Ensure paragraphs have double line breaks
-        let processedText = responseText
+        const processedText = responseText
           .replace(/\n/g, "\n\n")
           .replace(/\n\n\n\n/g, "\n\n");
 
@@ -82,16 +80,6 @@ function App() {
 
   const selectStyle = (style) => {
     setSelectedStyle(style);
-  };
-
-  // Option 2: Render raw text with manual line break handling
-  const renderWithLineBreaks = (text) => {
-    return text.split("\n").map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        <br />
-      </React.Fragment>
-    ));
   };
 
   return (
@@ -246,7 +234,20 @@ function App() {
             </div>
             {selectedStyle && (
               <div className="mt-2 text-sm text-gray-600 italic">
-                Using: {selectedStyle}
+                {selectedStyle === academicStyle &&
+                  "Style: Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
+                {selectedStyle === fluentStyle &&
+                  "Style: Fluent - Enhances the clarity and flow of your text while maintaining your original message."}
+                {selectedStyle === humanizeStyle &&
+                  "Style: Human - Makes your text sound more natural and conversational, as if written by a person."}
+                {selectedStyle === formalStyle &&
+                  "Style: Formal - Elevates your text with sophisticated language and proper structure without being overly technical."}
+                {selectedStyle === expandStyle &&
+                  "Style: Extended - Elaborates on your original text with additional details and explanations."}
+                {selectedStyle === shortStyle &&
+                  "Style: Shortened - Condenses your text while preserving the key points and meaning."}
+                {!selectedStyle.trim() &&
+                  "Style: Standard - Maintains your original meaning with natural-sounding variations."}
               </div>
             )}
           </div>
