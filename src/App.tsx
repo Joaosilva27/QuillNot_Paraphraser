@@ -11,6 +11,9 @@ function App() {
   const [prompt, setPrompt] = useState("");
   const [promptResult, setPromptResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [standardStyle] = useState(
+    "natural without changing the original meaning"
+  );
   const [academicStyle] = useState(
     "Academic, meaning you must express the text in a more technical and scholarly way."
   );
@@ -29,7 +32,7 @@ function App() {
   const [shortStyle] = useState(
     "Shortened, meaning you must rephrase this text using a lower word count."
   );
-  const [selectedStyle, setSelectedStyle] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
 
   const getWordCount = (text) => {
@@ -163,9 +166,9 @@ function App() {
 
             <div className="flex flex-wrap gap-2 items-center">
               <button
-                onClick={() => setSelectedStyle("")}
+                onClick={() => setSelectedStyle(standardStyle)}
                 className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === ""
+                  selectedStyle === standardStyle
                     ? "bg-[#7A9E7E] text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                 } transition-colors`}
@@ -260,6 +263,8 @@ function App() {
             </div>
             {selectedStyle && (
               <div className="mt-2 text-sm text-gray-600 italic">
+                {selectedStyle === standardStyle &&
+                  "Standard - Maintains your original meaning with natural-sounding variations."}
                 {selectedStyle === academicStyle &&
                   "Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
                 {selectedStyle === fluentStyle &&
@@ -274,8 +279,6 @@ function App() {
                   "Shortened - Condenses your text while preserving the key points and meaning."}
                 {selectedStyle === customDescription &&
                   "Custom - Rewrites your text to match the unique description provided."}
-                {!selectedStyle.trim() &&
-                  "Standard - Maintains your original meaning with natural-sounding variations."}
               </div>
             )}
           </div>
