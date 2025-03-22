@@ -35,6 +35,9 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
+  const [savedOutput, setSavedOutput] = useState(
+    localStorage.getItem("output")
+  );
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -83,6 +86,7 @@ function App() {
           .replace(/\n\n\n\n/g, "\n\n");
 
         setPromptResult(processedText);
+        localStorage.setItem("output", processedText);
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
       } finally {
@@ -95,6 +99,8 @@ function App() {
   const clearAll = () => {
     setPrompt("");
     setPromptResult("");
+    localStorage.removeItem("output");
+    setSavedOutput("");
   };
 
   const selectStyle = (style: string) => {
@@ -403,6 +409,10 @@ function App() {
               ) : promptResult ? (
                 <div className="prose prose-sm max-w-none whitespace-pre-line">
                   <ReactMarkdown>{promptResult}</ReactMarkdown>
+                </div>
+              ) : savedOutput ? (
+                <div className="prose prose-sm max-w-none whitespace-pre-line">
+                  <ReactMarkdown>{savedOutput}</ReactMarkdown>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400">
