@@ -12,6 +12,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
     "@tailwindcss/vite": "^4.0.14",
+    "counterapi": "^1.129.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
