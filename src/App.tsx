@@ -35,7 +35,7 @@ function App() {
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
 
-  const getWordCount = (text) => {
+  const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
   };
 
@@ -90,7 +90,7 @@ function App() {
     setPromptResult("");
   };
 
-  const selectStyle = (style) => {
+  const selectStyle = (style: string) => {
     setSelectedStyle(style);
   };
 
