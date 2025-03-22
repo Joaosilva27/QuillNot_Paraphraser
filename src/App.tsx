@@ -64,7 +64,7 @@ function App() {
         IMPORTANT: Format your response with proper line breaks between paragraphs.
         Each paragraph should be separated by a blank line.
         Use proper markdown formatting for any lists, headings, or other formatting.
-        Make sure to use double line breaks (\\n\\n) between paragraphs to ensure they display correctly.
+        Make sure to use double line breaks (\\n\\n) and not (\n\n) between paragraphs to ensure they display correctly.
         
         Paraphrase this: `;
         const newPrompt = promptInstructions + prompt;
@@ -289,7 +289,8 @@ function App() {
             <div className="p-3 flex bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700">Original Text</h2>
               <div className="ml-auto text-sm text-gray-500">
-                {getWordCount(prompt)} words / {prompt.length} characters
+                {getWordCount(prompt)} words / {prompt.length} characters (
+                {prompt.replace(/\s/g, "").length} without spaces)
               </div>
             </div>
             <div className="relative h-64 md:h-96">
@@ -333,7 +334,8 @@ function App() {
                 {promptResult && (
                   <div className="text-sm text-gray-500 mr-2">
                     {getWordCount(promptResult)} words / {promptResult.length}{" "}
-                    characters
+                    characters ({promptResult.replace(/\s/g, "").length} without
+                    spaces)
                   </div>
                 )}
                 {promptResult && (
