@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
+import GithubIcon from "./images/github.png";
 
 function App() {
   const genAI = new GoogleGenerativeAI(
@@ -27,10 +28,10 @@ function App() {
     "Formal, meaning you must sound more sophisticated."
   );
   const [expandStyle] = useState(
-    "Extended, meaning you must rephrase this text using a higher word count."
+    "Extended, meaning you must rephrase this text using a higher word count while maintaining its meaning and not making a lot of changes."
   );
   const [shortStyle] = useState(
-    "Shortened, meaning you must rephrase this text using a lower word count."
+    "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes."
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
@@ -65,6 +66,12 @@ function App() {
         Each paragraph should be separated by a blank line.
         Use proper markdown formatting for any lists, headings, or other formatting.
         Make sure to use double line breaks (\\n\\n) and not (\n\n) between paragraphs to ensure they display correctly.
+
+        Please provide original content that is uniquely phrased and free from plagiarism,
+        a text that will bypass any plagiarism checker.
+        Rephrase or summarize any widely known concepts, and ensure that responses are well-cited if they include specific data,
+        quotes, or external references. Avoid direct copying from sources,
+        and focus on creating a fresh and unique perspective tailored to my request.
         
         Paraphrase this: `;
         const newPrompt = promptInstructions + prompt;
@@ -100,12 +107,16 @@ function App() {
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
           <a
-            className="text-[#E8F5E9] hover:text-white text-sm underline"
+            className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
             href="https://www.joaoportfolio.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
             by João Silva
+            <img
+              src={GithubIcon}
+              className="h-4 w-4 ml-1.5 animate-bounce object-contain"
+            />
           </a>
         </div>
       </header>
