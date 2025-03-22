@@ -3,6 +3,7 @@ import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 import GithubIcon from "./images/github.png";
+import { CounterAPI } from "counterapi";
 
 function App() {
   const genAI = new GoogleGenerativeAI(
@@ -41,6 +42,8 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
+  const counterAPI = new CounterAPI(); // Create a single instance outside state
+  const [count, setCount] = useState(0); // Store just the count value
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -91,6 +94,10 @@ function App() {
 
         setPromptResult(processedText);
         setSavedOutput(processedText);
+        counterAPI.up("test", "test").then((res) => {
+          console.log(res);
+          setCount(res.Count);
+        });
         localStorage.setItem("output", processedText);
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
@@ -121,11 +128,21 @@ function App() {
     }
   }, [prompt]);
 
+  useEffect(() => {
+    counterAPI.get("test", "test").then((res) => {
+      console.log(res);
+      setCount(res.Count);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-[#7A9E7E] text-white py-4 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
+          <span className="capitalize">
+            {count} phrases improved until now.
+          </span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
             href="https://www.joaoportfolio.com/"
