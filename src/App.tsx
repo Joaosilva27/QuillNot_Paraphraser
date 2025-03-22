@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
@@ -38,6 +38,7 @@ function App() {
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output")
   );
+  const [savedInput, setSavedInput] = useState(localStorage.getItem("input"));
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -101,11 +102,19 @@ function App() {
     setPromptResult("");
     localStorage.removeItem("output");
     setSavedOutput("");
+    localStorage.removeItem("input");
+    setSavedInput("");
   };
 
   const selectStyle = (style: string) => {
     setSelectedStyle(style);
   };
+
+  useEffect(() => {
+    if (prompt.length > 0) {
+      localStorage.setItem("input", prompt);
+    }
+  }, [prompt]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -311,34 +320,47 @@ function App() {
               </div>
             </div>
             <div className="relative h-64 md:h-96">
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-full p-4 focus:outline-none resize-none"
-                placeholder={"Enter your text here to paraphrase..."}
-              />
-              {!prompt && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <button
-                    onClick={handlePaste}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Paste Text
-                  </button>
+              {savedInput ? (
+                <textarea
+                  value={savedInput}
+                  onChange={(e) => (
+                    setPrompt(e.target.value), setSavedInput(e.target.value)
+                  )}
+                  className="w-full h-full p-4 focus:outline-none resize-none"
+                  placeholder={"Enter your text here to paraphrase..."}
+                />
+              ) : (
+                <div className="relative h-64 md:h-96">
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    className="w-full h-full p-4 focus:outline-none resize-none"
+                    placeholder={"Enter your text here to paraphrase..."}
+                  />
+                  {!prompt && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <button
+                        onClick={handlePaste}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Paste Text
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
