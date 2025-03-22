@@ -42,8 +42,8 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [customDescription, setCustomDescription] = useState("");
-  const counterAPI = new CounterAPI(); // Create a single instance outside state
-  const [count, setCount] = useState(0); // Store just the count value
+  const counterAPI = new CounterAPI();
+  const [count, setCount] = useState(0);
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -140,9 +140,7 @@ function App() {
       <header className="bg-[#7A9E7E] text-white py-4 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
-          <span className="capitalize">
-            {count} phrases improved until now.
-          </span>
+          <span className="capitalize">{count} phrases improved in total.</span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
             href="https://www.joaoportfolio.com/"
