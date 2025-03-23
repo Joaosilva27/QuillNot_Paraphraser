@@ -159,17 +159,17 @@ function App() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
-      <header className="bg-[#7A9E7E] text-white py-3 px-6 shadow-md">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span className="flex justify-center items-center ">
+    <div className="min-h-screen flex flex-col bg-gray-50 overflow-hidden">
+      <header className="bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+          <span className="flex justify-center items-center">
             <img
               src={QuillNotIcon}
               className="h-8 w-8 object-contain bg-white rounded-3xl"
             />
             <h1 className="text-3xl font-bold dancing-script-400">QuillNot</h1>
           </span>
-          <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20  transition-colors animate-pulse-once">
+          <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors animate-pulse-once text-sm sm:text-base text-center">
             {count} total paraphrases across all users
           </span>
           <a
@@ -187,13 +187,13 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 xl:min-w-7xl max-w-7xl mx-auto p-3 flex flex-col overflow-hidden">
-        <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-3">
-          <div className="flex flex-wrap gap-3 items-center mb-2">
+      <main className="flex-1 xl:min-w-7xl max-w-7xl mx-auto p-2 sm:p-3 flex flex-col overflow-hidden">
+        <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-2 sm:p-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-2">
             <button
               onClick={onParaphrase}
               disabled={isLoading || !prompt.trim()}
-              className={`px-6 py-2 rounded font-medium text-white ${
+              className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
                 isLoading || !prompt.trim()
                   ? "bg-gray-400"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
@@ -230,14 +230,14 @@ function App() {
 
             <button
               onClick={clearAll}
-              className="px-6 py-2 rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
+              className="px-3 sm:px-6 py-2 rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
             >
               Clear All
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex-1">
+          <div className="flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-2">
+            <div className="flex-1 w-full md:w-auto">
               <p className="text-sm font-medium text-gray-700 mb-1">
                 Select Paraphrasing Style:
               </p>
@@ -245,7 +245,7 @@ function App() {
               <div className="flex flex-wrap gap-2 items-center">
                 <button
                   onClick={() => setSelectedStyle(standardStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === standardStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -255,7 +255,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(academicStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === academicStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -265,7 +265,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(fluentStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === fluentStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -275,7 +275,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(humanizeStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === humanizeStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -285,7 +285,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(formalStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === formalStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -295,7 +295,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(expandStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === expandStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -305,7 +305,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(shortStyle)}
-                  className={`px-3 py-1 text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                     selectedStyle === shortStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -316,7 +316,7 @@ function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => selectStyle(customDescription)}
-                    className={`px-3 py-1 text-sm rounded ${
+                    className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                       selectedStyle === customDescription
                         ? "bg-[#7A9E7E] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -335,18 +335,18 @@ function App() {
                         setSelectedStyle(newDesc);
                       }}
                       placeholder="Describe style..."
-                      className="px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-48"
+                      className="px-2 py-1 text-xs sm:text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48"
                     />
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center flex-col gap-2 ml-2 lg:mr-10">
+            <div className="flex items-center flex-col gap-2 w-full md:w-auto md:ml-2 lg:mr-10 mt-2 md:mt-0">
               <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
                 Amount of Changes:
               </p>
-              <div className="w-48 relative">
+              <div className="w-full sm:w-48 relative">
                 <input
                   type="range"
                   min="0"
@@ -394,7 +394,7 @@ function App() {
           </div>
 
           {selectedStyle && (
-            <div className="mt-1 text-sm text-gray-600 italic">
+            <div className="mt-1 text-xs sm:text-sm text-gray-600 italic">
               {selectedStyle === standardStyle &&
                 "Standard - Maintains your original meaning with natural-sounding variations."}
               {selectedStyle === academicStyle &&
@@ -415,31 +415,33 @@ function App() {
           )}
         </div>
 
-        <div className="flex flex-1 border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
-          <div className="flex-1 border-r border-gray-200 flex flex-col">
+        <div className="flex flex-1 flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
+          <div className="flex-1 md:border-r border-b md:border-b-0 border-gray-200 flex flex-col">
             <div className="p-2 flex items-center bg-gray-50 border-b border-gray-200">
-              <h2 className="font-medium text-gray-700">Original Text</h2>
+              <h2 className="font-medium text-gray-700 text-sm sm:text-base">
+                Original Text
+              </h2>
               <div className="ml-auto text-xs text-gray-500">
                 {getWordCount(prompt)} words / {prompt.length} characters (
                 {prompt.replace(/\s/g, "").length} without spaces)
               </div>
             </div>
-            <div className="relative flex-1">
+            <div className="relative flex-1 min-h-60 md:min-h-0">
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-full p-3 focus:outline-none resize-none"
+                className="w-full h-full p-2 sm:p-3 focus:outline-none resize-none"
                 placeholder={"Enter your text here to paraphrase..."}
               />
               {!prompt && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <button
                     onClick={handlePaste}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
+                      className="h-4 sm:h-5 w-4 sm:w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -460,13 +462,18 @@ function App() {
 
           <div className="flex-1 flex flex-col">
             <div className="p-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="font-medium text-gray-700">Paraphrased Text</h2>
-              <div className="flex items-center">
+              <h2 className="font-medium text-gray-700 text-sm sm:text-base">
+                Paraphrased Text
+              </h2>
+              <div className="flex items-center flex-wrap justify-end">
                 {promptResult && (
                   <div className="text-xs text-gray-500 mr-2">
                     {getWordCount(promptResult)} words / {promptResult.length}{" "}
-                    characters ({promptResult.replace(/\s/g, "").length} without
-                    spaces)
+                    <span className="hidden sm:inline">characters</span>
+                    <span className="inline sm:hidden">chars</span> (
+                    {promptResult.replace(/\s/g, "").length}{" "}
+                    <span className="hidden sm:inline">without spaces</span>
+                    <span className="inline sm:hidden">no spaces</span>)
                   </div>
                 )}
                 {promptResult && (
@@ -493,12 +500,12 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="flex-1 p-3 overflow-auto bg-white">
+            <div className="flex-1 p-2 sm:p-3 overflow-auto bg-white min-h-60 md:min-h-0">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full text-gray-500">
                   <div className="text-center">
                     <svg
-                      className="animate-spin h-8 w-8 mx-auto mb-4 text-[#7A9E7E]"
+                      className="animate-spin h-6 sm:h-8 w-6 sm:w-8 mx-auto mb-3 sm:mb-4 text-[#7A9E7E]"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -525,7 +532,7 @@ function App() {
                   <ReactMarkdown>{promptResult}</ReactMarkdown>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
                   Your paraphrased text will appear here
                 </div>
               )}
