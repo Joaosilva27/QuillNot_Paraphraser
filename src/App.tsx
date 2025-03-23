@@ -54,7 +54,7 @@ function App() {
   const counterAPI = new CounterAPI();
   const [count, setCount] = useState(0);
 
-  const getWordCount = (text) => {
+  const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
   };
 
@@ -139,7 +139,7 @@ function App() {
     setSavedInput("");
   };
 
-  const selectStyle = (style) => {
+  const selectStyle = (style: string) => {
     setSelectedStyle(style);
   };
 
@@ -178,7 +178,7 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl mx-auto p-3 flex flex-col overflow-hidden">
+      <main className="flex-1 xl:min-w-7xl max-w-7xl mx-auto p-3 flex flex-col overflow-hidden">
         <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-3">
           <div className="flex flex-wrap gap-3 items-center mb-2">
             <button
