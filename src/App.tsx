@@ -333,11 +333,11 @@ function App() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 ml-2">
+            <div className="flex items-center flex-col gap-2 ml-2 lg:mr-10">
               <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                Changes Amount:
+                Amount of Changes:
               </p>
-              <div className="w-40">
+              <div className="w-48 relative">
                 <input
                   type="range"
                   min="0"
@@ -345,26 +345,36 @@ function App() {
                   step="1"
                   value={changesLevel}
                   onChange={(e) => setChangesLevel(parseInt(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7A9E7E]"
+                  className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer custom-slider"
                 />
-                <div className="flex justify-between w-full text-xs text-gray-600 mt-1">
+                <div className="absolute w-full flex justify-between px-1.5 top-3.5 pointer-events-none">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-1.5 h-1.5 rounded-full pointer-events-none ${
+                        changesLevel >= i ? "bg-[#7A9E7E]" : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-between w-full text-xs text-gray-600 mt-4">
                   <span
                     className={
-                      changesLevel === 0 ? "font-bold text-[#7A9E7E]" : ""
+                      changesLevel === 0 ? "font-semibold text-[#7A9E7E]" : ""
                     }
                   >
                     Fewer
                   </span>
                   <span
                     className={
-                      changesLevel === 1 ? "font-bold text-[#7A9E7E]" : ""
+                      changesLevel === 1 ? "font-semibold text-[#7A9E7E]" : ""
                     }
                   >
                     Standard
                   </span>
                   <span
                     className={
-                      changesLevel === 2 ? "font-bold text-[#7A9E7E]" : ""
+                      changesLevel === 2 ? "font-semibold text-[#7A9E7E]" : ""
                     }
                   >
                     More
