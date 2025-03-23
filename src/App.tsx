@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 import GithubIcon from "./images/github.png";
 import { CounterAPI } from "counterapi";
+import QuillNotIcon from "./images/QuillNotIcon.png";
 
 function App() {
   const genAI = new GoogleGenerativeAI(
@@ -161,7 +162,13 @@ function App() {
     <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
       <header className="bg-[#7A9E7E] text-white py-3 px-6 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">Paraphraser Tool</h1>
+          <span className="flex justify-center items-center ">
+            <img
+              src={QuillNotIcon}
+              className="h-8 w-8 object-contain bg-white rounded-3xl"
+            />
+            <h1 className="text-3xl font-bold dancing-script-400">QuillNot</h1>
+          </span>
           <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20  transition-colors animate-pulse-once">
             {count} total paraphrases across all users
           </span>
@@ -410,7 +417,7 @@ function App() {
 
         <div className="flex flex-1 border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
           <div className="flex-1 border-r border-gray-200 flex flex-col">
-            <div className="p-2 flex bg-gray-50 border-b border-gray-200">
+            <div className="p-2 flex items-center bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700">Original Text</h2>
               <div className="ml-auto text-xs text-gray-500">
                 {getWordCount(prompt)} words / {prompt.length} characters (

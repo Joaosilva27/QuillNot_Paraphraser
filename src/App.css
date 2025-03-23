@@ -5,6 +5,13 @@
   text-align: center;
 }
 
+.dancing-script-400 {
+  font-family: "Caveat", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
