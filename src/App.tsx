@@ -9,7 +9,7 @@ function App() {
   const genAI = new GoogleGenerativeAI(
     "AIzaSyAThR2xsb5E_ra5OfeWhqsBy3wiJZch-so"
   );
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
