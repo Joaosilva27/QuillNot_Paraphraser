@@ -49,7 +49,7 @@ function App() {
     "IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible."
   );
   const [selectedChanges, setSelectedChanges] = useState(standardChanges);
-  const [changesLevel, setChangesLevel] = useState(1); // 0 = fewer, 1 = standard, 2 = more
+  const [changesLevel, setChangesLevel] = useState(1);
   const [customDescription, setCustomDescription] = useState("");
   const counterAPI = new CounterAPI();
   const [count, setCount] = useState(0);
@@ -68,7 +68,6 @@ function App() {
     }
   };
 
-  // Update selected changes when changes level changes
   useEffect(() => {
     if (changesLevel === 0) {
       setSelectedChanges(fewerChanges);
@@ -159,9 +158,9 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#7A9E7E] text-white py-4 px-6 shadow-md">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+      <header className="bg-[#7A9E7E] text-white py-3 px-6 shadow-md">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
           <span className="capitalize">{count} phrases improved in total.</span>
           <a
@@ -179,8 +178,8 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-4 md:p-6">
-        <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-4">
+      <main className="flex-1 max-w-7xl mx-auto p-3 flex flex-col overflow-hidden">
+        <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-3">
           <div className="flex flex-wrap gap-3 items-center mb-2">
             <button
               onClick={onParaphrase}
@@ -228,190 +227,189 @@ function App() {
             </button>
           </div>
 
-          <div>
-            <p className="text-sm font-medium text-gray-700">
-              Select Paraphrasing Style:
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-700 mb-1">
+                Select Paraphrasing Style:
+              </p>
 
-            <div className="flex flex-wrap gap-2 items-center">
-              <button
-                onClick={() => setSelectedStyle(standardStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === standardStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Standard
-              </button>
-              <button
-                onClick={() => selectStyle(academicStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === academicStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Academic
-              </button>
-              <button
-                onClick={() => selectStyle(fluentStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === fluentStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Fluent
-              </button>
-              <button
-                onClick={() => selectStyle(humanizeStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === humanizeStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Human
-              </button>
-              <button
-                onClick={() => selectStyle(formalStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === formalStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Formal
-              </button>
-              <button
-                onClick={() => selectStyle(expandStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === expandStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Extended
-              </button>
-              <button
-                onClick={() => selectStyle(shortStyle)}
-                className={`px-3 py-1 text-sm rounded ${
-                  selectedStyle === shortStyle
-                    ? "bg-[#7A9E7E] text-white"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                } transition-colors`}
-              >
-                Shortened
-              </button>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 <button
-                  onClick={() => selectStyle(customDescription)}
+                  onClick={() => setSelectedStyle(standardStyle)}
                   className={`px-3 py-1 text-sm rounded ${
-                    selectedStyle === customDescription
+                    selectedStyle === standardStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
-                  Custom
+                  Standard
                 </button>
+                <button
+                  onClick={() => selectStyle(academicStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === academicStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Academic
+                </button>
+                <button
+                  onClick={() => selectStyle(fluentStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === fluentStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Fluent
+                </button>
+                <button
+                  onClick={() => selectStyle(humanizeStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === humanizeStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Human
+                </button>
+                <button
+                  onClick={() => selectStyle(formalStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === formalStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Formal
+                </button>
+                <button
+                  onClick={() => selectStyle(expandStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === expandStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Extended
+                </button>
+                <button
+                  onClick={() => selectStyle(shortStyle)}
+                  className={`px-3 py-1 text-sm rounded ${
+                    selectedStyle === shortStyle
+                      ? "bg-[#7A9E7E] text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  } transition-colors`}
+                >
+                  Shortened
+                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => selectStyle(customDescription)}
+                    className={`px-3 py-1 text-sm rounded ${
+                      selectedStyle === customDescription
+                        ? "bg-[#7A9E7E] text-white"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    } transition-colors`}
+                  >
+                    Custom
+                  </button>
 
-                {selectedStyle === customDescription && (
-                  <input
-                    type="text"
-                    value={customDescription}
-                    onChange={(e) => {
-                      const newDesc = e.target.value;
-                      setCustomDescription(newDesc);
-                      setSelectedStyle(newDesc);
-                    }}
-                    placeholder="Describe style..."
-                    className="px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-48"
-                  />
-                )}
-              </div>
-              {/* Changes Slider */}
-              <div className=" w-full max-w-80 lg:ml-8">
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Changes Amount:
-                </p>
-                <div className="flex flex-col space-y-2">
-                  <div className="w-full max-w-md">
+                  {selectedStyle === customDescription && (
                     <input
-                      type="range"
-                      min="0"
-                      max="2"
-                      step="1"
-                      value={changesLevel}
-                      onChange={(e) =>
-                        setChangesLevel(parseInt(e.target.value))
-                      }
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7A9E7E]"
+                      type="text"
+                      value={customDescription}
+                      onChange={(e) => {
+                        const newDesc = e.target.value;
+                        setCustomDescription(newDesc);
+                        setSelectedStyle(newDesc);
+                      }}
+                      placeholder="Describe style..."
+                      className="px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-48"
                     />
-                  </div>
-                  <div className="flex justify-between w-full max-w-md text-xs text-gray-600">
-                    <span
-                      className={
-                        changesLevel === 0 ? "font-bold text-[#7A9E7E]" : ""
-                      }
-                    >
-                      Fewer Changes
-                    </span>
-                    <span
-                      className={
-                        changesLevel === 1 ? "font-bold text-[#7A9E7E]" : ""
-                      }
-                    >
-                      Standard
-                    </span>
-                    <span
-                      className={
-                        changesLevel === 2 ? "font-bold text-[#7A9E7E]" : ""
-                      }
-                    >
-                      More Changes
-                    </span>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-            {selectedStyle && (
-              <div className="mt-2 text-sm text-gray-600 italic">
-                {selectedStyle === standardStyle &&
-                  "Standard - Maintains your original meaning with natural-sounding variations."}
-                {selectedStyle === academicStyle &&
-                  "Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
-                {selectedStyle === fluentStyle &&
-                  "Fluent - Enhances the clarity and flow of your text while maintaining your original message."}
-                {selectedStyle === humanizeStyle &&
-                  "Human - Makes your text sound more natural and conversational, as if written by a person."}
-                {selectedStyle === formalStyle &&
-                  "Formal - Elevates your text with sophisticated language and proper structure without being overly technical."}
-                {selectedStyle === expandStyle &&
-                  "Extended - Elaborates on your original text with additional details and explanations."}
-                {selectedStyle === shortStyle &&
-                  "Shortened - Condenses your text while preserving the key points and meaning."}
-                {selectedStyle === customDescription &&
-                  "Custom - Rewrites your text to match the unique description provided."}
+
+            <div className="flex items-center gap-2 ml-2">
+              <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Changes Amount:
+              </p>
+              <div className="w-40">
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="1"
+                  value={changesLevel}
+                  onChange={(e) => setChangesLevel(parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7A9E7E]"
+                />
+                <div className="flex justify-between w-full text-xs text-gray-600 mt-1">
+                  <span
+                    className={
+                      changesLevel === 0 ? "font-bold text-[#7A9E7E]" : ""
+                    }
+                  >
+                    Fewer
+                  </span>
+                  <span
+                    className={
+                      changesLevel === 1 ? "font-bold text-[#7A9E7E]" : ""
+                    }
+                  >
+                    Standard
+                  </span>
+                  <span
+                    className={
+                      changesLevel === 2 ? "font-bold text-[#7A9E7E]" : ""
+                    }
+                  >
+                    More
+                  </span>
+                </div>
               </div>
-            )}
+            </div>
           </div>
+
+          {selectedStyle && (
+            <div className="mt-1 text-sm text-gray-600 italic">
+              {selectedStyle === standardStyle &&
+                "Standard - Maintains your original meaning with natural-sounding variations."}
+              {selectedStyle === academicStyle &&
+                "Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
+              {selectedStyle === fluentStyle &&
+                "Fluent - Enhances the clarity and flow of your text while maintaining your original message."}
+              {selectedStyle === humanizeStyle &&
+                "Human - Makes your text sound more natural and conversational, as if written by a person."}
+              {selectedStyle === formalStyle &&
+                "Formal - Elevates your text with sophisticated language and proper structure without being overly technical."}
+              {selectedStyle === expandStyle &&
+                "Extended - Elaborates on your original text with additional details and explanations."}
+              {selectedStyle === shortStyle &&
+                "Shortened - Condenses your text while preserving the key points and meaning."}
+              {selectedStyle === customDescription &&
+                "Custom - Rewrites your text to match the unique description provided."}
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm">
-          <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-200">
-            <div className="p-3 flex bg-gray-50 border-b border-gray-200">
+        <div className="flex flex-1 border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
+          <div className="flex-1 border-r border-gray-200 flex flex-col">
+            <div className="p-2 flex bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700">Original Text</h2>
-              <div className="ml-auto text-sm text-gray-500">
+              <div className="ml-auto text-xs text-gray-500">
                 {getWordCount(prompt)} words / {prompt.length} characters (
                 {prompt.replace(/\s/g, "").length} without spaces)
               </div>
             </div>
-            <div className="relative h-64 md:h-96">
+            <div className="relative flex-1">
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-full p-4 focus:outline-none resize-none"
+                className="w-full h-full p-3 focus:outline-none resize-none"
                 placeholder={"Enter your text here to paraphrase..."}
               />
               {!prompt && (
@@ -441,12 +439,12 @@ function App() {
             </div>
           </div>
 
-          <div className="flex-1">
-            <div className="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+          <div className="flex-1 flex flex-col">
+            <div className="p-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
               <h2 className="font-medium text-gray-700">Paraphrased Text</h2>
               <div className="flex items-center">
                 {promptResult && (
-                  <div className="text-sm text-gray-500 mr-2">
+                  <div className="text-xs text-gray-500 mr-2">
                     {getWordCount(promptResult)} words / {promptResult.length}{" "}
                     characters ({promptResult.replace(/\s/g, "").length} without
                     spaces)
@@ -476,7 +474,7 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="w-full h-64 md:h-96 p-4 overflow-y-auto bg-white">
+            <div className="flex-1 p-3 overflow-auto bg-white">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full text-gray-500">
                   <div className="text-center">
@@ -516,7 +514,7 @@ function App() {
           </div>
         </div>
       </main>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto pb-1">
         <span className="text-xs font-medium text-gray-500 block text-center">
           I can process very long texts, even tens of thousands of words — but
           extremely lengthy inputs may reduce the quality of my response because
