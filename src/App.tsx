@@ -41,11 +41,20 @@ function App() {
     "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes."
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
+  const [fewerChanges] = useState(
+    "IMPORTANT: You will not make a lot of changes to the original text; Make as few changes as possible."
+  );
+  const [standardChanges] = useState("");
+  const [moreChanges] = useState(
+    "IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible."
+  );
+  const [selectedChanges, setSelectedChanges] = useState(standardChanges);
+  const [changesLevel, setChangesLevel] = useState(1); // 0 = fewer, 1 = standard, 2 = more
   const [customDescription, setCustomDescription] = useState("");
   const counterAPI = new CounterAPI();
   const [count, setCount] = useState(0);
 
-  const getWordCount = (text: string) => {
+  const getWordCount = (text) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
   };
 
@@ -59,6 +68,17 @@ function App() {
     }
   };
 
+  // Update selected changes when changes level changes
+  useEffect(() => {
+    if (changesLevel === 0) {
+      setSelectedChanges(fewerChanges);
+    } else if (changesLevel === 1) {
+      setSelectedChanges(standardChanges);
+    } else {
+      setSelectedChanges(moreChanges);
+    }
+  }, [changesLevel, fewerChanges, standardChanges, moreChanges]);
+
   const onParaphrase = () => {
     const getParaphrasingData = async () => {
       if (!prompt.trim()) return;
@@ -71,11 +91,13 @@ function App() {
         You must sound ${
           selectedStyle || "natural without changing the original meaning"
         }
+
+        Also: ${selectedChanges}
         
         IMPORTANT: Format your response with proper line breaks between paragraphs.
         Each paragraph should be separated by a blank line.
         Use proper markdown formatting for any lists, headings, or other formatting.
-        Make sure to use double line breaks (\\n\\n) and not (\n\n) between paragraphs to ensure they display correctly.
+        Make sure to use double line breaks (\\n\\n) and not (\n\n) or ('\n') between paragraphs to ensure they display correctly.
 
         Please provide original content that is uniquely phrased and free from plagiarism,
         a text that will bypass any plagiarism checker.
@@ -83,9 +105,8 @@ function App() {
         quotes, or external references. Avoid direct copying from sources,
         and focus on creating a fresh and unique perspective tailored to my request.
         
-        Paraphrase this: `;
-        const newPrompt = promptInstructions + prompt;
-        const result = await model.generateContent(newPrompt);
+        Paraphrase this: ${prompt}`;
+        const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
 
         const processedText = responseText
@@ -94,10 +115,12 @@ function App() {
 
         setPromptResult(processedText);
         setSavedOutput(processedText);
+
         counterAPI.up("test", "test").then((res) => {
           console.log(res);
           setCount(res.Count);
         });
+
         localStorage.setItem("output", processedText);
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
@@ -117,7 +140,7 @@ function App() {
     setSavedInput("");
   };
 
-  const selectStyle = (style: string) => {
+  const selectStyle = (style) => {
     setSelectedStyle(style);
   };
 
@@ -158,7 +181,7 @@ function App() {
 
       <main className="max-w-6xl mx-auto p-4 md:p-6">
         <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 p-4">
-          <div className="flex flex-wrap gap-3 items-center mb-4">
+          <div className="flex flex-wrap gap-3 items-center mb-2">
             <button
               onClick={onParaphrase}
               disabled={isLoading || !prompt.trim()}
@@ -205,8 +228,8 @@ function App() {
             </button>
           </div>
 
-          <div className="mt-2">
-            <p className="text-sm font-medium text-gray-700 mb-2">
+          <div>
+            <p className="text-sm font-medium text-gray-700">
               Select Paraphrasing Style:
             </p>
 
@@ -292,6 +315,7 @@ function App() {
                 >
                   Custom
                 </button>
+
                 {selectedStyle === customDescription && (
                   <input
                     type="text"
@@ -305,6 +329,50 @@ function App() {
                     className="px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-48"
                   />
                 )}
+              </div>
+              {/* Changes Slider */}
+              <div className=" w-full max-w-80 lg:ml-8">
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  Changes Amount:
+                </p>
+                <div className="flex flex-col space-y-2">
+                  <div className="w-full max-w-md">
+                    <input
+                      type="range"
+                      min="0"
+                      max="2"
+                      step="1"
+                      value={changesLevel}
+                      onChange={(e) =>
+                        setChangesLevel(parseInt(e.target.value))
+                      }
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#7A9E7E]"
+                    />
+                  </div>
+                  <div className="flex justify-between w-full max-w-md text-xs text-gray-600">
+                    <span
+                      className={
+                        changesLevel === 0 ? "font-bold text-[#7A9E7E]" : ""
+                      }
+                    >
+                      Fewer Changes
+                    </span>
+                    <span
+                      className={
+                        changesLevel === 1 ? "font-bold text-[#7A9E7E]" : ""
+                      }
+                    >
+                      Standard
+                    </span>
+                    <span
+                      className={
+                        changesLevel === 2 ? "font-bold text-[#7A9E7E]" : ""
+                      }
+                    >
+                      More Changes
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
             {selectedStyle && (
