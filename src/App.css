@@ -50,3 +50,19 @@
   transform: scale(1.1);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
+
+@keyframes pulseOnce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-pulse-once {
+  animation: pulseOnce 1s ease-in-out;
+}

@@ -162,7 +162,9 @@ function App() {
       <header className="bg-[#7A9E7E] text-white py-3 px-6 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Paraphraser Tool</h1>
-          <span className="capitalize">{count} phrases improved in total.</span>
+          <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20  transition-colors animate-pulse-once">
+            {count} total paraphrases across all users
+          </span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
             href="https://www.joaoportfolio.com/"
