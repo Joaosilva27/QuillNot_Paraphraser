@@ -202,17 +202,24 @@ function App() {
   const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
     if (!clickedWord) return;
 
-    const words = promptResult.split(/\s+/);
+    const paragraphs = promptResult.split("\n\n");
 
-    if (words[clickedWord.wordIndex] === clickedWord.word) {
-      words[clickedWord.wordIndex] = synonym;
+    const targetParagraph = paragraphs[clickedWord.paragraphIndex];
+
+    const words = targetParagraph.split(/\s+/);
+
+    if (words[clickedWord.wordInParagraph] === clickedWord.word) {
+      words[clickedWord.wordInParagraph] = synonym;
+
+      paragraphs[clickedWord.paragraphIndex] = words.join(" ");
+
+      const newText = paragraphs.join("\n\n");
+
+      setPromptResult(newText);
+      setSavedOutput(newText);
+      localStorage.setItem("output", newText);
     }
 
-    const newText = words.join(" ");
-
-    setPromptResult(newText);
-    setSavedOutput(newText);
-    localStorage.setItem("output", newText);
     setClickedWord(null);
   };
 
@@ -594,7 +601,6 @@ function App() {
                         const sentenceText = sentence.endsWith(".")
                           ? sentence.trim()
                           : `${sentence.trim()}`;
-
                         return (
                           <span
                             key={sIndex}
@@ -603,6 +609,15 @@ function App() {
                             {sentenceText
                               .split(/\s+/)
                               .map((word, wordIndex) => {
+                                // Calculate global word index
+                                let globalWordIndex = 0;
+                                for (let i = 0; i < pIndex; i++) {
+                                  globalWordIndex += promptResult
+                                    .split("\n\n")
+                                    [i].split(/\s+/).length;
+                                }
+                                globalWordIndex += wordIndex;
+
                                 const isDifferent = !cleanedOriginalWords.has(
                                   cleanWord(word)
                                 );
@@ -622,7 +637,9 @@ function App() {
                                           x: e.clientX,
                                           y: e.clientY,
                                         },
-                                        wordIndex: wordIndex,
+                                        wordIndex: globalWordIndex,
+                                        paragraphIndex: pIndex,
+                                        wordInParagraph: wordIndex,
                                       });
                                       onClickedWord(word);
                                     }}
