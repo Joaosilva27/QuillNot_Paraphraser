@@ -59,6 +59,7 @@ function App() {
   const [clickedWord, setClickedWord] = useState<{
     word: string;
     position: { x: number; y: number };
+    wordIndex: number;
   } | null>(null);
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
 
@@ -201,15 +202,13 @@ function App() {
   const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
     if (!clickedWord) return;
 
-    const escapedWord = clickedWord.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const words = promptResult.split(/\s+/);
 
-    const wordRegex = new RegExp(`(^|\\W)${escapedWord}(?=\\W|$)`, "gi");
+    if (words[clickedWord.wordIndex] === clickedWord.word) {
+      words[clickedWord.wordIndex] = synonym;
+    }
 
-    const newText = promptResult.replace(wordRegex, (match) => {
-      const prefix = match.match(/^\W*/)?.[0] || "";
-      const suffix = match.match(/\W*$/)?.[0] || "";
-      return prefix + synonym + suffix;
-    });
+    const newText = words.join(" ");
 
     setPromptResult(newText);
     setSavedOutput(newText);
@@ -623,8 +622,8 @@ function App() {
                                           x: e.clientX,
                                           y: e.clientY,
                                         },
+                                        wordIndex: wordIndex,
                                       });
-
                                       onClickedWord(word);
                                     }}
                                   >
