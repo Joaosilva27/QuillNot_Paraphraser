@@ -547,7 +547,7 @@ function App() {
                         return (
                           <span
                             key={sIndex}
-                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-gray-50/50 inline leading-[1.8]"
+                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
                           >
                             {sentenceText
                               .split(/\s+/)
