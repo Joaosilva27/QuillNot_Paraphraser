@@ -410,8 +410,9 @@ function App() {
                 "Extended - Elaborates on your original text with additional details and explanations."}
               {selectedStyle === shortStyle &&
                 "Shortened - Condenses your text while preserving the key points and meaning."}
-              {selectedStyle === customDescription &&
-                "Custom - Rewrites your text to match the unique description provided."}
+              {selectedStyle === customDescription && (
+                <span className="block w-full md:truncate md:max-w-xl break-words">{`Custom - Your text will be rewritten to sound: "${customDescription}".`}</span>
+              )}
             </div>
           )}
         </div>
