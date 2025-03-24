@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import ReactMarkdown from "react-markdown";
 import GithubIcon from "./images/github.png";
 import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
