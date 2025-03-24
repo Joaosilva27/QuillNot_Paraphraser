@@ -60,7 +60,10 @@ function App() {
     word: string;
     position: { x: number; y: number };
     wordIndex: number;
+    paragraphIndex: number;
+    wordInParagraph: number;
   } | null>(null);
+
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
 
   const getWordCount = (text: string) => {
@@ -200,7 +203,12 @@ function App() {
   };
 
   const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
-    if (!clickedWord) return;
+    if (
+      !clickedWord ||
+      clickedWord.paragraphIndex === undefined ||
+      clickedWord.wordInParagraph === undefined
+    )
+      return;
 
     const paragraphs = promptResult.split("\n\n");
 
