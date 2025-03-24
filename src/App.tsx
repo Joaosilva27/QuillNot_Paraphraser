@@ -531,7 +531,7 @@ function App() {
                 </div>
               ) : promptResult ? (
                 <div className="prose text-black prose-sm max-w-none whitespace-pre-line">
-                  <ReactMarkdown>{promptResult}</ReactMarkdown>
+                  {promptResult}
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
