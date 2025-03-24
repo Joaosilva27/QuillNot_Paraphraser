@@ -93,6 +93,7 @@ function App() {
 
         Also: ${selectedChanges}
         
+        IMPORTANT: TRY TO PRESERVE THE ORIGINAL PARAGRAPH STRUCTURE AND LINE BREAKS. 
 
         Please provide original content that is uniquely phrased and free from plagiarism,
         a text that will bypass any plagiarism checker.
@@ -105,8 +106,9 @@ function App() {
         const responseText = result.response.text();
 
         const processedText = responseText
-          .replace(/\n/g, "\n\n")
-          .replace(/\n\n\n\n/g, "\n\n");
+          .replace(/(\n){3,}/g, "\n\n")
+          .replace(/(\S)\n(\S)/g, "$1 $2")
+          .trim();
 
         setPromptResult(processedText);
         setSavedOutput(processedText);
@@ -535,32 +537,42 @@ function App() {
                 </div>
               ) : promptResult ? (
                 <div className="prose text-lg text-black prose-sm max-w-none whitespace-pre-line">
-                  {promptResult.split(/(?<=\.)\s+/).map((sentence, index) => {
-                    const sentenceText = sentence.endsWith(".")
-                      ? sentence.trim()
-                      : `${sentence.trim()}.`;
+                  {promptResult.split("\n\n").map((paragraph, pIndex) => (
+                    <div key={pIndex} className="mb-4">
+                      {paragraph.split(/(?<=\.)\s+/).map((sentence, sIndex) => {
+                        const sentenceText = sentence.endsWith(".")
+                          ? sentence.trim()
+                          : `${sentence.trim()}`;
 
-                    return (
-                      <span
-                        key={index}
-                        className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-gray-50/50 inline leading-[1.8]"
-                      >
-                        {sentenceText.split(/\s+/).map((word, wordIndex) => {
-                          const isDifferent = !cleanedOriginalWords.has(
-                            cleanWord(word)
-                          );
-                          return (
-                            <span
-                              key={wordIndex}
-                              className={isDifferent ? "text-blue-500" : ""}
-                            >
-                              {word}{" "}
-                            </span>
-                          );
-                        })}
-                      </span>
-                    );
-                  })}
+                        return (
+                          <span
+                            key={sIndex}
+                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-gray-50/50 inline leading-[1.8]"
+                          >
+                            {sentenceText
+                              .split(/\s+/)
+                              .map((word, wordIndex) => {
+                                const isDifferent = !cleanedOriginalWords.has(
+                                  cleanWord(word)
+                                );
+                                return (
+                                  <span
+                                    key={wordIndex}
+                                    className={
+                                      prompt && isDifferent
+                                        ? "text-blue-500"
+                                        : ""
+                                    }
+                                  >
+                                    {word}{" "}
+                                  </span>
+                                );
+                              })}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
