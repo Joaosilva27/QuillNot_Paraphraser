@@ -18,7 +18,7 @@ function App() {
     localStorage.getItem("input") || ""
   );
   const [prompt, setPrompt] = useState(savedInput);
-  const [promptResult, setPromptResult] = useState(savedOutput);
+  const [promptResult, setPromptResult] = useState<any>(savedOutput);
   const [isLoading, setIsLoading] = useState(false);
   const [standardStyle] = useState(
     "natural without changing the original meaning"
@@ -115,8 +115,9 @@ function App() {
 
         setPromptResult(processedText);
         setSavedOutput(processedText);
+        console.log(processedText.split(" "));
 
-        counterAPI.up("test", "test").then((res) => {
+        counterAPI.up("quillnot", "paraphrases").then((res) => {
           console.log(res);
           setCount(res.Count);
         });
@@ -152,7 +153,7 @@ function App() {
   }, [prompt]);
 
   useEffect(() => {
-    counterAPI.get("test", "test").then((res) => {
+    counterAPI.get("quillnot", "paraphrases").then((res) => {
       console.log(res);
       setCount(res.Count);
     });
