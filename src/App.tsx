@@ -198,6 +198,19 @@ function App() {
     fetchSynonymData();
   };
 
+  const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
+    if (!clickedWord) return;
+
+    const wordRegex = new RegExp(`\\b${clickedWord.word}\\b`, "g");
+
+    const newText = promptResult.replace(wordRegex, synonym);
+
+    setPromptResult(newText);
+    setSavedOutput(newText);
+    localStorage.setItem("output", newText);
+    setClickedWord(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 overflow-hidden">
       <header className="bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md">
@@ -647,7 +660,13 @@ function App() {
           <div className="text-sm flex p-4 flex-col font-medium text-gray-700">
             <span className="font-bold mb-1.5">Synonyms:</span>
             {clickedWordSynonyms.split(", ").map((synonym, index) => (
-              <span key={index} className="bg-gray-100 px-2 py-1 rounded">
+              <span
+                key={index}
+                className="bg-gray-100 px-2 m-0.5 py-1 rounded hover:bg-gray-200 cursor-pointer"
+                onClick={() =>
+                  replaceWordWithSynonym(clickedWord.word, synonym)
+                }
+              >
                 {synonym}
               </span>
             ))}
