@@ -94,10 +94,7 @@ function App() {
 
         Also: ${selectedChanges}
         
-        IMPORTANT: Format your response with proper line breaks between paragraphs.
-        Each paragraph should be separated by a blank line.
-        Use proper markdown formatting for any lists, headings, or other formatting.
-        Make sure to use double line breaks ONLY (\\n\\n) and not (\\) between paragraphs to ensure they display correctly.
+        
 
         Please provide original content that is uniquely phrased and free from plagiarism,
         a text that will bypass any plagiarism checker.
