@@ -56,6 +56,10 @@ function App() {
   const [customDescription, setCustomDescription] = useState("");
   const counterAPI = new CounterAPI();
   const [count, setCount] = useState(0);
+  const [clickedWord, setClickedWord] = useState<{
+    word: string;
+    position: { x: number; y: number };
+  } | null>(null);
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -564,9 +568,19 @@ function App() {
                                     key={wordIndex}
                                     className={
                                       prompt && isDifferent
-                                        ? "text-blue-500"
-                                        : ""
+                                        ? "text-blue-500 cursor-pointer"
+                                        : "cursor-pointer"
                                     }
+                                    onClick={(e) => {
+                                      if (!prompt) return;
+                                      setClickedWord({
+                                        word: word,
+                                        position: {
+                                          x: e.clientX,
+                                          y: e.clientY,
+                                        },
+                                      });
+                                    }}
                                   >
                                     {word}{" "}
                                   </span>
@@ -594,6 +608,27 @@ function App() {
           I might lose focus. There's no official word limit.
         </span>
       </div>
+      {clickedWord && (
+        <div
+          className="fixed bg-white border border-gray-200 rounded-lg p-2 shadow-lg z-50"
+          style={{
+            top: `${clickedWord.position.y}px`,
+            left: `${clickedWord.position.x}px`,
+            transform: "translateY(-100%)",
+          }}
+        >
+          <div className="text-sm flex p-4 flex-col font-medium text-gray-700">
+            <span className="font-bold mb-1.5">Synonyms:</span>
+            {clickedWord.word}
+          </div>
+          <button
+            className="absolute top-0 right-1 text-gray-500 hover:text-gray-700"
+            onClick={() => setClickedWord(null)}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }
