@@ -42,7 +42,10 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "IMPORTANT: You will not make a lot of changes to the original text; Make as few changes as possible."
+    "CRUCIAL: Preserve 90-95% of the original text. Only make changes when absolutely necessary for grammar or clarity. " +
+      "Maintain the exact: sentence structure, word order, and paragraph format. " +
+      "When altering, only substitute individual words with simpler synonyms, never rephrase full phrases. " +
+      "Prioritize word-for-word fidelity over stylistic improvements."
   );
   const [standardChanges] = useState("");
   const [moreChanges] = useState(
@@ -94,6 +97,7 @@ function App() {
         Also: ${selectedChanges}
         
         IMPORTANT: TRY TO PRESERVE THE ORIGINAL PARAGRAPH STRUCTURE AND LINE BREAKS. 
+        IF THE GIVEN PROMPT TEXT IS BIG (e.g. more than 100 words) AND HAS NO LINE BREAKS, ADD THEM WHERE YOU THINK ARE NECESSARY.
 
         Please provide original content that is uniquely phrased and free from plagiarism,
         a text that will bypass any plagiarism checker.
@@ -508,7 +512,7 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="flex-1 p-2 sm:p-3 overflow-y-auto bg-white min-h-60 md:min-h-0 max-h-[calc(50vh)]">
+            <div className="flex-1 p-2 sm:p-3 overflow-y-auto bg-white min-h-60 md:min-h-0 max-h-[calc(50vh)] xs:max-w-[calc(80vw)] md:max-w-[calc(40vw)]">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full text-gray-500">
                   <div className="text-center">
