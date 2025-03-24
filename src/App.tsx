@@ -201,9 +201,15 @@ function App() {
   const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
     if (!clickedWord) return;
 
-    const wordRegex = new RegExp(`\\b${clickedWord.word}\\b`, "g");
+    const escapedWord = clickedWord.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-    const newText = promptResult.replace(wordRegex, synonym);
+    const wordRegex = new RegExp(`(^|\\W)${escapedWord}(?=\\W|$)`, "gi");
+
+    const newText = promptResult.replace(wordRegex, (match) => {
+      const prefix = match.match(/^\W*/)?.[0] || "";
+      const suffix = match.match(/\W*$/)?.[0] || "";
+      return prefix + synonym + suffix;
+    });
 
     setPromptResult(newText);
     setSavedOutput(newText);
