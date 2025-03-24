@@ -93,7 +93,6 @@ function App() {
 
         Also: ${selectedChanges}
         
-        
 
         Please provide original content that is uniquely phrased and free from plagiarism,
         a text that will bypass any plagiarism checker.
@@ -437,7 +436,7 @@ function App() {
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full text-black h-full p-2 sm:p-3 focus:outline-none resize-none"
+                className="w-full text-black text-lg h-full p-2 sm:p-3 focus:outline-none resize-none"
                 placeholder={"Enter your text here to paraphrase..."}
               />
               {!prompt && (
@@ -535,22 +534,33 @@ function App() {
                   </div>
                 </div>
               ) : promptResult ? (
-                <div className="prose text-black prose-sm max-w-none whitespace-pre-line">
-                  {promptResult
-                    .split(/\s+/)
-                    .map((word: string, index: number) => {
-                      const isDifferent = !cleanedOriginalWords.has(
-                        cleanWord(word)
-                      );
-                      return (
-                        <span
-                          key={index}
-                          className={isDifferent ? "text-blue-500" : ""}
-                        >
-                          {word}{" "}
-                        </span>
-                      );
-                    })}
+                <div className="prose text-lg text-black prose-sm max-w-none whitespace-pre-line">
+                  {promptResult.split(/(?<=\.)\s+/).map((sentence, index) => {
+                    const sentenceText = sentence.endsWith(".")
+                      ? sentence.trim()
+                      : `${sentence.trim()}.`;
+
+                    return (
+                      <span
+                        key={index}
+                        className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-gray-50/50 inline leading-[1.8]"
+                      >
+                        {sentenceText.split(/\s+/).map((word, wordIndex) => {
+                          const isDifferent = !cleanedOriginalWords.has(
+                            cleanWord(word)
+                          );
+                          return (
+                            <span
+                              key={wordIndex}
+                              className={isDifferent ? "text-blue-500" : ""}
+                            >
+                              {word}{" "}
+                            </span>
+                          );
+                        })}
+                      </span>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
