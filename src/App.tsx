@@ -60,6 +60,7 @@ function App() {
     word: string;
     position: { x: number; y: number };
   } | null>(null);
+  const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
 
   const getWordCount = (text: string) => {
     return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -172,6 +173,30 @@ function App() {
     const words = prompt.trim().split(/\s+/);
     return new Set(words.map((word) => cleanWord(word)));
   }, [prompt]);
+
+  const onClickedWord = (word: string) => {
+    setClickedWordSynonyms("Loading...");
+    const fetchSynonymData = async () => {
+      try {
+        const promptInstructions = `Provide 6 synonyms for "${word}" separated by commas - ONLY SYNONYMS, NO EXTRA TEXT`;
+        const result = await model.generateContent(promptInstructions);
+        const responseText = result.response.text();
+
+        const cleanedSynonyms = responseText
+          .replace(/["\\*]/g, "")
+          .split(",")
+          .slice(0, 6)
+          .map((s) => s.trim())
+          .join(", ");
+
+        setClickedWordSynonyms(cleanedSynonyms);
+      } catch (err) {
+        setClickedWordSynonyms("Failed to load synonyms");
+        console.log(err);
+      }
+    };
+    fetchSynonymData();
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 overflow-hidden">
@@ -580,6 +605,8 @@ function App() {
                                           y: e.clientY,
                                         },
                                       });
+
+                                      onClickedWord(word);
                                     }}
                                   >
                                     {word}{" "}
@@ -619,7 +646,11 @@ function App() {
         >
           <div className="text-sm flex p-4 flex-col font-medium text-gray-700">
             <span className="font-bold mb-1.5">Synonyms:</span>
-            {clickedWord.word}
+            {clickedWordSynonyms.split(", ").map((synonym, index) => (
+              <span key={index} className="bg-gray-100 px-2 py-1 rounded">
+                {synonym}
+              </span>
+            ))}
           </div>
           <button
             className="absolute top-0 right-1 text-gray-500 hover:text-gray-700"
