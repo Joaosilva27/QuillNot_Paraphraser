@@ -231,7 +231,7 @@ function App() {
 
             <button
               onClick={clearAll}
-              className="px-3 sm:px-6 py-2 rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
+              className="px-3 sm:px-6 py-2 text-black rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
             >
               Clear All
             </button>
@@ -432,7 +432,7 @@ function App() {
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-full p-2 sm:p-3 focus:outline-none resize-none"
+                className="w-full text-black h-full p-2 sm:p-3 focus:outline-none resize-none"
                 placeholder={"Enter your text here to paraphrase..."}
               />
               {!prompt && (
@@ -530,7 +530,7 @@ function App() {
                   </div>
                 </div>
               ) : promptResult ? (
-                <div className="prose prose-sm max-w-none whitespace-pre-line">
+                <div className="prose text-black prose-sm max-w-none whitespace-pre-line">
                   <ReactMarkdown>{promptResult}</ReactMarkdown>
                 </div>
               ) : (
