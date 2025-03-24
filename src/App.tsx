@@ -501,7 +501,7 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="flex-1 p-2 sm:p-3 overflow-auto bg-white min-h-60 md:min-h-0">
+            <div className="flex-1 p-2 sm:p-3 overflow-y-auto bg-white min-h-60 md:min-h-0 max-h-[calc(50vh)]">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full text-gray-500">
                   <div className="text-center">
