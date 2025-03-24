@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import GithubIcon from "./images/github.png";
@@ -17,7 +17,7 @@ function App() {
     localStorage.getItem("input") || ""
   );
   const [prompt, setPrompt] = useState(savedInput);
-  const [promptResult, setPromptResult] = useState<any>(savedOutput);
+  const [promptResult, setPromptResult] = useState(savedOutput);
   const [isLoading, setIsLoading] = useState(false);
   const [standardStyle] = useState(
     "natural without changing the original meaning"
@@ -111,7 +111,7 @@ function App() {
 
         setPromptResult(processedText);
         setSavedOutput(processedText);
-        console.log(processedText);
+        console.log(processedText.split(" "));
 
         counterAPI.up("quillnot", "paraphrases").then((res) => {
           console.log(res);
@@ -154,6 +154,15 @@ function App() {
       setCount(res.Count);
     });
   }, []);
+
+  const cleanWord = (word: string) => {
+    return word.replace(/^\W+|\W+$/g, "").toLowerCase();
+  };
+
+  const cleanedOriginalWords = useMemo(() => {
+    const words = prompt.trim().split(/\s+/);
+    return new Set(words.map((word) => cleanWord(word)));
+  }, [prompt]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 overflow-hidden">
@@ -332,7 +341,7 @@ function App() {
                         setSelectedStyle(newDesc);
                       }}
                       placeholder="Describe style..."
-                      className="px-2 py-1 text-xs sm:text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48"
+                      className="px-2 py-1 text-xs text-black sm:text-sm border-[#7A9E7E] border-2 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48"
                     />
                   )}
                 </div>
@@ -527,7 +536,21 @@ function App() {
                 </div>
               ) : promptResult ? (
                 <div className="prose text-black prose-sm max-w-none whitespace-pre-line">
-                  {promptResult}
+                  {promptResult
+                    .split(/\s+/)
+                    .map((word: string, index: number) => {
+                      const isDifferent = !cleanedOriginalWords.has(
+                        cleanWord(word)
+                      );
+                      return (
+                        <span
+                          key={index}
+                          className={isDifferent ? "text-blue-500" : ""}
+                        >
+                          {word}{" "}
+                        </span>
+                      );
+                    })}
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
