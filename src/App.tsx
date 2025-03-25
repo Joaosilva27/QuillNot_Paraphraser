@@ -62,6 +62,7 @@ function App() {
     wordIndex: number;
     paragraphIndex: number;
     wordInParagraph: number;
+    sentenceIndex: number;
   } | null>(null);
 
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
