@@ -42,11 +42,23 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "CRUCIAL: Preserve 90-95% of the original text. Only make changes when absolutely necessary for grammar or clarity. " +
-      "Maintain the exact: sentence structure, word order, and paragraph format. " +
-      "When altering, only substitute individual words with simpler synonyms, never rephrase full phrases. " +
-      "Prioritize word-for-word fidelity over stylistic improvements."
+    "ULTRA-CONSERVATIVE PARAPHRASING RULES: " +
+      "1. WORD CHANGE LIMIT: Maximum 3 word changes per sentence (average 2)\n" +
+      "2. CHANGE CRITERIA (ONLY permitted if BOTH apply):\n" +
+      "   a) The original is grammatically incorrect OR\n" +
+      "   b) The word has a perfect synonym (same denotation AND connotation)\n" +
+      "3. ABSOLUTE PROHIBITIONS:\n" +
+      "   - Never change sentence structure\n" +
+      "   - Never change word order\n" +
+      "   - Never modify phrases/idioms\n" +
+      "   - Never alter technical/specialized terms\n" +
+      "4. EXAMPLES:\n" +
+      "   Acceptable: 'big' → 'large' (perfect synonym)\n" +
+      "   Unacceptable: 'cardiologist' → 'heart doctor'\n" +
+      "   Unacceptable: 'The cat sat' → 'There was a sitting feline'\n" +
+      "5. When in doubt, KEEP THE ORIGINAL WORDING"
   );
+
   const [standardChanges] = useState("");
   const [moreChanges] = useState(
     "IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible."
@@ -123,7 +135,7 @@ function App() {
         selectedStyle || "natural without changing the original meaning"
       }
 
-      Change level: ${selectedChanges}
+      IMPORTANT!!!!!!: Change level: ${selectedChanges}
 
       Plagiarism prevention:
       - Create completely original phrasing while keeping all original facts
