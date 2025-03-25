@@ -51,8 +51,8 @@ function App() {
   const [moreChanges] = useState(
     "IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible."
   );
-  const [selectedChanges, setSelectedChanges] = useState(standardChanges);
-  const [changesLevel, setChangesLevel] = useState(1);
+  const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
+  const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
   const counterAPI = new CounterAPI();
   const [count, setCount] = useState(0);
@@ -170,7 +170,7 @@ function App() {
   }, []);
 
   const cleanWord = (word: string) => {
-    return word.replace(/^\W+|\W+$/g, "").toLowerCase();
+    return word.replace(/^\W+/g, "").toLowerCase();
   };
 
   const cleanedOriginalWords = useMemo(() => {
@@ -211,16 +211,17 @@ function App() {
       return;
 
     const paragraphs = promptResult.split("\n\n");
-
     const targetParagraph = paragraphs[clickedWord.paragraphIndex];
-
     const words = targetParagraph.split(/\s+/);
 
     if (words[clickedWord.wordInParagraph] === clickedWord.word) {
-      words[clickedWord.wordInParagraph] = synonym;
+      const originalWord = words[clickedWord.wordInParagraph];
+      const punctuationMatch = originalWord.match(/[.,!?;:]+$/);
+      const punctuation = punctuationMatch ? punctuationMatch[0] : "";
+
+      words[clickedWord.wordInParagraph] = synonym + punctuation;
 
       paragraphs[clickedWord.paragraphIndex] = words.join(" ");
-
       const newText = paragraphs.join("\n\n");
 
       setPromptResult(newText);
@@ -612,7 +613,7 @@ function App() {
                         return (
                           <span
                             key={sIndex}
-                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
+                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
                           >
                             {sentenceText
                               .split(/\s+/)
