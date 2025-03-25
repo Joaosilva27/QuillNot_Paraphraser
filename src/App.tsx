@@ -169,28 +169,51 @@ function App() {
     });
   }, []);
 
-  const cleanWord = (word: string) => {
-    return word.replace(/^\W+/g, "").toLowerCase();
+  const getOriginalWord = (word: string) => {
+    return word.replace(/^\W+/g, "");
   };
 
   const cleanedOriginalWords = useMemo(() => {
     const words = prompt.trim().split(/\s+/);
-    return new Set(words.map((word) => cleanWord(word)));
+    return new Set(words.map((word) => getOriginalWord(word)));
   }, [prompt]);
 
   const onClickedWord = (word: string) => {
     setClickedWordSynonyms("Loading...");
     const fetchSynonymData = async () => {
       try {
-        const promptInstructions = `Provide 6 synonyms for "${word}" separated by commas - ONLY SYNONYMS, NO EXTRA TEXT`;
+        const originalWord = getOriginalWord(word);
+        const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas.
+        The synonyms must have the same case as the word provided, for example:
+        If the word is in all capitals, like HELLO - all synonyms must be capital letters.
+        If the word is in all lowercase, like hello - all synonyms must be lowerletters.
+        If the word is mixed, for example hElLo - the synonyms must match the lower and higher cases.
+        IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
         const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
+        console.log(responseText);
+
+        // this was the only way I could style the words to match the case sensivity
+        // the prompt above given to AI for some reason works only half of the time
+        // (gemini 2.0 version)
+        const matchCase = (original: string, synonym: string) => {
+          if (original === original.toUpperCase()) {
+            return synonym.toUpperCase();
+          } else if (original === original.toLowerCase()) {
+            return synonym.toLowerCase();
+          } else if (/^[A-Z]/.test(original)) {
+            return (
+              synonym.charAt(0).toUpperCase() + synonym.slice(1).toLowerCase()
+            );
+          }
+          return synonym;
+        };
 
         const cleanedSynonyms = responseText
           .replace(/["\\*]/g, "")
           .split(",")
           .slice(0, 6)
-          .map((s) => s.trim())
+          .map((s) => matchCase(originalWord, s.trim()))
           .join(", ");
 
         setClickedWordSynonyms(cleanedSynonyms);
@@ -627,9 +650,11 @@ function App() {
                                 }
                                 globalWordIndex += wordIndex;
 
+                                const originalWord = getOriginalWord(word);
                                 const isDifferent = !cleanedOriginalWords.has(
-                                  cleanWord(word)
+                                  getOriginalWord(word)
                                 );
+
                                 return (
                                   <span
                                     key={wordIndex}
@@ -641,7 +666,7 @@ function App() {
                                     onClick={(e) => {
                                       if (!prompt) return;
                                       setClickedWord({
-                                        word: word,
+                                        word: originalWord,
                                         position: {
                                           x: e.clientX,
                                           y: e.clientY,
@@ -650,7 +675,7 @@ function App() {
                                         paragraphIndex: pIndex,
                                         wordInParagraph: wordIndex,
                                       });
-                                      onClickedWord(word);
+                                      onClickedWord(originalWord);
                                     }}
                                   >
                                     {word}{" "}
