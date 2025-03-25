@@ -229,20 +229,26 @@ function App() {
     if (!clickedWord) return;
 
     const paragraphs = promptResult.split("\n\n");
-
     const targetParagraph = paragraphs[clickedWord.paragraphIndex];
 
-    const words = targetParagraph.split(/\s+/);
+    const sentences = targetParagraph.split(/(?<=\.)\s+/);
+    const targetSentence = sentences[clickedWord.sentenceIndex];
 
-    const actualWord = words[clickedWord.wordInParagraph];
+    const words = targetSentence.split(/\s+/);
 
-    if (getOriginalWord(actualWord) === clickedWord.word) {
-      const punctuationMatch = actualWord.match(/[.,!?;:]+$/);
+    if (
+      words[clickedWord.wordInParagraph] &&
+      getOriginalWord(words[clickedWord.wordInParagraph]) === clickedWord.word
+    ) {
+      const originalWord = words[clickedWord.wordInParagraph];
+      const punctuationMatch = originalWord.match(/[.,!?;:]+$/);
       const punctuation = punctuationMatch ? punctuationMatch[0] : "";
 
       words[clickedWord.wordInParagraph] = synonym + punctuation;
 
-      paragraphs[clickedWord.paragraphIndex] = words.join(" ");
+      sentences[clickedWord.sentenceIndex] = words.join(" ");
+
+      paragraphs[clickedWord.paragraphIndex] = sentences.join(" ");
 
       const newText = paragraphs.join("\n\n");
 
@@ -628,41 +634,66 @@ function App() {
                 <div className="prose text-lg text-black prose-sm max-w-none whitespace-pre-line">
                   {promptResult.split("\n\n").map((paragraph, pIndex) => (
                     <div key={pIndex} className="mb-4">
-                      {paragraph.split(/\s+/).map((word, wordIndex) => {
-                        // Calculate global word index
-                        let globalWordIndex = 0;
-                        for (let i = 0; i < pIndex; i++) {
-                          globalWordIndex += promptResult
-                            .split("\n\n")
-                            [i].split(/\s+/).length;
-                        }
-                        globalWordIndex += wordIndex;
-
-                        const originalWord = getOriginalWord(word);
-                        const isDifferent =
-                          !cleanedOriginalWords.has(originalWord);
-
+                      {paragraph.split(/(?<=\.)\s+/).map((sentence, sIndex) => {
+                        const sentenceText = sentence.endsWith(".")
+                          ? sentence.trim()
+                          : `${sentence.trim()}`;
                         return (
                           <span
-                            key={wordIndex}
-                            className={
-                              prompt && isDifferent
-                                ? "text-blue-500 cursor-pointer"
-                                : "cursor-pointer"
-                            }
-                            onClick={(e) => {
-                              if (!prompt) return;
-                              setClickedWord({
-                                word: originalWord,
-                                position: { x: e.clientX, y: e.clientY },
-                                wordIndex: globalWordIndex,
-                                paragraphIndex: pIndex,
-                                wordInParagraph: wordIndex,
-                              });
-                              onClickedWord(originalWord);
-                            }}
+                            key={sIndex}
+                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
                           >
-                            {word}{" "}
+                            {sentenceText
+                              .split(/\s+/)
+                              .map((word, wordIndex) => {
+                                let globalWordIndex = 0;
+                                for (let i = 0; i < pIndex; i++) {
+                                  globalWordIndex += promptResult
+                                    .split("\n\n")
+                                    [i].split(/\s+/).length;
+                                }
+                                const currentParagraph =
+                                  promptResult.split("\n\n")[pIndex];
+                                const sentences =
+                                  currentParagraph.split(/(?<=\.)\s+/);
+                                for (let i = 0; i < sIndex; i++) {
+                                  globalWordIndex +=
+                                    sentences[i].split(/\s+/).length;
+                                }
+                                globalWordIndex += wordIndex;
+
+                                const originalWord = getOriginalWord(word);
+                                const isDifferent =
+                                  !cleanedOriginalWords.has(originalWord);
+
+                                return (
+                                  <span
+                                    key={wordIndex}
+                                    className={
+                                      prompt && isDifferent
+                                        ? "text-blue-500 cursor-pointer"
+                                        : "cursor-pointer"
+                                    }
+                                    onClick={(e) => {
+                                      if (!prompt) return;
+                                      setClickedWord({
+                                        word: originalWord,
+                                        position: {
+                                          x: e.clientX,
+                                          y: e.clientY,
+                                        },
+                                        wordIndex: globalWordIndex,
+                                        paragraphIndex: pIndex,
+                                        wordInParagraph: wordIndex,
+                                        sentenceIndex: sIndex,
+                                      });
+                                      onClickedWord(originalWord);
+                                    }}
+                                  >
+                                    {word}{" "}
+                                  </span>
+                                );
+                              })}
                           </span>
                         );
                       })}
