@@ -50,6 +50,7 @@ function App() {
       "3. ABSOLUTE PROHIBITIONS:\n" +
       "   - Never change sentence structure\n" +
       "   - Never change word order\n" +
+      "   - Never try to shorten words by using a backslash (e.g. / )" +
       "   - Never modify phrases/idioms\n" +
       "   - Never alter technical/specialized terms\n" +
       "4. EXAMPLES:\n" +
