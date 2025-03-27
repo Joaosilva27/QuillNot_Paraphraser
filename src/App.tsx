@@ -38,7 +38,11 @@ function App() {
     "Extended, meaning you must rephrase this text using a higher word count while maintaining its meaning and not making a lot of changes."
   );
   const [shortStyle] = useState(
-    "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes. IMPORTANT: Your output must be around 35% word shorter than the given prompt. So for example if the prompt is 160 words, your output must be around 110 words. KEEP THE ORIGINAL MEANING."
+    `Shortened, meaning you must rephrase this text using a lower word count.
+     Maintaining its meaning and you MUST ABSOLUTELY NOT make a lot of changes. 
+     IMPORTANT: Your output ABSOLUTELY MUST be around 35% word shorter than the given prompt.
+     For example if the prompt is 160 words, your output must be around 110 words.
+     YOU MUST KEEP THE ORIGINAL MEANING.`
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
