@@ -793,11 +793,14 @@ function App() {
             }}
           >
             <div className="p-3">
-              <div className="text-sm font-medium text-gray-700 mb-2">
+              <div className="flex justify-between text-sm font-medium text-gray-700 mb-2">
                 <span className="font-semibold text-[#7A9E7E]">
                   {clickedWord.word}{" "}
                   <span className="text-black">synonyms:</span>
                 </span>
+                <button className="bg-[#7A9E7E] hover:bg-[#6B8E71] text-xs p-2 rounded text-white">
+                  Paraphrase Sentence
+                </button>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {clickedWordSynonyms === "Loading..." ? (
