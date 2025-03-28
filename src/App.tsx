@@ -763,26 +763,43 @@ Provide your paraphrased version:`;
             }}
           />
           <div
-            className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-w-xs"
+            className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50"
             style={{
-              top: `${Math.min(
-                clickedWord.position.y,
-                window.innerHeight - 200
-              )}px`,
-              left: `${Math.min(
-                clickedWord.position.x,
-                window.innerWidth - 300
-              )}px`,
+              // Calculate max available space
+              maxWidth: "min(90vw, 500px)",
+              width: "auto",
+              maxHeight: "min(90vh, 500px)",
+              // Dynamic positioning that stays in viewport
+              top: `${
+                clickedWord.position.y > window.innerHeight / 2
+                  ? Math.max(10, clickedWord.position.y - 300) // Position above if near bottom
+                  : clickedWord.position.y + 20 // Position below if near top
+              }px`,
+              left: `${
+                clickedWord.position.x > window.innerWidth / 2
+                  ? Math.max(10, clickedWord.position.x - 300) // Position left if near right edge
+                  : Math.min(
+                      window.innerWidth - 320,
+                      clickedWord.position.x + 20
+                    ) // Position right if near left edge
+              }px`,
+              overflowY: "auto",
+              overflowX: "hidden",
             }}
           >
             <div className="p-3">
               {clickedRephraseSentence ? (
-                <div className="flex flex-col gap-3">
+                <div
+                  className="flex flex-col gap-3"
+                  style={{ minWidth: "300px" }}
+                >
                   <div className="text-sm font-medium text-gray-700">
                     <span className="font-semibold text-[#7A9E7E]">
                       Original:
                     </span>
-                    <div className="italic mt-1">{getCurrentSentence()}</div>
+                    <div className="italic mt-1 whitespace-normal break-words max-w-full">
+                      {getCurrentSentence()}
+                    </div>
                   </div>
                   <div className="text-sm font-medium text-gray-700">
                     <span className="font-semibold text-[#7A9E7E]">
@@ -803,7 +820,7 @@ Provide your paraphrased version:`;
                             strokeWidth="4"
                           ></circle>
                           <path
-                            className="opacity极简-75"
+                            className="opacity-75"
                             fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
@@ -815,7 +832,7 @@ Provide your paraphrased version:`;
                         {sentenceRephrases.map((rephrase, index) => (
                           <div
                             key={index}
-                            className="p-2 bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded cursor-pointer transition-colors"
+                            className="p-2 bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded cursor-pointer transition-colors whitespace-normal break-words"
                             onClick={() => {
                               replaceSentence(rephrase);
                               setClickedRephraseSentence(false);
@@ -833,7 +850,7 @@ Provide your paraphrased version:`;
                   </div>
                   <button
                     onClick={() => setClickedRephraseSentence(false)}
-                    className="text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline self-start"
+                    className="text-[#7A9E7E] hover:text-[极简#6B8E71] text-sm underline self-start"
                   >
                     ← Back to synonyms
                   </button>
@@ -872,7 +889,7 @@ Provide your paraphrased version:`;
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 极简0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.极简962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
                         Loading...
