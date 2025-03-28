@@ -38,44 +38,26 @@ function App() {
     "Extended, meaning you must rephrase this text using a higher word count while maintaining its meaning and not making a lot of changes."
   );
   const [shortStyle] = useState(
-    `Shortened, meaning you must rephrase this text using a lower word count.
-     Maintaining its meaning and you MUST ABSOLUTELY NOT make a lot of changes. 
-     IMPORTANT: Your output ABSOLUTELY MUST be around 35% word shorter than the given prompt.
-     For example if the prompt is 160 words, your output must be around 110 words.
-     YOU MUST KEEP THE ORIGINAL MEANING.`
+    "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes."
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "STRICTEST POSSIBLE PARAPHRASING - ENFORCE THESE RULES:\n" +
-      "1. HARD LIMITS:\n" +
-      "   - YOU MUST CHANGE MAX. 4 WORD CHANGES PER SENTENCE (count '.' as sentence end)\n" +
-      "   - ZERO changes allowed unless CRITICALLY necessary\n" +
-      "2. CHANGE APPROVAL PROCESS (must pass ALL checks):\n" +
-      "   a) Is the original word grammatically WRONG? (not just improvable)\n" +
-      "   b) Does the change fix an actual error (not just preference)?\n" +
-      "   c) Is the new word a 100% perfect synonym? (Test: Can you substitute it in ALL contexts?)\n" +
-      "3. LOCK THESE ELEMENTS (NEVER CHANGE):\n" +
-      "   - Proper nouns/names (John, NASA, COVID-19)\n" +
-      "   - Technical terms (mitochondria, blockchain)\n" +
-      "   - Numbers/dates/measurements (20%, 1999, 5km)\n" +
-      "   - Phrases/idioms ('kick the bucket', 'piece of cake')\n" +
-      "   - Word forms (-ing, -ed, -ly endings)\n" +
-      "4. ENFORCEMENT MECHANISMS:\n" +
-      "   - Before changing ANY word, you MUST:\n" +
-      "     1) Count existing changes in the sentence\n" +
-      "     2) Verify no prohibited elements are affected\n" +
-      "     3) Get 'approval' from these rules\n" +
-      "   - If a sentence already has 2 changes, LOCK it - no more edits\n" +
-      "5. EXAMPLES:\n" +
-      "   ✅ Allowed (1 change): 'The car is big' → 'The car is large'\n" +
-      "   ❌ Forbidden: 'The vehicle is large' (2 changes: car→vehicle, big→large)\n" +
-      "   ❌ Forbidden: 'The big car' → 'The large automobile' (structure changed)\n" +
-      "6. FAILSAFE:\n" +
-      "   If uncertain → KEEP ORIGINAL WORDING\n" +
-      "   If limit reached → LOCK SENTENCE\n" +
-      "   If rules conflict → FAVOR PRESERVATION"
+    "EXTREMELY STRICT MODE: Preserve 98-100% of the original text. " +
+      "ONLY change 1-3 words per sentence MAXIMUM, and only when: " +
+      "1) There's a clear grammatical error, OR " +
+      "2) A word is extremely obscure/confusing, OR " +
+      "3) A direct synonym exists that is clearly better " +
+      "NEVER change: " +
+      "- Proper nouns, names, technical terms " +
+      "- Sentence structure or word order " +
+      "- Phrases or idioms (treat as single units) " +
+      "- The tone or formality level " +
+      "When substituting words: " +
+      "- Only use the most common synonyms " +
+      "- Never change more than one word per clause " +
+      "- Preserve all prefixes/suffixes " +
+      "Prioritize keeping the text IDENTICAL over any 'improvements'"
   );
-
   const [standardChanges] = useState("");
   const [moreChanges] = useState(
     "IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible."
@@ -93,12 +75,11 @@ function App() {
     wordInParagraph: number;
     sentenceIndex: number;
   } | null>(null);
-
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
+  const [clickedRephraseSentence, setClickedRephraseSentence] = useState(false);
 
-  const getWordCount = (text: string) => {
-    return text.trim() ? text.trim().split(/\s+/).length : 0;
-  };
+  const getWordCount = (text: string) =>
+    text.trim() ? text.trim().split(/\s+/).length : 0;
 
   const handlePaste = async () => {
     try {
@@ -111,84 +92,50 @@ function App() {
   };
 
   useEffect(() => {
-    if (changesLevel === 0) {
-      setSelectedChanges(fewerChanges);
-    } else if (changesLevel === 1) {
-      setSelectedChanges(standardChanges);
-    } else {
-      setSelectedChanges(moreChanges);
-    }
-  }, [changesLevel, fewerChanges, standardChanges, moreChanges]);
+    if (changesLevel === 0) setSelectedChanges(fewerChanges);
+    else if (changesLevel === 1) setSelectedChanges(standardChanges);
+    else setSelectedChanges(moreChanges);
+  }, [changesLevel]);
 
   const onParaphrase = () => {
     const getParaphrasingData = async () => {
       if (!prompt.trim()) return;
-
       try {
         setIsLoading(true);
-        const promptInstructions = `You are an expert paraphrasing tool.
-         Your task is to rewrite the provided text while strictly maintaining:
-        1. The original meaning and intent
-        2. The same language as the input
-        3. The same sentence types (questions remain questions, commands remain commands)
-        4. The original technicality and complexity level
+        const promptInstructions = `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
+1. The original meaning and intent
+2. The same language as the input
+3. The same sentence types
+4. The original technicality and complexity level
 
-        Key requirements:
-        - Preserve 100% of the original meaning - never alter facts, conclusions, or intent
-        - Maintain the original paragraph structure and line breaks
-        - For long texts (>100 words) without breaks, add logical paragraph breaks
-        - Keep specialized terminology and domain-specific language unchanged
-        - Retain all proper nouns, names, and technical terms exactly as written
-        - Only change wording when it improves clarity without altering meaning
+Key requirements:
+- Preserve 100% of the original meaning
+- Maintain the original paragraph structure
+- Keep specialized terminology unchanged
+- Retain all proper nouns and technical terms
+- Only change wording when it improves clarity without altering meaning
 
-      Paraphrasing approach:
-      1. First analyze the exact meaning and intent of the original text
-      2. Identify which words/phrases can be changed without affecting meaning
-      3. Use synonyms only when they perfectly match the original context
-      4. Adjust sentence structure only to improve flow, never to change meaning
-      5. Preserve all numerical data, names, quotes, and citations exactly
+Style guidance: ${
+          selectedStyle || "natural without changing the original meaning"
+        }
 
-      IMPORTANT!!!!!!: Style guidance: ${
-        selectedStyle || "natural without changing the original meaning"
-      }
+Change level: ${selectedChanges}
 
-      IMPORTANT!!!!!!: Change level: ${selectedChanges}
+Input text to paraphrase: ${prompt}
 
-      Plagiarism prevention:
-      - Create completely original phrasing while keeping all original facts
-      - Rephrase concepts using different sentence structures and word choices
-      - For common knowledge, find novel ways to express the same ideas
-      - For cited material, keep references but rephrase the surrounding text
-
-      Important restrictions:
-      - NEVER add new information not in the original
-      - NEVER remove information from the original
-      - NEVER change the core message or conclusions
-      - NEVER alter the tone (formal/informal) unless explicitly requested
-      - NEVER modify numbers, statistics, or factual claims
-
-        Input text to paraphrase: ${prompt}
-
-      Provide your paraphrased version that meets all above requirements.`;
-
+Provide your paraphrased version:`;
         const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
-
         const processedText = responseText
           .replace(/(\n){3,}/g, "\n\n")
           .replace(/(\S)\n(\S)/g, "$1 $2")
           .trim();
-
         setPromptResult(processedText);
         setSavedOutput(processedText);
-        console.log(processedText.split(" "));
-
-        counterAPI.up("quillnot", "paraphrases").then((res) => {
-          console.log(res);
-          setCount(res.Count);
-        });
-
         localStorage.setItem("output", processedText);
+        counterAPI
+          .up("quillnot", "paraphrases")
+          .then((res) => setCount(res.Count));
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
       } finally {
@@ -207,9 +154,7 @@ function App() {
     setSavedInput("");
   };
 
-  const selectStyle = (style: string) => {
-    setSelectedStyle(style);
-  };
+  const selectStyle = (style: string) => setSelectedStyle(style);
 
   useEffect(() => {
     if (prompt.length > 0) {
@@ -219,15 +164,12 @@ function App() {
   }, [prompt]);
 
   useEffect(() => {
-    counterAPI.get("quillnot", "paraphrases").then((res) => {
-      console.log(res);
-      setCount(res.Count);
-    });
+    counterAPI
+      .get("quillnot", "paraphrases")
+      .then((res) => setCount(res.Count));
   }, []);
 
-  const getOriginalWord = (word: string) => {
-    return word.replace(/^\W+/g, "");
-  };
+  const getOriginalWord = (word: string) => word.replace(/^\W+/g, "");
 
   const cleanedOriginalWords = useMemo(() => {
     const words = prompt.trim().split(/\s+/);
@@ -240,38 +182,26 @@ function App() {
       try {
         const originalWord = getOriginalWord(word);
         const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas.
-        The synonyms must have the same case as the word provided, for example:
-        If the word is in all capitals, like HELLO - all synonyms must be capital letters.
-        If the word is in all lowercase, like hello - all synonyms must be lowerletters.
-        If the word is mixed, for example hElLo - the synonyms must match the lower and higher cases.
+        The synonyms must have the same case as the word provided.
         IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
         const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
-        console.log(responseText);
-
-        // this was the only way I could style the words to match the case sensivity
-        // the prompt above given to AI for some reason works only half of the time
-        // (gemini 2.0 version)
         const matchCase = (original: string, synonym: string) => {
-          if (original === original.toUpperCase()) {
-            return synonym.toUpperCase();
-          } else if (original === original.toLowerCase()) {
+          if (original === original.toUpperCase()) return synonym.toUpperCase();
+          else if (original === original.toLowerCase())
             return synonym.toLowerCase();
-          } else if (/^[A-Z]/.test(original)) {
+          else if (/^[A-Z]/.test(original))
             return (
               synonym.charAt(0).toUpperCase() + synonym.slice(1).toLowerCase()
             );
-          }
           return synonym;
         };
-
         const cleanedSynonyms = responseText
           .replace(/["\\*]/g, "")
           .split(",")
           .slice(0, 6)
           .map((s) => matchCase(originalWord, s.trim()))
           .join(", ");
-
         setClickedWordSynonyms(cleanedSynonyms);
       } catch (err) {
         setClickedWordSynonyms("Failed to load synonyms");
@@ -283,15 +213,11 @@ function App() {
 
   const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
     if (!clickedWord) return;
-
     const paragraphs = promptResult.split("\n\n");
     const targetParagraph = paragraphs[clickedWord.paragraphIndex];
-
     const sentences = targetParagraph.split(/(?<=\.)\s+/);
     const targetSentence = sentences[clickedWord.sentenceIndex];
-
     const words = targetSentence.split(/\s+/);
-
     if (
       words[clickedWord.wordInParagraph] &&
       getOriginalWord(words[clickedWord.wordInParagraph]) === clickedWord.word
@@ -299,21 +225,25 @@ function App() {
       const originalWord = words[clickedWord.wordInParagraph];
       const punctuationMatch = originalWord.match(/[.,!?;:]+$/);
       const punctuation = punctuationMatch ? punctuationMatch[0] : "";
-
       words[clickedWord.wordInParagraph] = synonym + punctuation;
-
       sentences[clickedWord.sentenceIndex] = words.join(" ");
-
       paragraphs[clickedWord.paragraphIndex] = sentences.join(" ");
-
       const newText = paragraphs.join("\n\n");
-
       setPromptResult(newText);
       setSavedOutput(newText);
       localStorage.setItem("output", newText);
     }
-
     setClickedWord(null);
+  };
+
+  const getCurrentSentence = () => {
+    if (!clickedWord) return null;
+    const paragraphs = promptResult.split("\n\n");
+    if (paragraphs.length <= clickedWord.paragraphIndex) return null;
+    const sentences =
+      paragraphs[clickedWord.paragraphIndex].split(/(?<=\.)\s+/);
+    if (sentences.length <= clickedWord.sentenceIndex) return null;
+    return sentences[clickedWord.sentenceIndex].trim();
   };
 
   return (
@@ -385,7 +315,6 @@ function App() {
                 "Paraphrase"
               )}
             </button>
-
             <button
               onClick={clearAll}
               className="px-3 sm:px-6 py-2 text-black rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
@@ -399,7 +328,6 @@ function App() {
               <p className="text-sm font-medium text-gray-700 mb-1">
                 Select Paraphrasing Style:
               </p>
-
               <div className="flex flex-wrap gap-2 items-center">
                 <button
                   onClick={() => setSelectedStyle(standardStyle)}
@@ -482,7 +410,6 @@ function App() {
                   >
                     Custom
                   </button>
-
                   {selectedStyle === customDescription && (
                     <input
                       type="text"
@@ -717,11 +644,9 @@ function App() {
                                     sentences[i].split(/\s+/).length;
                                 }
                                 globalWordIndex += wordIndex;
-
                                 const originalWord = getOriginalWord(word);
                                 const isDifferent =
                                   !cleanedOriginalWords.has(originalWord);
-
                                 return (
                                   <span
                                     key={wordIndex}
@@ -774,7 +699,6 @@ function App() {
       </div>
       {clickedWord && (
         <>
-          {/* Overlay to capture outside clicks */}
           <div
             className="fixed inset-0 z-40"
             onClick={() => setClickedWord(null)}
@@ -793,59 +717,139 @@ function App() {
             }}
           >
             <div className="p-3">
-              <div className="flex justify-between text-sm font-medium text-gray-700 mb-2">
-                <span className="font-semibold text-[#7A9E7E]">
-                  {clickedWord.word}{" "}
-                  <span className="text-black">synonyms:</span>
-                </span>
-                <button className="bg-[#7A9E7E] hover:bg-[#6B8E71] text-xs p-2 rounded text-white">
-                  Paraphrase Sentence
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {clickedWordSynonyms === "Loading..." ? (
-                  <div className="flex items-center justify-center w-full py-2">
-                    <svg
-                      className="animate-spin h-4 w-4 mr-2 text-[#7A9E7E]"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Loading...
-                  </div>
-                ) : clickedWordSynonyms === "Failed to load synonyms" ? (
-                  <div className="text-red-500 text-xs py-1">
-                    Failed to load synonyms
-                  </div>
-                ) : (
-                  clickedWordSynonyms.split(", ").map((synonym, index) => (
-                    <button
-                      key={index}
-                      className="px-2.5 py-1 text-sm bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded-full transition-colors"
-                      onClick={() => {
-                        replaceWordWithSynonym(clickedWord.word, synonym);
+              {clickedRephraseSentence ? (
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={async () => {
+                      const sentence = getCurrentSentence();
+                      if (!sentence) return;
+                      setIsLoading(true);
+                      try {
+                        const instruction = `Rephrase this sentence with MAX 3 word changes while keeping:
+                          - Same meaning and type
+                          - All names, numbers, and technical terms
+                          - IMPORTANT!!!!!!!!!!!!! DO NOT, I REPEAT DO NOT, SAY ANYTHING ELSE BESIDES THE REPHRASED TEXT.
+                          - Style: ${selectedStyle}
+                          Sentence: "${sentence}"`;
+                        const result = await model.generateContent(instruction);
+                        const newSentence = result.response
+                          .text()
+                          .trim()
+                          .replace(/^"|"$/g, "");
+                        const paragraphs = [...promptResult.split("\n\n")];
+                        const sentences =
+                          paragraphs[clickedWord.paragraphIndex].split(
+                            /(?<=\.)\s+/
+                          );
+                        sentences[clickedWord.sentenceIndex] = newSentence;
+                        paragraphs[clickedWord.paragraphIndex] =
+                          sentences.join(" ");
+                        setPromptResult(paragraphs.join("\n\n"));
+                      } finally {
+                        setIsLoading(false);
                         setClickedWord(null);
-                      }}
+                      }
+                    }}
+                    className="bg-[#7A9E7E] hover:bg-[#6B8E71] text-white px-3 py-2 rounded-md text-sm"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin h-4 w-4 mr-1 inline"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Rephrasing...
+                      </>
+                    ) : (
+                      "Rephrase This Sentence"
+                    )}
+                  </button>
+                  <div className="text-sm text-gray-600">
+                    <div className="font-medium mb-1">Original:</div>
+                    <div className="italic">{getCurrentSentence()}</div>
+                  </div>
+                  <button
+                    onClick={() => setClickedRephraseSentence(false)}
+                    className="text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline"
+                  >
+                    ← Back to synonyms
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="text-sm font-medium text-gray-700 mb-2">
+                    <span className="font-semibold text-[#7A9E7E]">
+                      {clickedWord.word}{" "}
+                      <span className="text-black">synonyms:</span>
+                    </span>
+                    <button
+                      onClick={() => setClickedRephraseSentence(true)}
+                      className="float-right bg-[#7A9E7E] hover:bg-[#6B8E71] text-xs p-1 rounded text-white"
                     >
-                      {synonym}
+                      Rephrase Sentence
                     </button>
-                  ))
-                )}
-              </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {clickedWordSynonyms === "Loading..." ? (
+                      <div className="flex items-center justify-center w-full py-2">
+                        <svg
+                          className="animate-spin h-4 w-4 mr-2 text-[#7A9E7E]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Loading...
+                      </div>
+                    ) : clickedWordSynonyms === "Failed to load synonyms" ? (
+                      <div className="text-red-500 text-xs py-1">
+                        Failed to load synonyms
+                      </div>
+                    ) : (
+                      clickedWordSynonyms.split(", ").map((synonym, index) => (
+                        <button
+                          key={index}
+                          className="px-2.5 py-1 text-sm bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded-full transition-colors"
+                          onClick={() => {
+                            replaceWordWithSynonym(clickedWord.word, synonym);
+                            setClickedWord(null);
+                          }}
+                        >
+                          {synonym}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </>
