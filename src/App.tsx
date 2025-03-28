@@ -78,6 +78,7 @@ function App() {
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
   const [clickedRephraseSentence, setClickedRephraseSentence] = useState(false);
   const [sentenceRephrases, setSentenceRephrases] = useState<string[]>([]);
+  const [isSentenceLoading, setIsSentenceLoading] = useState(false);
 
   const getWordCount = (text: string) =>
     text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -249,7 +250,7 @@ Provide your paraphrased version:`;
 
   const fetchSentenceRephrases = async (sentence: string) => {
     try {
-      setIsLoading(true);
+      setIsSentenceLoading(true);
       const instruction = `Provide 6 different rephrases of this sentence while:
         - Keeping the exact same meaning
         - Maintaining all names, numbers, and technical terms
@@ -273,7 +274,7 @@ Provide your paraphrased version:`;
       console.error("Failed to generate rephrases:", err);
       setSentenceRephrases([]);
     } finally {
-      setIsLoading(false);
+      setIsSentenceLoading(false);
     }
   };
 
@@ -338,7 +339,7 @@ Provide your paraphrased version:`;
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
                 isLoading || !prompt.trim()
                   ? "bg-gray-400"
-                  : "bg[#7A9E7E] hover:bg-[#6B8E71]"
+                  : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
             >
               {isLoading ? (
@@ -360,7 +361,7 @@ Provide your paraphrased version:`;
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="M4 12a8 8 0 018-8极简V0C5.373 0 0 5.373 极简0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
                   Processing...
@@ -369,6 +370,7 @@ Provide your paraphrased version:`;
                 "Paraphrase"
               )}
             </button>
+
             <button
               onClick={clearAll}
               className="px-3 sm:px-6 py-2 text-black rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors"
@@ -786,7 +788,7 @@ Provide your paraphrased version:`;
                     <span className="font-semibold text-[#7A9E7E]">
                       Rephrased options:
                     </span>
-                    {isLoading ? (
+                    {isSentenceLoading ? (
                       <div className="flex items-center justify-center py-2">
                         <svg
                           className="animate-spin h-4 w-4 mr-2 text-[#7A9E7E]"
@@ -801,9 +803,9 @@ Provide your paraphrased version:`;
                             strokeWidth="4"
                           ></circle>
                           <path
-                            className="opacity-75"
+                            className="opacity极简-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c极简0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
                         Generating rephrases...
