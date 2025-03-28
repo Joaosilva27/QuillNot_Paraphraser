@@ -77,6 +77,7 @@ function App() {
   } | null>(null);
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
   const [clickedRephraseSentence, setClickedRephraseSentence] = useState(false);
+  const [sentenceRephrases, setSentenceRephrases] = useState<string[]>([]);
 
   const getWordCount = (text: string) =>
     text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -246,6 +247,59 @@ Provide your paraphrased version:`;
     return sentences[clickedWord.sentenceIndex].trim();
   };
 
+  const fetchSentenceRephrases = async (sentence: string) => {
+    try {
+      setIsLoading(true);
+      const instruction = `Provide 6 different rephrases of this sentence while:
+        - Keeping the exact same meaning
+        - Maintaining all names, numbers, and technical terms
+        - Following style: ${selectedStyle}
+        - Changing no more than 3 words per rephrase
+        - IMPORTANT: Return ONLY a numbered list of rephrases, DO NOT, I REPEAT DO NOT INCLUDE ANYTHING ELSE, ONLY THE REPHRASES. (1st phrase. ... 2nd phrase. ... etc.)
+        
+        Sentence: "${sentence}"`;
+
+      const result = await model.generateContent(instruction);
+      const responseText = result.response.text();
+
+      const rephrases = responseText
+        .split("\n")
+        .map((line) => line.replace(/^\d+\.\s*/, "").trim())
+        .filter((line) => line.length > 0)
+        .slice(0, 6);
+
+      setSentenceRephrases(rephrases);
+    } catch (err) {
+      console.error("Failed to generate rephrases:", err);
+      setSentenceRephrases([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const replaceSentence = (newSentence: string) => {
+    if (!clickedWord) return;
+    const paragraphs = [...promptResult.split("\n\n")];
+    const sentences =
+      paragraphs[clickedWord.paragraphIndex].split(/(?<=\.)\s+/);
+    sentences[clickedWord.sentenceIndex] = newSentence;
+    paragraphs[clickedWord.paragraphIndex] = sentences.join(" ");
+    const newText = paragraphs.join("\n\n");
+    setPromptResult(newText);
+    setSavedOutput(newText);
+    localStorage.setItem("output", newText);
+    setClickedWord(null);
+  };
+
+  useEffect(() => {
+    if (clickedRephraseSentence && clickedWord) {
+      const sentence = getCurrentSentence();
+      if (sentence) {
+        fetchSentenceRephrases(sentence);
+      }
+    }
+  }, [clickedRephraseSentence]);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 overflow-hidden">
       <header className="bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md">
@@ -284,7 +338,7 @@ Provide your paraphrased version:`;
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
                 isLoading || !prompt.trim()
                   ? "bg-gray-400"
-                  : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                  : "bg[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
             >
               {isLoading ? (
@@ -402,7 +456,7 @@ Provide your paraphrased version:`;
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => selectStyle(customDescription)}
-                    className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                    className={`px极简2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                       selectedStyle === customDescription
                         ? "bg-[#7A9E7E] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -428,7 +482,7 @@ Provide your paraphrased version:`;
             </div>
 
             <div className="flex items-center flex-col gap-2 w-full md:w-auto md:ml-2 lg:mr-10 mt-2 md:mt-0">
-              <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
+              <p className="极简text-sm font-medium text-gray-700 whitespace-nowrap">
                 Amount of Changes:
               </p>
               <div className="w-full sm:w-48 relative">
@@ -503,7 +557,7 @@ Provide your paraphrased version:`;
 
         <div className="flex flex-1 flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
           <div className="flex-1 md:border-r border-b md:border-b-0 border-gray-200 flex flex-col">
-            <div className="p-2 flex items-center bg-gray-50 border-b border-gray-200">
+            <div className="p-2 flex items-center bg-gray极简-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700 text-sm sm:text-base">
                 Original Text
               </h2>
@@ -523,13 +577,13 @@ Provide your paraphrased version:`;
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <button
                     onClick={handlePaste}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base"
+                    className="flex items-center gap-2 px-3 sm:px-极简4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 sm:h-5 w-4 sm:w-5"
                       fill="none"
-                      viewBox="0 0 24 24"
+                      viewBox="极简0 0 24 24"
                       stroke="currentColor"
                       strokeWidth={2}
                     >
@@ -578,7 +632,7 @@ Provide your paraphrased version:`;
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 极简2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2极简h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
                       />
                     </svg>
                     Copy
@@ -607,7 +661,7 @@ Provide your paraphrased version:`;
                       <path
                         className="opacity-75"
                         fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12极简h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
                     Generating paraphrase...
@@ -701,7 +755,10 @@ Provide your paraphrased version:`;
         <>
           <div
             className="fixed inset-0 z-40"
-            onClick={() => setClickedWord(null)}
+            onClick={() => {
+              setClickedWord(null);
+              setClickedRephraseSentence(false);
+            }}
           />
           <div
             className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-w-xs"
@@ -719,44 +776,20 @@ Provide your paraphrased version:`;
             <div className="p-3">
               {clickedRephraseSentence ? (
                 <div className="flex flex-col gap-3">
-                  <button
-                    onClick={async () => {
-                      const sentence = getCurrentSentence();
-                      if (!sentence) return;
-                      setIsLoading(true);
-                      try {
-                        const instruction = `Rephrase this sentence with MAX 3 word changes while keeping:
-                          - Same meaning and type
-                          - All names, numbers, and technical terms
-                          - IMPORTANT!!!!!!!!!!!!! DO NOT, I REPEAT DO NOT, SAY ANYTHING ELSE BESIDES THE REPHRASED TEXT.
-                          - Style: ${selectedStyle}
-                          Sentence: "${sentence}"`;
-                        const result = await model.generateContent(instruction);
-                        const newSentence = result.response
-                          .text()
-                          .trim()
-                          .replace(/^"|"$/g, "");
-                        const paragraphs = [...promptResult.split("\n\n")];
-                        const sentences =
-                          paragraphs[clickedWord.paragraphIndex].split(
-                            /(?<=\.)\s+/
-                          );
-                        sentences[clickedWord.sentenceIndex] = newSentence;
-                        paragraphs[clickedWord.paragraphIndex] =
-                          sentences.join(" ");
-                        setPromptResult(paragraphs.join("\n\n"));
-                      } finally {
-                        setIsLoading(false);
-                        setClickedWord(null);
-                      }
-                    }}
-                    className="bg-[#7A9E7E] hover:bg-[#6B8E71] text-white px-3 py-2 rounded-md text-sm"
-                    disabled={isLoading}
-                  >
+                  <div className="text-sm font-medium text-gray-700">
+                    <span className="font-semibold text-[#7A9E7E]">
+                      Original:
+                    </span>
+                    <div className="italic mt-1">{getCurrentSentence()}</div>
+                  </div>
+                  <div className="text-sm font-medium text-gray-700">
+                    <span className="font-semibold text-[#7A9E7E]">
+                      Rephrased options:
+                    </span>
                     {isLoading ? (
-                      <>
+                      <div className="flex items-center justify-center py-2">
                         <svg
-                          className="animate-spin h-4 w-4 mr-1 inline"
+                          className="animate-spin h-4 w-4 mr-2 text-[#7A9E7E]"
                           viewBox="0 0 24 24"
                         >
                           <circle
@@ -770,22 +803,35 @@ Provide your paraphrased version:`;
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c极简0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        Rephrasing...
-                      </>
+                        Generating rephrases...
+                      </div>
+                    ) : sentenceRephrases.length > 0 ? (
+                      <div className="mt-2 space-y-2">
+                        {sentenceRephrases.map((rephrase, index) => (
+                          <div
+                            key={index}
+                            className="p-2 bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded cursor-pointer transition-colors"
+                            onClick={() => {
+                              replaceSentence(rephrase);
+                              setClickedRephraseSentence(false);
+                            }}
+                          >
+                            {rephrase}
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      "Rephrase This Sentence"
+                      <div className="text-red-500 text-xs py-1">
+                        Failed to generate rephrases
+                      </div>
                     )}
-                  </button>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium mb-1">Original:</div>
-                    <div className="italic">{getCurrentSentence()}</div>
                   </div>
                   <button
                     onClick={() => setClickedRephraseSentence(false)}
-                    className="text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline"
+                    className="text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline self-start"
                   >
                     ← Back to synonyms
                   </button>
@@ -824,7 +870,7 @@ Provide your paraphrased version:`;
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 极简0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
                         Loading...
