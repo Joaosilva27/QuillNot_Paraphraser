@@ -46,22 +46,34 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "ULTRA-CONSERVATIVE PARAPHRASING RULES: " +
-      "1. WORD CHANGE LIMIT: Maximum 3 word changes per sentence (average 2)\n" +
-      "2. CHANGE CRITERIA (ONLY permitted if BOTH apply):\n" +
-      "   a) The original is grammatically incorrect OR\n" +
-      "   b) The word has a perfect synonym (same denotation AND connotation)\n" +
-      "3. ABSOLUTE PROHIBITIONS:\n" +
-      "   - Never change sentence structure\n" +
-      "   - Never change word order\n" +
-      "   - Never try to shorten words by using a backslash (e.g. / )" +
-      "   - Never modify phrases/idioms\n" +
-      "   - Never alter technical/specialized terms\n" +
-      "4. EXAMPLES:\n" +
-      "   Acceptable: 'big' → 'large' (perfect synonym)\n" +
-      "   Unacceptable: 'cardiologist' → 'heart doctor'\n" +
-      "   Unacceptable: 'The cat sat' → 'There was a sitting feline'\n" +
-      "5. When in doubt, KEEP THE ORIGINAL WORDING"
+    "STRICTEST POSSIBLE PARAPHRASING - ENFORCE THESE RULES:\n" +
+      "1. HARD LIMITS:\n" +
+      "   - YOU MUST CHANGE MAX. 4 WORD CHANGES PER SENTENCE (count '.' as sentence end)\n" +
+      "   - ZERO changes allowed unless CRITICALLY necessary\n" +
+      "2. CHANGE APPROVAL PROCESS (must pass ALL checks):\n" +
+      "   a) Is the original word grammatically WRONG? (not just improvable)\n" +
+      "   b) Does the change fix an actual error (not just preference)?\n" +
+      "   c) Is the new word a 100% perfect synonym? (Test: Can you substitute it in ALL contexts?)\n" +
+      "3. LOCK THESE ELEMENTS (NEVER CHANGE):\n" +
+      "   - Proper nouns/names (John, NASA, COVID-19)\n" +
+      "   - Technical terms (mitochondria, blockchain)\n" +
+      "   - Numbers/dates/measurements (20%, 1999, 5km)\n" +
+      "   - Phrases/idioms ('kick the bucket', 'piece of cake')\n" +
+      "   - Word forms (-ing, -ed, -ly endings)\n" +
+      "4. ENFORCEMENT MECHANISMS:\n" +
+      "   - Before changing ANY word, you MUST:\n" +
+      "     1) Count existing changes in the sentence\n" +
+      "     2) Verify no prohibited elements are affected\n" +
+      "     3) Get 'approval' from these rules\n" +
+      "   - If a sentence already has 2 changes, LOCK it - no more edits\n" +
+      "5. EXAMPLES:\n" +
+      "   ✅ Allowed (1 change): 'The car is big' → 'The car is large'\n" +
+      "   ❌ Forbidden: 'The vehicle is large' (2 changes: car→vehicle, big→large)\n" +
+      "   ❌ Forbidden: 'The big car' → 'The large automobile' (structure changed)\n" +
+      "6. FAILSAFE:\n" +
+      "   If uncertain → KEEP ORIGINAL WORDING\n" +
+      "   If limit reached → LOCK SENTENCE\n" +
+      "   If rules conflict → FAVOR PRESERVATION"
   );
 
   const [standardChanges] = useState("");
@@ -136,7 +148,7 @@ function App() {
       4. Adjust sentence structure only to improve flow, never to change meaning
       5. Preserve all numerical data, names, quotes, and citations exactly
 
-      Style guidance: ${
+      IMPORTANT!!!!!!: Style guidance: ${
         selectedStyle || "natural without changing the original meaning"
       }
 
@@ -783,9 +795,9 @@ function App() {
             <div className="p-3">
               <div className="text-sm font-medium text-gray-700 mb-2">
                 <span className="font-semibold text-[#7A9E7E]">
-                  {clickedWord.word}
-                </span>{" "}
-                synonyms:
+                  {clickedWord.word}{" "}
+                  <span className="text-black">synonyms:</span>
+                </span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {clickedWordSynonyms === "Loading..." ? (
