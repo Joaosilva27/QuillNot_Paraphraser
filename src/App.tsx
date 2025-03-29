@@ -6,9 +6,15 @@ import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 
 function App() {
-  const genAI = new GoogleGenerativeAI(
-    "AIzaSyAThR2xsb5E_ra5OfeWhqsBy3wiJZch-so"
-  );
+  const apiKey = import.meta.env.VITE_API_KEY;
+
+  if (!apiKey) {
+    throw new Error(
+      "API key is missing. Please set REACT_APP_API_KEY in your environment."
+    );
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
