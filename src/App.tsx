@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import GithubIcon from "./images/github.png";
 import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
+import Coffee from "./Coffee";
 
 function App() {
   const apiKey = import.meta.env.VITE_API_KEY;
@@ -332,6 +333,7 @@ Provide your paraphrased version:`;
               src={GithubIcon}
               className="h-4 w-4 ml-1.5 animate-bounce object-contain"
             />
+            <Coffee />
           </a>
         </div>
       </header>
