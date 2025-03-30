@@ -204,10 +204,11 @@ function App() {
     const fetchSynonymData = async () => {
       try {
         const originalWord = getOriginalWord(word);
-        const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas.
-        The synonyms must have the same case as the word provided.
-        IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
-        const result = await FastModel.generateContent(promptInstructions);
+        const currentSentence = getCurrentSentence();
+        const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas, in this context: "${currentSentence}"
+          The synonyms must have the same case as the word provided.
+          IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
+        const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
