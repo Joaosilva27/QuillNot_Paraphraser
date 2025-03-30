@@ -209,7 +209,7 @@ function App() {
         const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas, in this context: "${currentSentence}"
           The synonyms must have the same case as the word provided.
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
-        const result = await model.generateContent(promptInstructions);
+        const result = await FastModel.generateContent(promptInstructions);
         const responseText = result.response.text();
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
@@ -283,7 +283,7 @@ function App() {
         
         Sentence: "${sentence}"`;
 
-      const result = await model.generateContent(instruction);
+      const result = await FastModel.generateContent(instruction);
       const responseText = result.response.text();
 
       const rephrases = responseText
