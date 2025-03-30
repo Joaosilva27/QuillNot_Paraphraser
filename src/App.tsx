@@ -101,30 +101,32 @@ function App() {
   const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
-    const trackUser = async () => {
+    const initializeFingerprint = async () => {
       try {
         const fp = await FingerprintJS.load();
         const result = await fp.get();
-        const visitorId = result.visitorId;
+        const userFingerprint = result.visitorId;
 
-        // check if we've seen this user before
-        const userKey = `user_${visitorId}`;
-        const hasVisitedBefore = localStorage.getItem(userKey);
+        const storedCount = parseInt(
+          localStorage.getItem("uniqueUserCount") || "0"
+        );
 
-        if (!hasVisitedBefore) {
-          // new user - mark as visited and increment count
-          localStorage.setItem(userKey, "true");
-          const newCount = userCount + 1;
-          setUserCount(newCount);
+        if (!localStorage.getItem(userFingerprint)) {
+          localStorage.setItem(userFingerprint, "true");
+          const newCount = storedCount + 1;
           localStorage.setItem("uniqueUserCount", newCount.toString());
+          setUserCount(newCount);
+        } else {
+          // existing user, just sync the count
+          setUserCount(storedCount);
         }
       } catch (error) {
-        console.error("Error tracking user:", error);
+        console.error("Fingerprint error:", error);
       }
     };
 
-    trackUser();
-  }, [userCount]);
+    initializeFingerprint();
+  }, []);
 
   useEffect(() => {
     if (copied) {
