@@ -53,8 +53,8 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "EXTREMELY STRICT MODE: Preserve about 65% of the original text. " +
-      "ONLY change 2-4 words per sentence MAXIMUM, and only when: " +
+    "EXTREMELY STRICT MODE: Preserve about 60% of the original text. " +
+      "ONLY change MINIMUM 2 words per sentence and a MAXIMUM of 4, and only when: " +
       "1) There's a clear grammatical error, OR " +
       "2) A word is extremely obscure/confusing, OR " +
       "3) A direct synonym exists that is clearly better " +
@@ -126,27 +126,27 @@ function App() {
       try {
         setIsLoading(true);
         const promptInstructions = `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
-1. The original meaning and intent
-2. The same language as the input
-3. The same sentence types
-4. The original technicality and complexity level
+          1. The original meaning and intent
+          2. The same language as the input
+          3. The same sentence types
+          4. The original technicality and complexity level
 
-Key requirements:
-- Preserve 100% of the original meaning
-- Maintain the original paragraph structure
-- Keep specialized terminology unchanged
-- Retain all proper nouns and technical terms
-- Only change wording when it improves clarity without altering meaning
+          Key requirements:
+          - Preserve 100% of the original meaning
+          - Maintain the original paragraph structure
+          - Keep specialized terminology unchanged
+          - Retain all proper nouns and technical terms
+          - Only change wording when it improves clarity without altering meaning
 
-Style guidance: ${
-          selectedStyle || "natural without changing the original meaning"
-        }
+          Style guidance: ${
+            selectedStyle || "natural without changing the original meaning"
+          }
 
-Change level: ${selectedChanges}
+          Change level: ${selectedChanges}
 
-Input text to paraphrase: ${prompt}
+          Input text to paraphrase: ${prompt}
 
-Provide your paraphrased version:`;
+          Provide your paraphrased version:`;
         const result = await model.generateContent(promptInstructions);
         const responseText = result.response.text();
         const processedText = responseText
