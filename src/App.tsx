@@ -17,7 +17,7 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   // I'm using the fast model of gemini AI to fetch word synonyms
   // so the user does not have to wait 6-12s just to get synonyms for one word
