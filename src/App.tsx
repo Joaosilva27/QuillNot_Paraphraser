@@ -49,7 +49,7 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "EXTREMELY STRICT MODE: Preserve about 70% of the original text. " +
+    "EXTREMELY STRICT MODE: Preserve about 65% of the original text. " +
       "ONLY change 2-4 words per sentence MAXIMUM, and only when: " +
       "1) There's a clear grammatical error, OR " +
       "2) A word is extremely obscure/confusing, OR " +
@@ -87,6 +87,8 @@ function App() {
   const [sentenceRephrases, setSentenceRephrases] = useState<string[]>([]);
   const [isSentenceLoading, setIsSentenceLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
     if (copied) {
@@ -379,7 +381,7 @@ Provide your paraphrased version:`;
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8极简V0C5.373 0 0 5.373 极简0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
                   Processing...
@@ -476,7 +478,7 @@ Provide your paraphrased version:`;
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => selectStyle(customDescription)}
-                    className={`px极简2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                    className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
                       selectedStyle === customDescription
                         ? "bg-[#7A9E7E] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -502,7 +504,7 @@ Provide your paraphrased version:`;
             </div>
 
             <div className="flex items-center flex-col gap-2 w-full md:w-auto md:ml-2 lg:mr-10 mt-2 md:mt-0">
-              <p className="极简text-sm font-medium text-gray-700 whitespace-nowrap">
+              <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
                 Amount of Changes:
               </p>
               <div className="w-full sm:w-48 relative">
@@ -577,7 +579,7 @@ Provide your paraphrased version:`;
 
         <div className="flex flex-1 flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden">
           <div className="flex-1 md:border-r border-b md:border-b-0 border-gray-200 flex flex-col">
-            <div className="p-2 flex items-center bg-gray极简-50 border-b border-gray-200">
+            <div className="p-2 flex items-center bg-gray-50 border-b border-gray-200">
               <h2 className="font-medium text-gray-700 text-sm sm:text-base">
                 Original Text
               </h2>
@@ -597,13 +599,13 @@ Provide your paraphrased version:`;
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <button
                     onClick={handlePaste}
-                    className="flex items-center gap-2 px-3 sm:px-极简4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base"
+                    className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 sm:h-5 w-4 sm:w-5"
                       fill="none"
-                      viewBox="极简0 0 24 24"
+                      viewBox="0 0 24 24"
                       stroke="currentColor"
                       strokeWidth={2}
                     >
@@ -628,58 +630,118 @@ Provide your paraphrased version:`;
               <div className="flex items-center flex-wrap justify-end">
                 {promptResult && (
                   <div className="text-xs text-gray-500 mr-2">
-                    {getWordCount(promptResult)} words / {promptResult.length}{" "}
+                    {isEditing
+                      ? getWordCount(editedText)
+                      : getWordCount(promptResult)}{" "}
+                    words /{" "}
+                    {isEditing ? editedText.length : promptResult.length}{" "}
                     <span className="hidden sm:inline">characters</span>
                     <span className="inline sm:hidden">chars</span> (
-                    {promptResult.replace(/\s/g, "").length}{" "}
+                    {
+                      (isEditing ? editedText : promptResult).replace(/\s/g, "")
+                        .length
+                    }{" "}
                     <span className="hidden sm:inline">without spaces</span>
                     <span className="inline sm:hidden">no spaces</span>)
                   </div>
                 )}
                 {promptResult && (
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(promptResult);
-                      setCopied(true);
-                    }}
-                    className="text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center min-w-[4rem]"
-                  >
-                    {copied ? (
-                      <>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-1"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                          />
-                        </svg>
-                        Copy
-                      </>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if (isEditing) {
+                          setPromptResult(editedText);
+                          setSavedOutput(editedText);
+                          localStorage.setItem("output", editedText);
+                        } else {
+                          setEditedText(promptResult);
+                        }
+                        setIsEditing(!isEditing);
+                      }}
+                      className="text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center min-w-[4rem]"
+                    >
+                      {isEditing ? (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 极简0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          Done
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                          Edit
+                        </>
+                      )}
+                    </button>
+                    {!isEditing && (
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(promptResult);
+                          setCopied(true);
+                        }}
+                        className="text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center min-w-[4rem]"
+                      >
+                        {copied ? (
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 mr-1"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                              />
+                            </svg>
+                            Copy
+                          </>
+                        )}
+                      </button>
                     )}
-                  </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -704,80 +766,91 @@ Provide your paraphrased version:`;
                       <path
                         className="opacity-75"
                         fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12极简h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
                     Generating paraphrase...
                   </div>
                 </div>
               ) : promptResult ? (
-                <div className="prose text-lg text-black prose-sm max-w-none whitespace-pre-line">
-                  {promptResult.split("\n\n").map((paragraph, pIndex) => (
-                    <div key={pIndex} className="mb-4">
-                      {paragraph.split(/(?<=\.)\s+/).map((sentence, sIndex) => {
-                        const sentenceText = sentence.endsWith(".")
-                          ? sentence.trim()
-                          : `${sentence.trim()}`;
-                        return (
-                          <span
-                            key={sIndex}
-                            className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
-                          >
-                            {sentenceText
-                              .split(/\s+/)
-                              .map((word, wordIndex) => {
-                                let globalWordIndex = 0;
-                                for (let i = 0; i < pIndex; i++) {
-                                  globalWordIndex += promptResult
-                                    .split("\n\n")
-                                    [i].split(/\s+/).length;
-                                }
-                                const currentParagraph =
-                                  promptResult.split("\n\n")[pIndex];
-                                const sentences =
-                                  currentParagraph.split(/(?<=\.)\s+/);
-                                for (let i = 0; i < sIndex; i++) {
-                                  globalWordIndex +=
-                                    sentences[i].split(/\s+/).length;
-                                }
-                                globalWordIndex += wordIndex;
-                                const originalWord = getOriginalWord(word);
-                                const isDifferent =
-                                  !cleanedOriginalWords.has(originalWord);
-                                return (
-                                  <span
-                                    key={wordIndex}
-                                    className={
-                                      prompt && isDifferent
-                                        ? "text-blue-500 cursor-pointer"
-                                        : "cursor-pointer"
+                isEditing ? (
+                  <textarea
+                    value={editedText}
+                    onChange={(e) => setEditedText(e.target.value)}
+                    className="w-full h-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] resize-none"
+                    autoFocus
+                  />
+                ) : (
+                  <div className="prose text-lg text-black prose-sm max-w-none whitespace-pre-line">
+                    {promptResult.split("\n\n").map((paragraph, pIndex) => (
+                      <div key={pIndex} className="mb-4">
+                        {paragraph
+                          .split(/(?<=\.)\s+/)
+                          .map((sentence, sIndex) => {
+                            const sentenceText = sentence.endsWith(".")
+                              ? sentence.trim()
+                              : `${sentence.trim()}`;
+                            return (
+                              <span
+                                key={sIndex}
+                                className="bg-blue-50 rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]"
+                              >
+                                {sentenceText
+                                  .split(/\s+/)
+                                  .map((word, wordIndex) => {
+                                    let globalWordIndex = 0;
+                                    for (let i = 0; i < pIndex; i++) {
+                                      globalWordIndex += promptResult
+                                        .split("\n\n")
+                                        [i].split(/\s+/).length;
                                     }
-                                    onClick={(e) => {
-                                      if (!prompt) return;
-                                      setClickedWord({
-                                        word: originalWord,
-                                        position: {
-                                          x: e.clientX,
-                                          y: e.clientY,
-                                        },
-                                        wordIndex: globalWordIndex,
-                                        paragraphIndex: pIndex,
-                                        wordInParagraph: wordIndex,
-                                        sentenceIndex: sIndex,
-                                      });
-                                      onClickedWord(originalWord);
-                                    }}
-                                  >
-                                    {word}{" "}
-                                  </span>
-                                );
-                              })}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
+                                    const currentParagraph =
+                                      promptResult.split("\n\n")[pIndex];
+                                    const sentences =
+                                      currentParagraph.split(/(?<=\.)\s+/);
+                                    for (let i = 0; i < sIndex; i++) {
+                                      globalWordIndex +=
+                                        sentences[i].split(/\s+/).length;
+                                    }
+                                    globalWordIndex += wordIndex;
+                                    const originalWord = getOriginalWord(word);
+                                    const isDifferent =
+                                      !cleanedOriginalWords.has(originalWord);
+                                    return (
+                                      <span
+                                        key={wordIndex}
+                                        className={
+                                          prompt && isDifferent
+                                            ? "text-blue-500 cursor-pointer"
+                                            : "cursor-pointer"
+                                        }
+                                        onClick={(e) => {
+                                          if (!prompt) return;
+                                          setClickedWord({
+                                            word: originalWord,
+                                            position: {
+                                              x: e.clientX,
+                                              y: e.clientY,
+                                            },
+                                            wordIndex: globalWordIndex,
+                                            paragraphIndex: pIndex,
+                                            wordInParagraph: wordIndex,
+                                            sentenceIndex: sIndex,
+                                          });
+                                          onClickedWord(originalWord);
+                                        }}
+                                      >
+                                        {word}{" "}
+                                      </span>
+                                    );
+                                  })}
+                              </span>
+                            );
+                          })}
+                      </div>
+                    ))}
+                  </div>
+                )
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base">
                   Your paraphrased text will appear here
@@ -806,23 +879,21 @@ Provide your paraphrased version:`;
           <div
             className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50"
             style={{
-              // Calculate max available space
               maxWidth: "min(90vw, 500px)",
               width: "auto",
               maxHeight: "min(90vh, 500px)",
-              // Dynamic positioning that stays in viewport
               top: `${
                 clickedWord.position.y > window.innerHeight / 2
-                  ? Math.max(10, clickedWord.position.y - 300) // Position above if near bottom
-                  : clickedWord.position.y + 20 // Position below if near top
+                  ? Math.max(10, clickedWord.position.y - 300)
+                  : clickedWord.position.y + 20
               }px`,
               left: `${
                 clickedWord.position.x > window.innerWidth / 2
-                  ? Math.max(10, clickedWord.position.x - 300) // Position left if near right edge
+                  ? Math.max(10, clickedWord.position.x - 300)
                   : Math.min(
                       window.innerWidth - 320,
                       clickedWord.position.x + 20
-                    ) // Position right if near left edge
+                    )
               }px`,
               overflowY: "auto",
               overflowX: "hidden",
@@ -891,7 +962,7 @@ Provide your paraphrased version:`;
                   </div>
                   <button
                     onClick={() => setClickedRephraseSentence(false)}
-                    className="text-[#7A9E7E] hover:text-[极简#6B8E71] text-sm underline self-start"
+                    className="text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline self-start"
                   >
                     ← Back to synonyms
                   </button>
@@ -930,7 +1001,7 @@ Provide your paraphrased version:`;
                           <path
                             className="opacity-75"
                             fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.极简962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
                         Loading...
