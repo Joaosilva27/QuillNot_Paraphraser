@@ -16,7 +16,7 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
@@ -49,8 +49,8 @@ function App() {
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
-    "EXTREMELY STRICT MODE: Preserve 98-100% of the original text. " +
-      "ONLY change 1-3 words per sentence MAXIMUM, and only when: " +
+    "EXTREMELY STRICT MODE: Preserve about 70% of the original text. " +
+      "ONLY change 2-4 words per sentence MAXIMUM, and only when: " +
       "1) There's a clear grammatical error, OR " +
       "2) A word is extremely obscure/confusing, OR " +
       "3) A direct synonym exists that is clearly better " +
