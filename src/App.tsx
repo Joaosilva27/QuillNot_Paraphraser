@@ -22,6 +22,11 @@ function App() {
   // I'm using the fast model of gemini AI to fetch word synonyms
   // so the user does not have to wait 6-12s just to get synonyms for one word
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  const [userCount, setUserCount] = useState(() => {
+    const count = localStorage.getItem("uniqueUserCount");
+    return count ? parseInt(count) : 0;
+  });
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
@@ -94,6 +99,32 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState("");
+
+  useEffect(() => {
+    const trackUser = async () => {
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        const visitorId = result.visitorId;
+
+        // check if we've seen this user before
+        const userKey = `user_${visitorId}`;
+        const hasVisitedBefore = localStorage.getItem(userKey);
+
+        if (!hasVisitedBefore) {
+          // new user - mark as visited and increment count
+          localStorage.setItem(userKey, "true");
+          const newCount = userCount + 1;
+          setUserCount(newCount);
+          localStorage.setItem("uniqueUserCount", newCount.toString());
+        }
+      } catch (error) {
+        console.error("Error tracking user:", error);
+      }
+    };
+
+    trackUser();
+  }, [userCount]);
 
   useEffect(() => {
     if (copied) {
@@ -339,7 +370,7 @@ function App() {
             <h1 className="text-3xl font-bold dancing-script-400">QuillNot</h1>
           </span>
           <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors animate-pulse-once text-sm sm:text-base text-center">
-            {count} total paraphrases across all users
+            {count} total paraphrases across {userCount || 0} users
           </span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
@@ -539,7 +570,9 @@ function App() {
                 <div className="flex justify-between w-full text-xs text-gray-600 mt-4">
                   <span
                     className={
-                      changesLevel === 0 ? "font-semibold text-[#7A9E7E]" : ""
+                      changesLevel === 0
+                        ? "font-semibold text-[#7A9极简E7E]"
+                        : ""
                     }
                   >
                     Fewer
@@ -679,7 +712,7 @@ function App() {
                           >
                             <path
                               fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 极简0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                               clipRule="evenodd"
                             />
                           </svg>
@@ -762,7 +795,7 @@ function App() {
                       className="animate-spin h-6 sm:h-8 w-6 sm:w-8 mx-auto mb-3 sm:mb-4 text-[#7A9E7E]"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      viewBox="0 0 24 24"
+                      viewBox="极简0 0 24 24"
                     >
                       <circle
                         className="opacity-25"
