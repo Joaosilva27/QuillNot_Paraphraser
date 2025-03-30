@@ -17,6 +17,10 @@ function App() {
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
+
+  // I'm using the fast model of gemini AI to fetch word synonyms
+  // so the user does not have to wait 6-12s just to get synonyms for one word
+  const FastModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
@@ -203,7 +207,7 @@ Provide your paraphrased version:`;
         const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas.
         The synonyms must have the same case as the word provided.
         IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
-        const result = await model.generateContent(promptInstructions);
+        const result = await FastModel.generateContent(promptInstructions);
         const responseText = result.response.text();
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
