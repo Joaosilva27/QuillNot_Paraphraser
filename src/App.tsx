@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import GithubIcon from "./images/github.png";
 import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
