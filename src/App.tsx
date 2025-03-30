@@ -208,6 +208,7 @@ function App() {
         const currentSentence = getCurrentSentence();
         const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas, in this context: "${currentSentence}"
           The synonyms must have the same case as the word provided.
+          Do not add * before or after a word, unless the word given has them
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
         const result = await FastModel.generateContent(promptInstructions);
         const responseText = result.response.text();
@@ -277,6 +278,7 @@ function App() {
       const instruction = `Provide 6 different rephrases of this sentence while:
         - Keeping the exact same meaning
         - Maintaining all names, numbers, and technical terms
+        - Do not add * before or after a word, unless the prompt given has them
         - Following style: ${selectedStyle}
         - Changing no more than 3 words per rephrase
         - IMPORTANT: Return ONLY a numbered list of rephrases, DO NOT, I REPEAT DO NOT INCLUDE ANYTHING ELSE, ONLY THE REPHRASES. (1st phrase. ... 2nd phrase. ... etc.)
