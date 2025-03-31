@@ -2,6 +2,8 @@
 
 QuillNot is an AI-powered paraphrasing app I created out of annoyance with QuillBot's 150-word limit for free users. I wanted a tool that was completely free, without any sign-ups, data collection, or annoying ads. So, I built my own.
 
+Unlike QuillBot, this tool automatically saves your input and output as you make changes, so you never have to worry about losing your work.
+
 Feel free to use it for your rewording needs: https://paraphraser-taupe.vercel.app/
 
 <img src="https://github.com/user-attachments/assets/63cdde44-2a39-4725-b551-ef79c627e89a" alt="macbook-air-m2-lid-open" height="600rem">
