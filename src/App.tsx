@@ -6,12 +6,10 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDoc,
   increment,
   onSnapshot,
 } from "firebase/firestore";
 import GithubIcon from "./images/github.png";
-import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
 
@@ -99,8 +97,6 @@ function App() {
   const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
   const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
-  const counterAPI = new CounterAPI();
-  const [count, setCount] = useState(0);
   const [clickedWord, setClickedWord] = useState<{
     word: string;
     position: { x: number; y: number };
@@ -186,10 +182,6 @@ function App() {
         setSavedOutput(processedText);
         localStorage.setItem("output", processedText);
 
-        counterAPI
-          .up("quillnot", "paraphrases")
-          .then((res) => setCount(res.Count));
-
         await updateCounter();
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
@@ -240,12 +232,6 @@ function App() {
       setSavedInput(prompt);
     }
   }, [prompt]);
-
-  useEffect(() => {
-    counterAPI
-      .get("quillnot", "paraphrases")
-      .then((res) => setCount(res.Count));
-  }, []);
 
   const getOriginalWord = (word: string) => word.replace(/^\W+/g, "");
 
