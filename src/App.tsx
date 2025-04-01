@@ -504,7 +504,7 @@ function App() {
               <div className="flex flex-wrap gap-2 items-center">
                 <button
                   onClick={() => setSelectedStyle(standardStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === standardStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -514,7 +514,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(academicStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === academicStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -524,7 +524,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(fluentStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === fluentStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -534,7 +534,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(humanizeStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === humanizeStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -544,7 +544,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(formalStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === formalStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -554,7 +554,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(expandStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === expandStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -564,7 +564,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => selectStyle(shortStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                     selectedStyle === shortStyle
                       ? "bg-[#7A9E7E] text-white"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -575,7 +575,7 @@ function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => selectStyle(customDescription)}
-                    className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded ${
+                    className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                       selectedStyle === customDescription
                         ? "bg-[#7A9E7E] text-white"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
