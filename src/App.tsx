@@ -1,7 +1,15 @@
 import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  increment,
+  onSnapshot,
+} from "firebase/firestore";
 import GithubIcon from "./images/github.png";
 import { CounterAPI } from "counterapi";
 import QuillNotIcon from "./images/QuillNotIcon.png";
@@ -9,6 +17,18 @@ import Coffee from "./Coffee";
 
 function App() {
   const apiKey = import.meta.env.VITE_API_KEY;
+
+  const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   if (!apiKey) {
     throw new Error(
@@ -23,10 +43,7 @@ function App() {
   // so the user does not have to wait 6-12s just to get synonyms for one word
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const [userCount, setUserCount] = useState(() => {
-    const count = localStorage.getItem("uniqueUserCount");
-    return count ? parseInt(count) : 0;
-  });
+  const [userCount, setUserCount] = useState(0);
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
@@ -101,34 +118,6 @@ function App() {
   const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
-    const initializeFingerprint = async () => {
-      try {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        const userFingerprint = result.visitorId;
-
-        const storedCount = parseInt(
-          localStorage.getItem("uniqueUserCount") || "0"
-        );
-
-        if (!localStorage.getItem(userFingerprint)) {
-          localStorage.setItem(userFingerprint, "true");
-          const newCount = storedCount + 1;
-          localStorage.setItem("uniqueUserCount", newCount.toString());
-          setUserCount(newCount);
-        } else {
-          // existing user, just sync the count
-          setUserCount(storedCount);
-        }
-      } catch (error) {
-        console.error("Fingerprint error:", error);
-      }
-    };
-
-    initializeFingerprint();
-  }, []);
-
-  useEffect(() => {
     if (copied) {
       const timer = setTimeout(() => setCopied(false), 2000);
       return () => clearTimeout(timer);
@@ -146,6 +135,11 @@ function App() {
     } catch (error) {
       console.error("Failed to paste text:", error);
     }
+  };
+
+  const updateCounter = async () => {
+    const counterRef = doc(db, "counters", "paraphrases");
+    await setDoc(counterRef, { count: increment(1) }, { merge: true });
   };
 
   useEffect(() => {
@@ -191,9 +185,12 @@ function App() {
         setPromptResult(processedText);
         setSavedOutput(processedText);
         localStorage.setItem("output", processedText);
+
         counterAPI
           .up("quillnot", "paraphrases")
           .then((res) => setCount(res.Count));
+
+        await updateCounter();
       } catch (err) {
         setPromptResult("An error occurred. Please try again." + err);
       } finally {
@@ -202,6 +199,29 @@ function App() {
     };
     getParaphrasingData();
   };
+
+  useEffect(() => {
+    const counterRef = doc(db, "counters", "paraphrases");
+
+    const unsubscribe = onSnapshot(
+      counterRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setUserCount(docSnap.data().count);
+        }
+      },
+      (error) => {
+        // Ignore termination-related errors
+        if (error.code !== "cancelled") {
+          console.error("Firestore error:", error);
+        }
+      }
+    );
+
+    return () => {
+      unsubscribe(); // Cleanup on unmount
+    };
+  }, []);
 
   const clearAll = () => {
     setPrompt("");
@@ -312,7 +332,7 @@ function App() {
       const instruction = `Provide 6 different rephrases of this sentence while:
         - Keeping the exact same meaning
         - Maintaining all names, numbers, and technical terms
-        - Do not add * before or after a word, unless the prompt given has them
+        - DO NOT EVER ADD * before or after a word, UNLESS the prompt given has them
         - Following style: ${selectedStyle}
         - Changing no more than 3 words per rephrase
         - IMPORTANT: Return ONLY a numbered list of rephrases, DO NOT, I REPEAT DO NOT INCLUDE ANYTHING ELSE, ONLY THE REPHRASES. (1st phrase. ... 2nd phrase. ... etc.)
@@ -372,7 +392,7 @@ function App() {
             <h1 className="text-3xl font-bold dancing-script-400">QuillNot</h1>
           </span>
           <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors animate-pulse-once text-sm sm:text-base text-center">
-            {count} total paraphrases across {userCount || 0} users
+            {userCount} total paraphrases across all users
           </span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
