@@ -148,10 +148,9 @@ function App() {
   useEffect(() => {
     const trackUser = async () => {
       try {
-        // Get fingerprint
+        // get fingerprint
         const fingerprint = await getFingerprint();
 
-        // Record user access
         await setDoc(
           doc(db, "uniqueUsers", fingerprint),
           {
@@ -171,8 +170,12 @@ function App() {
     const unsubscribe = onSnapshot(
       collection(db, "uniqueUsers"),
       (snapshot) => {
-        setUniqueUsers(snapshot.size);
-        console.log("Unique users updated:", snapshot.size);
+        // get actual count from docs array
+        const count = snapshot.docs.length;
+        setUniqueUsers(count);
+      },
+      (error) => {
+        console.error("Error fetching unique users:", error);
       }
     );
 
@@ -249,7 +252,7 @@ function App() {
         }
       },
       (error) => {
-        // Ignore termination-related errors
+        // ignore termination-related errors
         if (error.code !== "cancelled") {
           console.error("Firestore error:", error);
         }
@@ -257,7 +260,7 @@ function App() {
     );
 
     return () => {
-      unsubscribe(); // Cleanup on unmount
+      unsubscribe();
     };
   }, []);
 
