@@ -16,9 +16,7 @@ Feel free to use it for your rewording needs: [quillnot.site](https://www.quilln
 
 - [Tailwind CSS](https://tailwindcss.com/)
 
-- [Counter API](https://counterapi.dev/) (get total paraphrases count)
-
-- [FingerprintJS](https://fingerprint.com/) (unique ID users count)
+- [Firebase Firestore](https://firebase.google.com/docs/firestore) (backend to store total paraphrases and unique users count)
 
 <br></br>
 
