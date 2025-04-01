@@ -8,6 +8,8 @@ import {
   setDoc,
   increment,
   onSnapshot,
+  collection,
+  serverTimestamp,
 } from "firebase/firestore";
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
@@ -41,7 +43,8 @@ function App() {
   // so the user does not have to wait 6-12s just to get synonyms for one word
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const [userCount, setUserCount] = useState(0);
+  const [userCount, setUserCount] = useState(0); // this is the paraphrasing count. i'm too lazy to change the doc name in firebase so it's staying with this const name
+  const [uniqueUsers, setUniqueUsers] = useState<number>();
   const [savedOutput, setSavedOutput] = useState(
     localStorage.getItem("output") || ""
   );
@@ -132,6 +135,49 @@ function App() {
       console.error("Failed to paste text:", error);
     }
   };
+
+  const getFingerprint = async () => {
+    const storedId = localStorage.getItem("userFingerprint");
+    if (storedId) return storedId;
+
+    const newId = crypto.randomUUID(); // random fingerprinting library just to get a random id
+    localStorage.setItem("userFingerprint", newId);
+    return newId;
+  };
+
+  useEffect(() => {
+    const trackUser = async () => {
+      try {
+        // Get fingerprint
+        const fingerprint = await getFingerprint();
+
+        // Record user access
+        await setDoc(
+          doc(db, "uniqueUsers", fingerprint),
+          {
+            lastSeen: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      } catch (error) {
+        console.error("Fingerprint tracking error:", error);
+      }
+    };
+
+    trackUser();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "uniqueUsers"),
+      (snapshot) => {
+        setUniqueUsers(snapshot.size);
+        console.log("Unique users updated:", snapshot.size);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   const updateCounter = async () => {
     const counterRef = doc(db, "counters", "paraphrases");
@@ -378,7 +424,7 @@ function App() {
             <h1 className="text-3xl font-bold dancing-script-400">QuillNot</h1>
           </span>
           <span className="capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors animate-pulse-once text-sm sm:text-base text-center">
-            {userCount} total paraphrases across all users
+            {userCount} total paraphrases across {uniqueUsers || 2} users
           </span>
           <a
             className="text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center"
