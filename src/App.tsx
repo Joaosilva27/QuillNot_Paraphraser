@@ -17,7 +17,7 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // temporarily using the fast model instead of 2.5 pro due to limitations
 
   // I'm using the fast model of gemini AI to fetch word synonyms
   // so the user does not have to wait 6-12s just to get synonyms for one word
@@ -895,8 +895,8 @@ function App() {
       </main>
       <div className="max-w-7xl mx-auto pb-1">
         <span className="text-xs font-medium text-gray-500 block text-center">
-          There is no official word limit - however, currently there is a
-          restriction of 50 paraphrases within a 24-hour period.
+          There is no official word limit - however, extremely lengthy inputs
+          may reduce the quality of my response because I might lose focus.
         </span>
       </div>
       {clickedWord && (
