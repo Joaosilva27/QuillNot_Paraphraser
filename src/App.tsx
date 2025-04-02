@@ -452,9 +452,15 @@ function App() {
           <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-2">
             <button
               onClick={onParaphrase}
-              disabled={isLoading || !prompt.trim()}
+              disabled={
+                isLoading ||
+                !prompt.trim() ||
+                prompt.replace(/\s/g, "").length > 1500
+              }
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
-                isLoading || !prompt.trim()
+                isLoading ||
+                !prompt.trim() ||
+                prompt.replace(/\s/g, "").length > 1500
                   ? "bg-gray-400"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
@@ -694,6 +700,13 @@ function App() {
                 className="w-full text-black text-lg h-full p-2 sm:p-3 focus:outline-none resize-none"
                 placeholder={"Enter your text here to paraphrase..."}
               />
+              <span
+                className={`absolute bottom-0 right-0 m-2 text-gray-400 ${
+                  prompt.replace(/\s/g, "").length > 1500 && "text-red-600"
+                }`}
+              >
+                {prompt.replace(/\s/g, "").length} / 1500 characters
+              </span>
               {!prompt && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <button
@@ -950,8 +963,9 @@ function App() {
       </main>
       <div className="max-w-7xl mx-auto pb-1">
         <span className="text-xs font-medium text-gray-500 block text-center">
-          There is no official word limit - however, extremely lengthy inputs
-          may reduce the quality of my response because I might lose focus.
+          The official word limit is 1500 characters - however, extremely
+          lengthy inputs may reduce the quality of my response because I might
+          lose focus, therefore a maximum of 1000 characters is recommended.
         </span>
       </div>
       {clickedWord && (
