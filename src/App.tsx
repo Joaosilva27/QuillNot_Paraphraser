@@ -455,12 +455,12 @@ function App() {
               disabled={
                 isLoading ||
                 !prompt.trim() ||
-                prompt.replace(/\s/g, "").length > 1500
+                prompt.replace(/\s/g, "").length > 3000
               }
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
                 isLoading ||
                 !prompt.trim() ||
-                prompt.replace(/\s/g, "").length > 1500
+                prompt.replace(/\s/g, "").length > 3000
                   ? "bg-gray-400"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
@@ -702,10 +702,10 @@ function App() {
               />
               <span
                 className={`absolute bottom-0 right-0 m-2 text-gray-400 ${
-                  prompt.replace(/\s/g, "").length > 1500 && "text-red-600"
+                  prompt.replace(/\s/g, "").length > 3000 && "text-red-600"
                 }`}
               >
-                {prompt.replace(/\s/g, "").length} / 1500 characters
+                {prompt.replace(/\s/g, "").length} / 3000 characters
               </span>
               {!prompt && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -963,7 +963,7 @@ function App() {
       </main>
       <div className="max-w-7xl mx-auto pb-1">
         <span className="text-xs font-medium text-gray-500 block text-center">
-          The official word limit is 1500 characters - however, extremely
+          The official word limit is 3000 characters - however, extremely
           lengthy inputs may reduce the quality of my response because I might
           lose focus, therefore a maximum of 1000 characters is recommended.
         </span>
