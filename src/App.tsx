@@ -179,7 +179,7 @@ function App() {
 
           Key requirements:
           - Preserve 100% of the original meaning
-          - NEVER EVER ADD * before or after a word, UNLESS the prompt given has them
+          - IMPORTANT MUST DO!!!! NEVER EVER ADD ASTERISKS "**" before or after a word, UNLESS the prompt given has them.
           - Maintain the original paragraph structure
           - Keep specialized terminology unchanged
           - Retain all proper nouns and technical terms
