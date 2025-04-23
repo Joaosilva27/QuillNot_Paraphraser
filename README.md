@@ -18,6 +18,8 @@ Feel free to use it for your rewording needs: [quillnot.site](https://www.quilln
 
 - [Tailwind CSS](https://tailwindcss.com/)
 
+- [react-markdown](https://www.npmjs.com/package/react-markdown/v/8.0.6) (to properly style AI's output)
+
 - [Firebase Firestore](https://firebase.google.com/docs/firestore) (backend to store total paraphrases and unique users count)
 
 <br></br>
