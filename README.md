@@ -14,6 +14,8 @@ Feel free to use it for your rewording needs: [quillnot.site](https://www.quilln
 
 - React JS
 
+- [Google's Gemini API](https://ai.google.dev/)
+
 - [Tailwind CSS](https://tailwindcss.com/)
 
 - [Firebase Firestore](https://firebase.google.com/docs/firestore) (backend to store total paraphrases and unique users count)
