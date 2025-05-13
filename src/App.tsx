@@ -71,6 +71,7 @@ function App() {
   );
   const [standardChanges] = useState("");
   const [moreChanges] = useState("IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible.");
+  const [isAiBypasserEnabled, setIsAiBypasserEnabled] = useState(false);
   const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
   const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
@@ -190,6 +191,15 @@ function App() {
           Change level: ${selectedChanges}
 
           Input text to paraphrase: ${prompt}
+
+          ${
+            isAiBypasserEnabled &&
+            `You MUST reduce patterns that AI detectors look for.
+            Rewrite the following text so that it sounds like it was written by a human:
+            casual, natural, and varied. Avoid the overly smooth, robotic, or overly formal tone that AI-generated writing often has.
+            Use natural sentence structure, contractions, occasional informal phrasing, and human-like rhythm.
+            Break up long sentences, vary the structure, and use some imperfections if needed.`
+          }
 
           Provide your paraphrased version:`;
         const result = await model.generateContent(promptInstructions);
@@ -435,6 +445,15 @@ function App() {
               className='px-3 sm:px-6 py-2 text-black rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors'
             >
               Clear All
+            </button>
+
+            <button
+              onClick={() => setIsAiBypasserEnabled(!isAiBypasserEnabled)}
+              className={`px-3 sm:px-6 py-2 rounded font-medium transition-colors ${
+                isAiBypasserEnabled ? "bg-blue-500 text-white hover:bg-blue-600" : "border border-blue-500 text-blue-500 hover:bg-blue-50"
+              }`}
+            >
+              {isAiBypasserEnabled ? "AI Bypasser: ON" : "AI Bypasser Mode"}
             </button>
           </div>
 
