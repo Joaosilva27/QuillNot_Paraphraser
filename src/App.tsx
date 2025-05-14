@@ -276,7 +276,7 @@ function App() {
       try {
         const originalWord = getOriginalWord(word);
         const currentSentence = getCurrentSentence();
-        const promptInstructions = `Provide 6 synonyms for "${originalWord}" separated by commas, in this context: "${currentSentence}"
+        const promptInstructions = `Provide as many synonyms as you can, up to 12 synonyms for "${originalWord}" separated by commas, in this context: "${currentSentence}"
           The synonyms must have the same case as the word provided.
           Do not add * before or after a word, unless the word given has them
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
