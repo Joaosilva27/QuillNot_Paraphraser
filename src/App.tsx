@@ -291,7 +291,7 @@ function App() {
         const cleanedSynonyms = responseText
           .replace(/["\\*]/g, "")
           .split(",")
-          .slice(0, 6)
+          .slice(0, 12)
           .map(s => matchCase(originalWord, s.trim()))
           .join(", ");
         setClickedWordSynonyms(cleanedSynonyms);
