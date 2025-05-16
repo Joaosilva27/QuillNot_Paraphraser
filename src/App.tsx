@@ -27,11 +27,11 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" }); // temporarily using the fast model instead of 2.5 pro due to limitations
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // temporarily using the fast model instead of 2.5 pro due to limitations
 
   // I'm using the fast model of gemini AI to fetch word synonyms
   // so the user does not have to wait 6-12s just to get synonyms for one word
-  const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
+  const FastModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const [userCount, setUserCount] = useState(0); // this is the paraphrasing count. i'm too lazy to change the doc name in firebase so it's staying with this const name
   const [uniqueUsers, setUniqueUsers] = useState<number>();
