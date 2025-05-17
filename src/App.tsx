@@ -408,8 +408,9 @@ function App() {
             <img src={QuillNotIcon} className='h-8 w-8 object-contain bg-white rounded-3xl' />
             <h1 className='text-3xl font-bold dancing-script-400'>QuillNot</h1>
           </span>
-          <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors animate-pulse-once text-sm sm:text-base text-center'>
+          <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
             {userCount} total paraphrases across {uniqueUsers || 2} users
+            <span className='block text-xs'>{Number(paraphrasesCount) || 0}/100 daily paraphrases used</span>
           </span>
           <a
             className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
