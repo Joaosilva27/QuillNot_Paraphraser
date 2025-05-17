@@ -433,7 +433,9 @@ function App() {
               onClick={onParaphrase}
               disabled={isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || Number(paraphrasesCount) >= 100}
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
-                isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 ? "bg-gray-400" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || Number(paraphrasesCount) >= 100
+                  ? "bg-gray-400"
+                  : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
             >
               {isLoading ? (
