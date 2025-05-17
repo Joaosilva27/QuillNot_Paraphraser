@@ -178,11 +178,10 @@ function App() {
         if (!paraphrasesCount) {
           localStorage.setItem("paraphrasesCount", "1");
           setParaphrasesCount("1");
-          console.log(paraphrasesCount);
         } else {
-          localStorage.setItem("paraphrasesCount", String(Number(paraphrasesCount) + 1));
-          setParaphrasesCount(paraphrasesCount + 1);
-          console.log(paraphrasesCount);
+          const newCount = String(Number(paraphrasesCount) + 1);
+          localStorage.setItem("paraphrasesCount", newCount);
+          setParaphrasesCount(newCount);
         }
 
         const promptInstructions = `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
