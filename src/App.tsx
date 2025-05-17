@@ -93,12 +93,28 @@ function App() {
   const [editedText, setEditedText] = useState("");
   const [paraphrasesCount, setParaphrasesCount] = useState(localStorage.getItem("paraphrasesCount") || "");
 
+  const today = new Date().toDateString();
+  localStorage.setItem("paraphrasesDate", today);
+
   useEffect(() => {
     if (copied) {
       const timer = setTimeout(() => setCopied(false), 2000);
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  useEffect(() => {
+    const storedDate = localStorage.getItem("paraphrasesDate");
+    const today = new Date().toDateString();
+
+    if (storedDate !== today) {
+      // new day, reset count and date
+      localStorage.setItem("paraphrasesDate", today);
+      localStorage.setItem("paraphrasesCount", "1");
+    } else {
+      console.log("Today's count:", paraphrasesCount);
+    }
+  }, []);
 
   const getWordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
