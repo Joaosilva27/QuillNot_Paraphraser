@@ -93,9 +93,6 @@ function App() {
   const [editedText, setEditedText] = useState("");
   const [paraphrasesCount, setParaphrasesCount] = useState(localStorage.getItem("paraphrasesCount") || "");
 
-  const today = new Date().toDateString();
-  localStorage.setItem("paraphrasesDate", today);
-
   useEffect(() => {
     if (copied) {
       const timer = setTimeout(() => setCopied(false), 2000);
@@ -114,7 +111,7 @@ function App() {
     } else {
       console.log("Today's count:", paraphrasesCount);
     }
-  }, []);
+  });
 
   const getWordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
@@ -190,6 +187,9 @@ function App() {
       if (!prompt.trim()) return;
       try {
         setIsLoading(true);
+
+        const today = new Date().toDateString();
+        localStorage.setItem("paraphrasesDate", today);
 
         if (!paraphrasesCount) {
           localStorage.setItem("paraphrasesCount", "1");
