@@ -106,7 +106,7 @@ function App() {
     checkCurrentUsage();
   }, []);
 
-  const trackUsage = async fingerprint => {
+  const trackUsage = async (fingerprint: string) => {
     const userDocRef = doc(db, "userUsage", fingerprint);
     const today = new Date().toDateString();
 
