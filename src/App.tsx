@@ -271,13 +271,15 @@ function App() {
           Input text to paraphrase: ${prompt}
 
           ${
-            isAiBypasserEnabled &&
-            `You MUST reduce patterns that AI detectors look for.
-            Rewrite the following text so that it sounds like it was written by a human:
-            casual, natural, and varied. Avoid the overly smooth, robotic, or overly formal tone that AI-generated writing often has.
-            Use natural sentence structure, contractions, occasional informal phrasing, and human-like rhythm.
-            Break up long sentences, vary the structure, and use some imperfections if needed.`
+            isAiBypasserEnabled
+              ? `You MUST reduce patterns that AI detectors look for.
+                  Rewrite the following text so that it sounds like it was written by a human:
+                  casual, natural, and varied. Avoid the overly smooth, robotic, or overly formal tone that AI-generated writing often has.
+                  Use natural sentence structure, contractions, occasional informal phrasing, and human-like rhythm.
+                  Break up long sentences, vary the structure, and use some imperfections if needed.`
+              : ""
           }
+          
 
           Provide your paraphrased version:`;
         const result = await model.generateContent(promptInstructions);
