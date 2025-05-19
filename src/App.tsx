@@ -6,6 +6,7 @@ import { getFirestore, doc, setDoc, increment, onSnapshot, collection, serverTim
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 function App() {
   const apiKey = import.meta.env.VITE_API_KEY;
@@ -29,7 +30,7 @@ function App() {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" }); // temporarily using the fast model instead of 2.5 pro due to limitations
 
-  // I'm using the fast model of gemini AI to fetch word synonyms
+  // I'm using the fast model of gemini AI to fetch word synonyms (2.0-flash, currently using 2.5-flash-preview to debug).
   // so the user does not have to wait 6-12s just to get synonyms for one word
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
 
@@ -129,9 +130,12 @@ function App() {
     const storedId = localStorage.getItem("userFingerprint");
     if (storedId) return storedId;
 
-    const newId = crypto.randomUUID(); // random fingerprinting library just to get a random id
-    localStorage.setItem("userFingerprint", newId);
-    return newId;
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    const fingerprint = result.visitorId;
+
+    localStorage.setItem("userFingerprint", fingerprint);
+    return fingerprint;
   };
 
   useEffect(() => {
