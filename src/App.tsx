@@ -424,7 +424,7 @@ function App() {
             <h1 className='text-3xl font-bold dancing-script-400'>QuillNot</h1>
           </span>
           <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
-            {userCount} total paraphrases across {uniqueUsers || 2} users
+            {userCount.toLocaleString()} total paraphrases across {uniqueUsers?.toLocaleString() || 2} users
             {Number(paraphrasesCount) >= 100 ? (
               <span className='block text-xs text-red-700'>The limit for daily paraphrases has been reached.</span>
             ) : (
