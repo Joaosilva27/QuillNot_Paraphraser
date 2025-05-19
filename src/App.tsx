@@ -425,7 +425,11 @@ function App() {
           </span>
           <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
             {userCount} total paraphrases across {uniqueUsers || 2} users
-            <span className='block text-xs'>{Number(paraphrasesCount) || 0}/100 daily paraphrases used</span>
+            {Number(paraphrasesCount) >= 100 ? (
+              <span className='block text-xs text-red-700'>The limit for daily paraphrases has been reached.</span>
+            ) : (
+              <span className='block text-xs'>{Number(paraphrasesCount) || 0}/100 daily paraphrases used</span>
+            )}
           </span>
           <a
             className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
