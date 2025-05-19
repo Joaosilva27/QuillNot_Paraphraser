@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc, increment, onSnapshot, collection, serverTimestamp } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, serverTimestamp } from "firebase/firestore";
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
@@ -92,7 +92,8 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState("");
-  const [paraphrasesCount, setParaphrasesCount] = useState(localStorage.getItem("paraphrasesCount") || "");
+  const [dailyUsageCount, setDailyUsageCount] = useState(0);
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
 
   useEffect(() => {
     if (copied) {
@@ -102,17 +103,65 @@ function App() {
   }, [copied]);
 
   useEffect(() => {
-    const storedDate = localStorage.getItem("paraphrasesDate");
+    checkCurrentUsage();
+  }, []);
+
+  const trackUsage = async fingerprint => {
+    const userDocRef = doc(db, "userUsage", fingerprint);
     const today = new Date().toDateString();
 
-    if (storedDate !== today) {
-      // new day, reset count and date
-      localStorage.setItem("paraphrasesDate", today);
-      localStorage.setItem("paraphrasesCount", "1");
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists() || userDoc.data().date !== today) {
+      // new user or new day - reset counter
+      await setDoc(userDocRef, {
+        count: 1,
+        date: today,
+        lastUsed: serverTimestamp(),
+      });
+      setDailyUsageCount(1);
+      return true;
     } else {
-      console.log("Today's count:", paraphrasesCount);
+      // existing usage today
+      const currentCount = userDoc.data().count;
+      setDailyUsageCount(currentCount);
+
+      if (currentCount >= 100) {
+        setDailyLimitReached(true);
+        return false; // limit reached
+      }
+
+      // increment usage count
+      await updateDoc(userDocRef, {
+        count: increment(1),
+        lastUsed: serverTimestamp(),
+      });
+      setDailyUsageCount(currentCount + 1);
+      return true; // allow usage
     }
-  });
+  };
+
+  const checkCurrentUsage = async () => {
+    try {
+      const fingerprint = await getFingerprint();
+      const userDocRef = doc(db, "userUsage", fingerprint);
+      const today = new Date().toDateString();
+
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists() && userDoc.data().date === today) {
+        const currentCount = userDoc.data().count;
+        setDailyUsageCount(currentCount);
+        if (currentCount >= 100) {
+          setDailyLimitReached(true);
+        }
+      } else {
+        setDailyUsageCount(0);
+        setDailyLimitReached(false);
+      }
+    } catch (error) {
+      console.error("Error checking usage:", error);
+    }
+  };
 
   const getWordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
@@ -189,20 +238,17 @@ function App() {
   const onParaphrase = () => {
     const getParaphrasingData = async () => {
       if (!prompt.trim()) return;
+
       try {
-        setIsLoading(true);
+        // check if the user has reached their daily limit
+        const fingerprint = await getFingerprint();
+        const canProceed = await trackUsage(fingerprint);
 
-        const today = new Date().toDateString();
-        localStorage.setItem("paraphrasesDate", today);
-
-        if (!paraphrasesCount) {
-          localStorage.setItem("paraphrasesCount", "1");
-          setParaphrasesCount("1");
-        } else {
-          const newCount = String(Number(paraphrasesCount) + 1);
-          localStorage.setItem("paraphrasesCount", newCount);
-          setParaphrasesCount(newCount);
+        if (!canProceed) {
+          setPromptResult("You've reached your daily limit of 100 paraphrases. Please try again tomorrow.");
+          return;
         }
+        setIsLoading(true);
 
         const promptInstructions = `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
           1. The original meaning and intent
@@ -429,11 +475,13 @@ function App() {
           </span>
           <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
             {userCount.toLocaleString()} total paraphrases across {uniqueUsers?.toLocaleString() || 2} users
-            {Number(paraphrasesCount) >= 100 ? (
-              <span className='block text-xs text-red-700'>The limit for daily paraphrases has been reached.</span>
-            ) : (
-              <span className='block text-xs'>{Number(paraphrasesCount) || 0}/100 daily paraphrases used</span>
-            )}
+            <span className='block text-xs'>
+              {dailyLimitReached ? (
+                <span className='text-red-700'>The limit for daily paraphrases has been reached.</span>
+              ) : (
+                `${dailyUsageCount}/100 daily paraphrases used`
+              )}
+            </span>
           </span>
           <a
             className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
@@ -455,9 +503,9 @@ function App() {
           <div className='flex flex-wrap gap-2 sm:gap-3 items-center mb-2'>
             <button
               onClick={onParaphrase}
-              disabled={isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || Number(paraphrasesCount) >= 100}
+              disabled={isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || dailyLimitReached}
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
-                isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || Number(paraphrasesCount) >= 100
+                isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > 3000 || dailyLimitReached
                   ? "bg-gray-400"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
