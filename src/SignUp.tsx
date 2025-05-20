@@ -1,6 +1,7 @@
 import { useState } from "react";
 import QuillNotShowcasePicture from "./images/quillnot.png";
 import GithubIcon from "./images/github.png";
+import QuillNotIcon from "./images/QuillNotIcon.png";
 
 export default function SignUp() {
   const [isHovering, setIsHovering] = useState(false);
@@ -14,24 +15,28 @@ export default function SignUp() {
     <div className='min-h-screen flex flex-col bg-gray-50'>
       <main className='flex-1 flex flex-col md:flex-row max-w-7xl mx-auto p-6 gap-8 items-center'>
         <div className='flex-1 max-w-lg'>
-          <div className='mb-8'>
-            <div className='flex'>
-              <h2 className='text-4xl font-bold text-gray-800 mb-6'>QuillNot Paraphraser</h2>
-              <div className='flex justify-center items-center ml-2'>
+          <div>
+            <div className='flex justify-between mb-6 w-full'>
+              <div className='flex items-center'>
+                <img src={QuillNotIcon} className='h-10 object-contain bg-white rounded-3xl' />
+                <h2 className='text-4xl font-bold text-green-800 ml-2'>QuillNot Paraphraser</h2>
+              </div>
+
+              <div className='flex flex-col justify-end items-end'>
                 <a
-                  className='text-black  text-sm underline flex justify-center items-center'
+                  className='text-black text-sm underline flex items-center'
                   href='https://www.joaoportfolio.com/'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
                   by João Silva
+                  <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
                 </a>
-                <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
               </div>
             </div>
 
             <p className='text-lg text-gray-600 mb-4'>
-              Transform your writing with QuillNot paraphrasing tool. Perfect for students, writers, and professionals.
+              Transform your writing with QuillNot — the 100% free paraphrasing tool for students, writers, and professionals.
             </p>
 
             <div className='bg-white p-6 rounded-lg shadow-md border border-gray-200'>
@@ -70,7 +75,7 @@ export default function SignUp() {
                 </li>
                 <li className='flex items-start'>
                   <span className='text-[#7A9E7E] mr-2'>✓</span>
-                  <span>Interactive sentence and word-level editing options</span>
+                  <span>Edit paraphrased results at the sentence and word level</span>
                 </li>
               </ul>
 
@@ -103,7 +108,7 @@ export default function SignUp() {
             </div>
           </div>
 
-          <div className='bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-700'>
+          <div className='bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm mt-6 text-blue-700'>
             <div className='font-medium mb-1'>Why do I need to sign in?</div>
             <p>QuillNot is completely free to use. Signing in helps prevent abuse and ensures fair daily usage for everyone.</p>
           </div>
