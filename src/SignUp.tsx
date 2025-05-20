@@ -1,14 +1,26 @@
 import { useState } from "react";
+import { Navigate } from "react-router";
 import QuillNotShowcasePicture from "./images/quillnot.png";
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
+import { useAuth } from "./AuthContext";
 
 export default function SignUp() {
   const [isHovering, setIsHovering] = useState(false);
+  const { signInWithGoogle, currentUser } = useAuth();
 
-  const handleSignIn = () => {
-    // Here you would implement your Google sign-in functionality
-    console.log("Signing in with Google");
+  // if user is already logged in, redirect to the app
+  if (currentUser) {
+    return <Navigate to='/' replace />;
+  }
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // redirect happens automatically thanks to the condition above
+    } catch (error) {
+      console.error("Failed to sign in:", error);
+    }
   };
 
   return (
@@ -36,7 +48,8 @@ export default function SignUp() {
             </div>
 
             <p className='text-lg text-gray-600 mb-4'>
-              Transform your writing with QuillNot — the 100% free paraphrasing tool for students, writers, and professionals.
+              Transform your writing with QuillNot — the <span className='font-bold'>100% free</span> paraphrasing tool for students, writers, and
+              professionals.
             </p>
 
             <div className='bg-white p-6 rounded-lg shadow-md border border-gray-200'>
