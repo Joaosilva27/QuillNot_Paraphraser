@@ -259,7 +259,7 @@ function App() {
           Key requirements:
           - Preserve 100% of the original meaning
           - IMPORTANT MUST DO!!!! NEVER!!!! EVER!!!!!! ADD ASTERISKS "**" before or after a word, UNLESS the prompt given has them - THIS IS AN ABSOLUTE MUST. 
-          - If the text given has any symbol like for example quotes "" - keep them. If the text given does not, do not add your own symbols.
+          - IMPORTANT!! If the text given has any symbol like for example quotes "" at the start or end of a sentence, YOU MUST KEEP THEM. If the text given does not, do not add your own symbols.
           - Maintain the original paragraph structure
           - Keep specialized terminology unchanged
           - Retain all proper nouns and technical terms
