@@ -1,5 +1,6 @@
 import { useState } from "react";
 import QuillNotShowcasePicture from "./images/quillnot.png";
+import GithubIcon from "./images/github.png";
 
 export default function SignUp() {
   const [isHovering, setIsHovering] = useState(false);
@@ -11,30 +12,26 @@ export default function SignUp() {
 
   return (
     <div className='min-h-screen flex flex-col bg-gray-50'>
-      <header className='bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md'>
-        <div className='max-w-7xl mx-auto flex flex-row justify-between items-center'>
-          <span className='flex justify-center items-center'>
-            <img src={QuillNotShowcasePicture} className='h-8 w-8 object-contain bg-white rounded-3xl' alt='QuillNot Logo' />
-            <h1 className='text-3xl font-bold ml-2'>QuillNot</h1>
-          </span>
-
-          <a
-            className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
-            href='https://www.joaoportfolio.com/'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            by João Silva
-          </a>
-        </div>
-      </header>
-
       <main className='flex-1 flex flex-col md:flex-row max-w-7xl mx-auto p-6 gap-8 items-center'>
         <div className='flex-1 max-w-lg'>
           <div className='mb-8'>
-            <h2 className='text-4xl font-bold text-gray-800 mb-6'>QuillNot Paraphraser</h2>
+            <div className='flex'>
+              <h2 className='text-4xl font-bold text-gray-800 mb-6'>QuillNot Paraphraser</h2>
+              <div className='flex justify-center items-center ml-2'>
+                <a
+                  className='text-black  text-sm underline flex justify-center items-center'
+                  href='https://www.joaoportfolio.com/'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  by João Silva
+                </a>
+                <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
+              </div>
+            </div>
+
             <p className='text-lg text-gray-600 mb-4'>
-              Transform your writing with our advanced paraphrasing tool. Perfect for students, writers, and professionals.
+              Transform your writing with QuillNot paraphrasing tool. Perfect for students, writers, and professionals.
             </p>
 
             <div className='bg-white p-6 rounded-lg shadow-md border border-gray-200'>
@@ -52,7 +49,7 @@ export default function SignUp() {
                   <span>
                     Choose from multiple paraphrasing styles:
                     <div className='flex flex-wrap gap-2 mt-2'>
-                      {["Standard", "Academic", "Fluent", "Human", "Formal", "Extended", "Shortened"].map(style => (
+                      {["Standard", "Academic", "Fluent", "Human", "Formal", "Extended", "Shortened", "Custom"].map(style => (
                         <span key={style} className='inline-block px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-md'>
                           {style}
                         </span>
@@ -63,13 +60,13 @@ export default function SignUp() {
                 <li className='flex items-start'>
                   <span className='text-[#7A9E7E] mr-2'>✓</span>
                   <span>
-                    Exclusive <span className='font-medium text-blue-600'>AI Bypasser Mode</span> that helps avoid AI content detection by replacing
-                    common machine-generated patterns
+                    <span className='font-medium text-blue-600'>AI Bypasser Mode</span> that helps avoid AI content detection by replacing common
+                    machine-generated patterns
                   </span>
                 </li>
                 <li className='flex items-start'>
                   <span className='text-[#7A9E7E] mr-2'>✓</span>
-                  <span>Adjust the amount of changes with our customizable intensity slider</span>
+                  <span>Control how much your text is changed using an adjustable rewrite intensity slider</span>
                 </li>
                 <li className='flex items-start'>
                   <span className='text-[#7A9E7E] mr-2'>✓</span>
@@ -107,17 +104,14 @@ export default function SignUp() {
           </div>
 
           <div className='bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-700'>
-            <div className='font-medium mb-1'>Why sign in?</div>
-            <p>Signing in allows you to access all features and keep track of your daily paraphrase limit. Your data is kept private and secure.</p>
+            <div className='font-medium mb-1'>Why do I need to sign in?</div>
+            <p>QuillNot is completely free to use. Signing in helps prevent abuse and ensures fair daily usage for everyone.</p>
           </div>
         </div>
 
-        <div className='flex-1 flex justify-center items-center max-w-md'>
+        <div className='flex-1 flex justify-center items-center max-w-2xl'>
           <div className='relative'>
             <img src={QuillNotShowcasePicture} alt='QuillNot Showcase' className='w-full h-auto object-contain rounded-lg' />
-            <div className='absolute -top-3 -right-3 bg-[#7A9E7E] text-white text-sm font-bold py-1 px-3 rounded-full transform rotate-12'>
-              100% Free!
-            </div>
           </div>
         </div>
       </main>
