@@ -3,6 +3,7 @@ import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, serverTimestamp } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
@@ -22,20 +23,19 @@ function App() {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
+  const [userId, setUserId] = useState(null);
 
   if (!apiKey) {
     throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" }); // temporarily using the fast model instead of 2.5 pro due to limitations
-
-  // I'm using the fast model of gemini AI to fetch word synonyms (2.0-flash, currently using 2.5-flash-preview to debug).
-  // so the user does not have to wait 6-12s just to get synonyms for one word
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
 
-  const [userCount, setUserCount] = useState(0); // this is the paraphrasing count. i'm too lazy to change the doc name in firebase so it's staying with this const name
-  const [uniqueUsers, setUniqueUsers] = useState<number>();
+  const [userCount, setUserCount] = useState(0);
+  const [uniqueUsers, setUniqueUsers] = useState();
   const [savedOutput, setSavedOutput] = useState(localStorage.getItem("output") || "");
   const [savedInput, setSavedInput] = useState(localStorage.getItem("input") || "");
   const [prompt, setPrompt] = useState(savedInput);
@@ -77,23 +77,28 @@ function App() {
   const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
   const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
-  const [clickedWord, setClickedWord] = useState<{
-    word: string;
-    position: { x: number; y: number };
-    wordIndex: number;
-    paragraphIndex: number;
-    wordInParagraph: number;
-    sentenceIndex: number;
-  } | null>(null);
+  const [clickedWord, setClickedWord] = useState(null);
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
   const [clickedRephraseSentence, setClickedRephraseSentence] = useState(false);
-  const [sentenceRephrases, setSentenceRephrases] = useState<string[]>([]);
+  const [sentenceRephrases, setSentenceRephrases] = useState([]);
   const [isSentenceLoading, setIsSentenceLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState("");
   const [dailyUsageCount, setDailyUsageCount] = useState(0);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
 
   useEffect(() => {
     if (copied) {
@@ -106,45 +111,61 @@ function App() {
     checkCurrentUsage();
   }, []);
 
-  const trackUsage = async (fingerprint: string) => {
-    const userDocRef = doc(db, "userUsage", fingerprint);
+  const getUserIdentifier = async () => {
+    if (userId && auth.currentUser?.email) {
+      return `email_${auth.currentUser.email}`;
+    }
+
+    const storedId = localStorage.getItem("userFingerprint");
+    if (storedId) return `fp_${storedId}`;
+
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    const fingerprint = result.visitorId;
+
+    localStorage.setItem("userFingerprint", fingerprint);
+    return `fp_${fingerprint}`;
+  };
+
+  const trackUsage = async () => {
+    const identifier = await getUserIdentifier();
+    const userDocRef = doc(db, "userUsage", identifier);
     const today = new Date().toDateString();
 
     const userDoc = await getDoc(userDocRef);
 
     if (!userDoc.exists() || userDoc.data().date !== today) {
-      // new user or new day - reset counter
       await setDoc(userDocRef, {
         count: 1,
         date: today,
         lastUsed: serverTimestamp(),
+        isAuthenticatedUser: identifier.startsWith("email_"),
       });
       setDailyUsageCount(1);
       return true;
     } else {
-      // existing usage today
       const currentCount = userDoc.data().count;
       setDailyUsageCount(currentCount);
 
       if (currentCount >= 100) {
         setDailyLimitReached(true);
-        return false; // limit reached
+        return false;
       }
 
-      // increment usage count
       await updateDoc(userDocRef, {
         count: increment(1),
         lastUsed: serverTimestamp(),
+        isAuthenticatedUser: identifier.startsWith("email_"),
       });
       setDailyUsageCount(currentCount + 1);
-      return true; // allow usage
+      return true;
     }
   };
 
   const checkCurrentUsage = async () => {
     try {
-      const fingerprint = await getFingerprint();
-      const userDocRef = doc(db, "userUsage", fingerprint);
+      const identifier = await getUserIdentifier();
+      const userDocRef = doc(db, "userUsage", identifier);
       const today = new Date().toDateString();
 
       const userDoc = await getDoc(userDocRef);
@@ -163,7 +184,7 @@ function App() {
     }
   };
 
-  const getWordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
+  const getWordCount = text => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
   const handlePaste = async () => {
     try {
@@ -175,44 +196,32 @@ function App() {
     }
   };
 
-  const getFingerprint = async () => {
-    const storedId = localStorage.getItem("userFingerprint");
-    if (storedId) return storedId;
-
-    const fp = await FingerprintJS.load();
-    const result = await fp.get();
-    const fingerprint = result.visitorId;
-
-    localStorage.setItem("userFingerprint", fingerprint);
-    return fingerprint;
-  };
-
   useEffect(() => {
     const trackUser = async () => {
       try {
-        // get fingerprint
-        const fingerprint = await getFingerprint();
+        const identifier = await getUserIdentifier();
 
         await setDoc(
-          doc(db, "uniqueUsers", fingerprint),
+          doc(db, "uniqueUsers", identifier),
           {
             lastSeen: serverTimestamp(),
+            isAuthenticatedUser: identifier.startsWith("email_"),
+            ...(userId && auth.currentUser?.email ? { email: auth.currentUser.email } : {}),
           },
           { merge: true }
         );
       } catch (error) {
-        console.error("Fingerprint tracking error:", error);
+        console.error("User tracking error:", error);
       }
     };
 
     trackUser();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "uniqueUsers"),
       snapshot => {
-        // get actual count from docs array
         const count = snapshot.docs.length;
         setUniqueUsers(count);
       },
@@ -240,9 +249,7 @@ function App() {
       if (!prompt.trim()) return;
 
       try {
-        // check if the user has reached their daily limit
-        const fingerprint = await getFingerprint();
-        const canProceed = await trackUsage(fingerprint);
+        const canProceed = await trackUsage();
 
         if (!canProceed) {
           setPromptResult("You've reached your daily limit of 100 paraphrases. Please try again tomorrow.");
@@ -314,7 +321,6 @@ function App() {
         }
       },
       error => {
-        // ignore termination-related errors
         if (error.code !== "cancelled") {
           console.error("Firestore error:", error);
         }
@@ -335,7 +341,7 @@ function App() {
     setSavedInput("");
   };
 
-  const selectStyle = (style: string) => setSelectedStyle(style);
+  const selectStyle = style => setSelectedStyle(style);
 
   useEffect(() => {
     if (prompt.length > 0) {
@@ -344,14 +350,14 @@ function App() {
     }
   }, [prompt]);
 
-  const getOriginalWord = (word: string) => word.replace(/^\W+/g, "");
+  const getOriginalWord = word => word.replace(/^\W+/g, "");
 
   const cleanedOriginalWords = useMemo(() => {
     const words = prompt.trim().split(/\s+/);
     return new Set(words.map(word => getOriginalWord(word)));
   }, [prompt]);
 
-  const onClickedWord = (word: string) => {
+  const onClickedWord = word => {
     setClickedWordSynonyms("Loading...");
     const fetchSynonymData = async () => {
       try {
@@ -363,7 +369,7 @@ function App() {
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
         const result = await FastModel.generateContent(promptInstructions);
         const responseText = result.response.text();
-        const matchCase = (original: string, synonym: string) => {
+        const matchCase = (original, synonym) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
           else if (original === original.toLowerCase()) return synonym.toLowerCase();
           else if (/^[A-Z]/.test(original)) return synonym.charAt(0).toUpperCase() + synonym.slice(1).toLowerCase();
@@ -384,7 +390,7 @@ function App() {
     fetchSynonymData();
   };
 
-  const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
+  const replaceWordWithSynonym = (_originalWord, synonym) => {
     if (!clickedWord) return;
     const paragraphs = promptResult.split("\n\n");
     const targetParagraph = paragraphs[clickedWord.paragraphIndex];
@@ -415,7 +421,7 @@ function App() {
     return sentences[clickedWord.sentenceIndex].trim();
   };
 
-  const fetchSentenceRephrases = async (sentence: string) => {
+  const fetchSentenceRephrases = async sentence => {
     try {
       setIsSentenceLoading(true);
       const instruction = `Provide 6 different rephrases of this sentence while:
@@ -446,7 +452,7 @@ function App() {
     }
   };
 
-  const replaceSentence = (newSentence: string) => {
+  const replaceSentence = newSentence => {
     if (!clickedWord) return;
     const paragraphs = [...promptResult.split("\n\n")];
     const sentences = paragraphs[clickedWord.paragraphIndex].split(/(?<=\.)\s+/);
