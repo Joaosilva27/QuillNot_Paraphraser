@@ -24,7 +24,7 @@ function App() {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   if (!apiKey) {
     throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
@@ -35,7 +35,7 @@ function App() {
   const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
 
   const [userCount, setUserCount] = useState(0);
-  const [uniqueUsers, setUniqueUsers] = useState();
+  const [uniqueUsers, setUniqueUsers] = useState<number>();
   const [savedOutput, setSavedOutput] = useState(localStorage.getItem("output") || "");
   const [savedInput, setSavedInput] = useState(localStorage.getItem("input") || "");
   const [prompt, setPrompt] = useState(savedInput);
@@ -77,10 +77,17 @@ function App() {
   const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
   const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
-  const [clickedWord, setClickedWord] = useState(null);
+  const [clickedWord, setClickedWord] = useState<{
+    word: string;
+    position: { x: number; y: number };
+    wordIndex: number;
+    paragraphIndex: number;
+    wordInParagraph: number;
+    sentenceIndex: number;
+  } | null>(null);
   const [clickedWordSynonyms, setClickedWordSynonyms] = useState("");
   const [clickedRephraseSentence, setClickedRephraseSentence] = useState(false);
-  const [sentenceRephrases, setSentenceRephrases] = useState([]);
+  const [sentenceRephrases, setSentenceRephrases] = useState<Array<string>>([]);
   const [isSentenceLoading, setIsSentenceLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -184,7 +191,7 @@ function App() {
     }
   };
 
-  const getWordCount = text => (text.trim() ? text.trim().split(/\s+/).length : 0);
+  const getWordCount = (text: string) => (text.trim() ? text.trim().split(/\s+/).length : 0);
 
   const handlePaste = async () => {
     try {
@@ -341,7 +348,7 @@ function App() {
     setSavedInput("");
   };
 
-  const selectStyle = style => setSelectedStyle(style);
+  const selectStyle = (style: string) => setSelectedStyle(style);
 
   useEffect(() => {
     if (prompt.length > 0) {
@@ -350,14 +357,14 @@ function App() {
     }
   }, [prompt]);
 
-  const getOriginalWord = word => word.replace(/^\W+/g, "");
+  const getOriginalWord = (word: string) => word.replace(/^\W+/g, "");
 
   const cleanedOriginalWords = useMemo(() => {
     const words = prompt.trim().split(/\s+/);
     return new Set(words.map(word => getOriginalWord(word)));
   }, [prompt]);
 
-  const onClickedWord = word => {
+  const onClickedWord = (word: string) => {
     setClickedWordSynonyms("Loading...");
     const fetchSynonymData = async () => {
       try {
@@ -369,7 +376,7 @@ function App() {
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
         const result = await FastModel.generateContent(promptInstructions);
         const responseText = result.response.text();
-        const matchCase = (original, synonym) => {
+        const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
           else if (original === original.toLowerCase()) return synonym.toLowerCase();
           else if (/^[A-Z]/.test(original)) return synonym.charAt(0).toUpperCase() + synonym.slice(1).toLowerCase();
@@ -390,7 +397,7 @@ function App() {
     fetchSynonymData();
   };
 
-  const replaceWordWithSynonym = (_originalWord, synonym) => {
+  const replaceWordWithSynonym = (_originalWord: string, synonym: string) => {
     if (!clickedWord) return;
     const paragraphs = promptResult.split("\n\n");
     const targetParagraph = paragraphs[clickedWord.paragraphIndex];
@@ -421,7 +428,7 @@ function App() {
     return sentences[clickedWord.sentenceIndex].trim();
   };
 
-  const fetchSentenceRephrases = async sentence => {
+  const fetchSentenceRephrases = async (sentence: string) => {
     try {
       setIsSentenceLoading(true);
       const instruction = `Provide 6 different rephrases of this sentence while:
@@ -452,7 +459,7 @@ function App() {
     }
   };
 
-  const replaceSentence = newSentence => {
+  const replaceSentence = (newSentence: string) => {
     if (!clickedWord) return;
     const paragraphs = [...promptResult.split("\n\n")];
     const sentences = paragraphs[clickedWord.paragraphIndex].split(/(?<=\.)\s+/);
