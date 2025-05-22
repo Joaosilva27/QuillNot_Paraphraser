@@ -25,6 +25,7 @@ function App() {
   const db = getFirestore(app);
   const auth = getAuth(app);
   const [userId, setUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
 
   if (!apiKey) {
     throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
@@ -106,6 +107,14 @@ function App() {
 
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (copied) {
@@ -546,6 +555,26 @@ function App() {
             >
               Logout
             </button>
+            {user?.photoURL && (
+              <img
+                src={user.photoURL}
+                alt='Profile'
+                className='h-8 w-8 rounded-full border-2 border-[#E8F5E9]/30 hover:border-white/50 transition-colors cursor-pointer object-cover'
+                onClick={() => {
+                  // might add some features later but probably not
+                  console.log("Profile clicked");
+                }}
+                onError={e => {
+                  e.target.src = `data:image/svg+xml;base64,${btoa(`
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="16" fill="#E8F5E9"/>
+                <circle cx="16" cy="12" r="4" fill="#7A9E7E"/>
+                <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#7A9E7E"/>
+              </svg>
+            `)}`;
+                }}
+              />
+            )}
           </div>
         </div>
       </header>
