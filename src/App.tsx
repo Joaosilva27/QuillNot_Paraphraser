@@ -3,7 +3,7 @@ import "./App.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, serverTimestamp } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
@@ -188,6 +188,15 @@ function App() {
       }
     } catch (error) {
       console.error("Error checking usage:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User signed out successfully");
+    } catch (error) {
+      console.error("Error signing out:", error);
     }
   };
 
@@ -532,7 +541,7 @@ function App() {
               <Coffee />
             </span>
             <button
-              // onClick={handleLogout} // You'll need to implement this function
+              onClick={handleLogout}
               className='text-[#E8F5E9] hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors text-sm font-medium border border-[#E8F5E9]/30 hover:border-white/20'
             >
               Logout
