@@ -226,18 +226,35 @@ function App() {
   }, [userId]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
+    let uniqueUsersCount = 0;
+    let userUsageCount = 0;
+
+    const unsubscribeUniqueUsers = onSnapshot(
       collection(db, "uniqueUsers"),
       snapshot => {
-        const count = snapshot.docs.length;
-        setUniqueUsers(count);
+        uniqueUsersCount = snapshot.docs.length;
+        setUniqueUsers(uniqueUsersCount + userUsageCount);
       },
       error => {
         console.error("Error fetching unique users:", error);
       }
     );
 
-    return () => unsubscribe();
+    const unsubscribeUserUsage = onSnapshot(
+      collection(db, "userUsage"),
+      snapshot => {
+        userUsageCount = snapshot.docs.length;
+        setUniqueUsers(uniqueUsersCount + userUsageCount);
+      },
+      error => {
+        console.error("Error fetching user usage:", error);
+      }
+    );
+
+    return () => {
+      unsubscribeUniqueUsers();
+      unsubscribeUserUsage();
+    };
   }, []);
 
   const updateCounter = async () => {
