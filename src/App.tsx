@@ -565,13 +565,14 @@ function App() {
                   console.log("Profile clicked");
                 }}
                 onError={e => {
-                  e.target.src = `data:image/svg+xml;base64,${btoa(`
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="16" fill="#E8F5E9"/>
-                <circle cx="16" cy="12" r="4" fill="#7A9E7E"/>
-                <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#7A9E7E"/>
-              </svg>
-            `)}`;
+                  const target = e.target as HTMLImageElement;
+                  target.src = `data:image/svg+xml;base64,${btoa(`
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="16" fill="#E8F5E9"/>
+      <circle cx="16" cy="12" r="4" fill="#7A9E7E"/>
+      <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#7A9E7E"/>
+    </svg>
+  `)}`;
                 }}
               />
             )}
