@@ -502,10 +502,21 @@ function App() {
     <div className='min-h-screen flex flex-col bg-gray-50 overflow-hidden'>
       <header className='bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md'>
         <div className='max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0'>
-          <span className='flex justify-center items-center'>
-            <img src={QuillNotIcon} className='h-8 w-8 object-contain bg-white rounded-3xl' />
-            <h1 className='text-3xl font-bold dancing-script-400'>QuillNot</h1>
-          </span>
+          <div className='flex items-center gap-4'>
+            <span className='flex justify-center items-center'>
+              <img src={QuillNotIcon} className='h-8 w-8 object-contain bg-white rounded-3xl' />
+              <h1 className='text-3xl font-bold dancing-script-400'>QuillNot</h1>
+            </span>
+            <a
+              className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
+              href='https://www.joaoportfolio.com/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              by João Silva
+              <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
+            </a>
+          </div>
           <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
             {userCount.toLocaleString()} total paraphrases across {uniqueUsers?.toLocaleString() || 2} users
             <span className='block text-xs'>
@@ -516,18 +527,17 @@ function App() {
               )}
             </span>
           </span>
-          <a
-            className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
-            href='https://www.joaoportfolio.com/'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            by João Silva
-            <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
-            <span>
+          <div className='flex items-center gap-3'>
+            <span className='text-[#E8F5E9] hover:text-white text-sm flex items-center cursor-pointer transition-colors'>
               <Coffee />
             </span>
-          </a>
+            <button
+              // onClick={handleLogout} // You'll need to implement this function
+              className='text-[#E8F5E9] hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors text-sm font-medium border border-[#E8F5E9]/30 hover:border-white/20'
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
