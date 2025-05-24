@@ -788,10 +788,13 @@ function App() {
                 placeholder={"Enter your text here to paraphrase..."}
               />
               <span
-                className={`absolute bottom-0 right-0 m-2 text-gray-400 ${prompt.replace(/\s/g, "").length > inputCharacterLimit && "text-red-600"}`}
+                className={`absolute bottom-0 right-0 m-2 px-1 rounded backdrop-blur-sm bg-white/60 text-sm ${
+                  prompt.replace(/\s/g, "").length > inputCharacterLimit ? "text-red-600" : "text-gray-400"
+                }`}
               >
                 {prompt.replace(/\s/g, "").length} / {inputCharacterLimit} characters
               </span>
+
               {!prompt && (
                 <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
                   <button
