@@ -790,7 +790,7 @@ function App() {
               <span
                 className={`absolute bottom-0 right-0 m-2 text-gray-400 ${prompt.replace(/\s/g, "").length > inputCharacterLimit && "text-red-600"}`}
               >
-                {prompt.replace(/\s/g, "").length} / ${inputCharacterLimit} characters
+                {prompt.replace(/\s/g, "").length} / {inputCharacterLimit} characters
               </span>
               {!prompt && (
                 <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
@@ -995,7 +995,7 @@ function App() {
       </main>
       <div className='max-w-7xl mx-auto pb-1'>
         <span className='text-xs font-medium text-gray-500 block text-center'>
-          The official word limit is ${inputCharacterLimit} characters - however, extremely lengthy inputs may reduce the quality of my response
+          The official word limit is {inputCharacterLimit} characters - however, extremely lengthy inputs may reduce the quality of my response
           because I might lose focus, therefore a maximum of 1000 characters is recommended.
         </span>
       </div>
