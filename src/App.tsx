@@ -95,6 +95,7 @@ function App() {
   const [editedText, setEditedText] = useState("");
   const [dailyUsageCount, setDailyUsageCount] = useState(0);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState<boolean>(true);
   const inputCharacterLimit = 1500;
 
   useEffect(() => {
@@ -519,7 +520,7 @@ function App() {
 
   return (
     <div className='min-h-screen flex flex-col bg-gray-50 overflow-hidden'>
-      <header className='bg-[#7A9E7E] text-white py-3 px-4 md:px-6 shadow-md'>
+      <header className={` ${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white py-3 px-4 md:px-6 shadow-md`}>
         <div className='max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0'>
           <div className='flex items-center gap-4'>
             <span className='flex justify-center items-center'>
@@ -590,6 +591,8 @@ function App() {
               className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
                 isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > inputCharacterLimit || dailyLimitReached
                   ? "bg-gray-400"
+                  : isDarkModeEnabled
+                  ? "bg-[#3A6B5C] hover:bg-[#234028]"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } transition-colors flex items-center`}
             >
@@ -649,15 +652,20 @@ function App() {
                 <button
                   onClick={() => setSelectedStyle(standardStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === standardStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === standardStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Standard
                 </button>
+
                 <button
                   onClick={() => selectStyle(academicStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === academicStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === academicStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Academic
@@ -665,7 +673,9 @@ function App() {
                 <button
                   onClick={() => selectStyle(fluentStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === fluentStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === fluentStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Fluent
@@ -673,7 +683,9 @@ function App() {
                 <button
                   onClick={() => selectStyle(humanizeStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === humanizeStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === humanizeStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Human
@@ -681,7 +693,9 @@ function App() {
                 <button
                   onClick={() => selectStyle(formalStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === formalStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === formalStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Formal
@@ -689,7 +703,9 @@ function App() {
                 <button
                   onClick={() => selectStyle(expandStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === expandStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === expandStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Extended
@@ -697,7 +713,9 @@ function App() {
                 <button
                   onClick={() => selectStyle(shortStyle)}
                   className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === shortStyle ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    selectedStyle === shortStyle
+                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                   } transition-colors`}
                 >
                   Shortened
@@ -706,7 +724,9 @@ function App() {
                   <button
                     onClick={() => selectStyle(customDescription)}
                     className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                      selectedStyle === customDescription ? "bg-[#7A9E7E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                      selectedStyle === customDescription
+                        ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                     } transition-colors`}
                   >
                     Custom
@@ -721,7 +741,7 @@ function App() {
                         setSelectedStyle(newDesc);
                       }}
                       placeholder='Describe style...'
-                      className='px-2 py-1 text-xs text-black sm:text-sm border-[#7A9E7E] border-2 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48'
+                      className='px-2 py-1 text-xs text-black sm:text-sm border-[#3A6B5C] border-2 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48'
                     />
                   )}
                 </div>
@@ -742,11 +762,16 @@ function App() {
                 />
                 <div className='absolute w-full flex justify-between px-1.5 top-3.5 pointer-events-none'>
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className={`w-1.5 h-1.5 rounded-full pointer-events-none ${changesLevel >= i ? "bg-[#7A9E7E]" : "bg-gray-300"}`} />
+                    <div
+                      key={i}
+                      className={`w-1.5 h-1.5 rounded-full pointer-events-none ${
+                        changesLevel >= i ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-white"}` : "bg-gray-300"
+                      }`}
+                    />
                   ))}
                 </div>
                 <div className='flex justify-between w-full text-xs text-gray-600 mt-4'>
-                  <span className={changesLevel === 0 ? "font-semibold text-[#7A9极简E7E]" : ""}>Fewer</span>
+                  <span className={changesLevel === 0 ? "font-semibold text-[#7A9E7E]" : ""}>Fewer</span>
                   <span className={changesLevel === 1 ? "font-semibold text-[#7A9E7E]" : ""}>Standard</span>
                   <span className={changesLevel === 2 ? "font-semibold text-[#7A9E7E]" : ""}>More</span>
                 </div>
