@@ -95,7 +95,7 @@ function App() {
   const [editedText, setEditedText] = useState("");
   const [dailyUsageCount, setDailyUsageCount] = useState(0);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState<boolean>(true);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState<boolean>(false);
   const inputCharacterLimit = 1500;
 
   useEffect(() => {
