@@ -850,7 +850,9 @@ function App() {
                 <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
                   <button
                     onClick={handlePaste}
-                    className='flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#7A9E7E] text-white rounded hover:bg-[#6B8E71] transition-colors pointer-events-auto text-sm sm:text-base'
+                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 ${
+                      isDarkModeEnabled ? "bg-[#3A6B5C] hover:bg-[#234028]" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                    }  text-white rounded transition-colors pointer-events-auto text-sm sm:text-base`}
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
