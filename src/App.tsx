@@ -770,7 +770,7 @@ function App() {
             </div>
 
             <div className='flex items-center flex-col gap-2 w-full md:w-auto md:ml-2 lg:mr-10 mt-2 md:mt-0'>
-              <p className={`text-sm font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"} whitespace-nowrap`}>Amount of Changes:</p>
+              <p className='text-sm font-medium text-gray-700 whitespace-nowrap'>Amount of Changes:</p>
               <div className='w-full sm:w-48 relative'>
                 <input
                   type='range'
@@ -779,25 +779,19 @@ function App() {
                   step='1'
                   value={changesLevel}
                   onChange={e => setChangesLevel(parseInt(e.target.value))}
-                  className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${isDarkModeEnabled ? "bg-gray-700" : "bg-gray-100"}`}
+                  className='w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer custom-slider'
                 />
                 <div className='absolute w-full flex justify-between px-1.5 top-3.5 pointer-events-none'>
                   {[...Array(3)].map((_, i) => (
                     <div
                       key={i}
                       className={`w-1.5 h-1.5 rounded-full pointer-events-none ${
-                        changesLevel >= i
-                          ? isDarkModeEnabled
-                            ? "bg-emerald-500"
-                            : "bg-[#7A9E7E]"
-                          : isDarkModeEnabled
-                          ? "bg-gray-600"
-                          : "bg-gray-300"
+                        changesLevel >= i ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"}` : "bg-gray-300"
                       }`}
                     />
                   ))}
                 </div>
-                <div className={`flex justify-between w-full text-xs ${isDarkModeEnabled ? "text-gray-400" : "text-gray-600"} mt-4`}>
+                <div className='flex justify-between w-full text-xs text-gray-600 mt-4'>
                   <span className={changesLevel === 0 ? "font-semibold text-[#7A9E7E]" : ""}>Fewer</span>
                   <span className={changesLevel === 1 ? "font-semibold text-[#7A9E7E]" : ""}>Standard</span>
                   <span className={changesLevel === 2 ? "font-semibold text-[#7A9E7E]" : ""}>More</span>
