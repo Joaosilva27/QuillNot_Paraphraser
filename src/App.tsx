@@ -526,8 +526,8 @@ function App() {
   }, [clickedRephraseSentence]);
 
   return (
-    <div className='min-h-screen flex flex-col bg-gray-50 overflow-hidden'>
-      <header className={` ${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white py-3 px-4 md:px-6 shadow-md`}>
+    <div className={`min-h-screen flex flex-col ${isDarkModeEnabled ? "bg-gray-900" : "bg-gray-50"} overflow-hidden`}>
+      <header className={`${isDarkModeEnabled ? "bg-[#2d5449] border-b border-gray-700" : "bg-[#7A9E7E]"} text-white py-3 px-4 md:px-6 shadow-md`}>
         <div className='max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0'>
           <div className='flex items-center gap-4'>
             <span className='flex justify-center items-center'>
@@ -535,7 +535,9 @@ function App() {
               <h1 className='text-3xl font-bold dancing-script-400'>QuillNot</h1>
             </span>
             <a
-              className='text-[#E8F5E9] hover:text-white text-sm underline flex justify-center items-center'
+              className={`${
+                isDarkModeEnabled ? "text-gray-300 hover:text-white" : "text-[#E8F5E9] hover:text-white"
+              } text-sm underline flex justify-center items-center`}
               href='https://www.joaoportfolio.com/'
               target='_blank'
               rel='noopener noreferrer'
@@ -544,11 +546,15 @@ function App() {
               <img src={GithubIcon} className='h-4 w-4 ml-1.5 animate-bounce object-contain' />
             </a>
           </div>
-          <span className='capitalize font-medium text-[#7A9E7E] bg-[#E8F5E9] px-2 py-1 rounded-md border border-[#7A9E7E]/20 transition-colors text-sm sm:text-base text-center'>
+          <span
+            className={`capitalize font-medium ${
+              isDarkModeEnabled ? "text-emerald-400 bg-gray-800 border border-gray-600" : "text-[#7A9E7E] bg-[#E8F5E9] border border-[#7A9E7E]/20"
+            } px-2 py-1 rounded-md transition-colors text-sm sm:text-base text-center`}
+          >
             {userCount.toLocaleString()} total paraphrases across {uniqueUsers?.toLocaleString() || 2} users
             <span className='block text-xs'>
               {dailyLimitReached ? (
-                <span className='text-red-700'>The limit for daily paraphrases has been reached.</span>
+                <span className={isDarkModeEnabled ? "text-red-400" : "text-red-700"}>The limit for daily paraphrases has been reached.</span>
               ) : (
                 `${dailyUsageCount}/100 daily paraphrases used`
               )}
@@ -558,7 +564,7 @@ function App() {
             <button
               onClick={() => setIsDarkModeEnabled(!isDarkModeEnabled)}
               className={`p-1.5 rounded-full transition-colors ${
-                isDarkModeEnabled ? "bg-[#3A6B5C] hover:bg-[#2d5449]" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                isDarkModeEnabled ? "bg-gray-700 hover:bg-gray-600" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               }`}
             >
               {isDarkModeEnabled ? (
@@ -581,12 +587,20 @@ function App() {
                 </svg>
               )}
             </button>
-            <span className='text-[#E8F5E9] hover:text-white text-sm flex items-center cursor-pointer transition-colors'>
+            <span
+              className={`${
+                isDarkModeEnabled ? "text-gray-300 hover:text-white" : "text-[#E8F5E9] hover:text-white"
+              } text-sm flex items-center cursor-pointer transition-colors`}
+            >
               <Coffee />
             </span>
             <button
               onClick={handleLogout}
-              className='text-[#E8F5E9] hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors text-sm font-medium border border-[#E8F5E9]/30 hover:border-white/20'
+              className={`${
+                isDarkModeEnabled
+                  ? "text-gray-300 border-gray-400 hover:bg-gray-700 hover:border-gray-300"
+                  : "text-[#E8F5E9] border-[#E8F5E9]/30 hover:bg-white/10 hover:border-white/20"
+              } hover:text-white px-3 py-1.5 rounded-md transition-colors text-sm font-medium border`}
             >
               Logout
             </button>
@@ -594,7 +608,9 @@ function App() {
               <img
                 src={user.photoURL}
                 alt='Profile'
-                className='h-8 w-8 rounded-full border-2 border-[#E8F5E9]/30 hover:border-white/50 transition-colors cursor-pointer object-cover'
+                className={`h-8 w-8 rounded-full border-2 ${
+                  isDarkModeEnabled ? "border-gray-400 hover:border-gray-200" : "border-[#E8F5E9]/30 hover:border-white/50"
+                } transition-colors cursor-pointer object-cover`}
                 onClick={() => {
                   // might add some features later but probably not
                   console.log("Profile clicked");
@@ -602,12 +618,12 @@ function App() {
                 onError={e => {
                   const target = e.target as HTMLImageElement;
                   target.src = `data:image/svg+xml;base64,${btoa(`
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="16" fill="#E8F5E9"/>
-      <circle cx="16" cy="12" r="4" fill="#7A9E7E"/>
-      <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#7A9E7E"/>
-    </svg>
-  `)}`;
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="16" cy="16" r="16" fill="#E8F5E9"/>
+                      <circle cx="16" cy="12" r="4" fill="#7A9E7E"/>
+                      <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#7A9E7E"/>
+                    </svg>
+                  `)}`;
                 }}
               />
             )}
@@ -616,18 +632,20 @@ function App() {
       </header>
 
       <main className='flex-1 xl:min-w-7xl max-w-7xl mx-auto p-2 sm:p-3 flex flex-col overflow-hidden'>
-        <div className='bg-white rounded-t-lg shadow-sm border border-gray-200 p-2 sm:p-3'>
+        <div className={`rounded-t-lg shadow-sm border ${isDarkModeEnabled ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} p-2 sm:p-3`}>
           <div className='flex flex-wrap gap-2 sm:gap-3 items-center mb-2'>
             <button
               onClick={onParaphrase}
               disabled={isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > inputCharacterLimit || dailyLimitReached}
-              className={`px-3 sm:px-6 py-2 rounded font-medium text-white ${
+              className={`px-3 sm:px-6 py-2 rounded font-medium ${
                 isLoading || !prompt.trim() || prompt.replace(/\s/g, "").length > inputCharacterLimit || dailyLimitReached
-                  ? "bg-gray-400"
+                  ? isDarkModeEnabled
+                    ? "bg-gray-600 text-gray-400"
+                    : "bg-gray-400"
                   : isDarkModeEnabled
-                  ? "bg-[#3A6B5C] hover:bg-[#234028]"
+                  ? "bg-emerald-700 hover:bg-emerald-600"
                   : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
-              } transition-colors flex items-center`}
+              } text-white transition-colors flex items-center`}
             >
               {isLoading ? (
                 <>
@@ -648,7 +666,9 @@ function App() {
 
             <button
               onClick={clearAll}
-              className='px-3 sm:px-6 py-2 text-black rounded font-medium border border-gray-300 hover:bg-gray-100 transition-colors'
+              className={`px-3 sm:px-6 py-2 rounded font-medium border ${
+                isDarkModeEnabled ? "text-gray-300 border-gray-500 hover:bg-gray-700" : "text-black border-gray-300 hover:bg-gray-100"
+              } transition-colors`}
             >
               Clear All
             </button>
@@ -656,18 +676,24 @@ function App() {
             <button
               onClick={() => setIsAiBypasserEnabled(!isAiBypasserEnabled)}
               className={`px-3 sm:px-6 py-2 rounded font-medium transition-colors ${
-                isAiBypasserEnabled ? "bg-blue-500 text-white hover:bg-blue-600" : "border border-blue-500 text-blue-500 hover:bg-blue-50"
+                isAiBypasserEnabled
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : isDarkModeEnabled
+                  ? "border border-blue-500 text-blue-400 hover:bg-gray-700"
+                  : "border border-blue-500 text-blue-500 hover:bg-blue-50"
               }`}
             >
               {isAiBypasserEnabled ? "AI Bypasser: ON" : "AI Bypasser Mode"}
             </button>
             {isAiBypasserEnabled && !isAiBypasserDisclamerClosed && (
-              <div className='flex-1 text-xs font-semibold ml-2'>
+              <div className={`flex-1 text-xs font-semibold ml-2 ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"}`}>
                 This mode rephrases text to reduce AI detection by avoiding common machine-generated phrasing. While it may help bypass some
                 detectors, complete undetectability is not guaranteed, no tool can promise that. Any claims of 100% bypass are purely marketing.
                 <span
                   onClick={() => setIsAiBypasserDisclaimerClosed(true)}
-                  className='inline-flex items-center px-2 py-0.5 ml-2 text-xs font-medium bg-gray-100 text-[#7A9E7E] rounded hover:bg-[#E8F5E9] hover:text-[#6B8E71] transition-colors cursor-pointer'
+                  className={`inline-flex items-center px-2 py-0.5 ml-2 text-xs font-medium ${
+                    isDarkModeEnabled ? "bg-gray-700 text-emerald-400 hover:bg-gray-600" : "bg-gray-100 text-[#7A9E7E] hover:bg-[#E8F5E9]"
+                  } rounded transition-colors cursor-pointer`}
                 >
                   <svg xmlns='http://www.w3.org/2000/svg' className='h-3 w-3 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
@@ -680,86 +706,44 @@ function App() {
 
           <div className='flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-2'>
             <div className='flex-1 w-full md:w-auto'>
-              <p className='text-sm font-medium text-gray-700 mb-1'>Select Paraphrasing Style:</p>
+              <p className={`text-sm font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"} mb-1`}>Select Paraphrasing Style:</p>
               <div className='flex flex-wrap gap-2 items-center'>
-                <button
-                  onClick={() => setSelectedStyle(standardStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === standardStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Standard
-                </button>
-
-                <button
-                  onClick={() => selectStyle(academicStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === academicStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Academic
-                </button>
-                <button
-                  onClick={() => selectStyle(fluentStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === fluentStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Fluent
-                </button>
-                <button
-                  onClick={() => selectStyle(humanizeStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === humanizeStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Human
-                </button>
-                <button
-                  onClick={() => selectStyle(formalStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === formalStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Formal
-                </button>
-                <button
-                  onClick={() => selectStyle(expandStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === expandStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Extended
-                </button>
-                <button
-                  onClick={() => selectStyle(shortStyle)}
-                  className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
-                    selectedStyle === shortStyle
-                      ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  } transition-colors`}
-                >
-                  Shortened
-                </button>
+                {[
+                  { name: "Standard", style: standardStyle },
+                  { name: "Academic", style: academicStyle },
+                  { name: "Fluent", style: fluentStyle },
+                  { name: "Human", style: humanizeStyle },
+                  { name: "Formal", style: formalStyle },
+                  { name: "Extended", style: expandStyle },
+                  { name: "Shortened", style: shortStyle },
+                ].map(style => (
+                  <button
+                    key={style.name}
+                    onClick={() => selectStyle(style.style)}
+                    className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
+                      selectedStyle === style.style
+                        ? isDarkModeEnabled
+                          ? "bg-emerald-700 text-white"
+                          : "bg-[#7A9E7E] text-white"
+                        : isDarkModeEnabled
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    } transition-colors`}
+                  >
+                    {style.name}
+                  </button>
+                ))}
                 <div className='flex items-center gap-2'>
                   <button
                     onClick={() => selectStyle(customDescription)}
                     className={`px-2 sm:px-3 py-1 text-xs font-semibold sm:text-sm rounded ${
                       selectedStyle === customDescription
-                        ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-[#7A9E7E]"} text-white`
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                        ? isDarkModeEnabled
+                          ? "bg-emerald-700 text-white"
+                          : "bg-[#7A9E7E] text-white"
+                        : isDarkModeEnabled
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     } transition-colors`}
                   >
                     Custom
@@ -774,7 +758,11 @@ function App() {
                         setSelectedStyle(newDesc);
                       }}
                       placeholder='Describe style...'
-                      className='px-2 py-1 text-xs text-black sm:text-sm border-[#3A6B5C] border-2 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] w-32 sm:w-48'
+                      className={`px-2 py-1 text-xs sm:text-sm border-2 rounded focus:outline-none focus:ring-2 ${
+                        isDarkModeEnabled
+                          ? "bg-gray-700 border-emerald-600 focus:ring-emerald-500 text-white"
+                          : "border-[#3A6B5C] focus:ring-[#7A9E7E] text-black"
+                      } w-32 sm:w-48`}
                     />
                   )}
                 </div>
@@ -782,7 +770,7 @@ function App() {
             </div>
 
             <div className='flex items-center flex-col gap-2 w-full md:w-auto md:ml-2 lg:mr-10 mt-2 md:mt-0'>
-              <p className='text-sm font-medium text-gray-700 whitespace-nowrap'>Amount of Changes:</p>
+              <p className={`text-sm font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"} whitespace-nowrap`}>Amount of Changes:</p>
               <div className='w-full sm:w-48 relative'>
                 <input
                   type='range'
@@ -791,19 +779,25 @@ function App() {
                   step='1'
                   value={changesLevel}
                   onChange={e => setChangesLevel(parseInt(e.target.value))}
-                  className='w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer custom-slider'
+                  className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${isDarkModeEnabled ? "bg-gray-700" : "bg-gray-100"}`}
                 />
                 <div className='absolute w-full flex justify-between px-1.5 top-3.5 pointer-events-none'>
                   {[...Array(3)].map((_, i) => (
                     <div
                       key={i}
                       className={`w-1.5 h-1.5 rounded-full pointer-events-none ${
-                        changesLevel >= i ? `${isDarkModeEnabled ? "bg-[#3A6B5C]" : "bg-white"}` : "bg-gray-300"
+                        changesLevel >= i
+                          ? isDarkModeEnabled
+                            ? "bg-emerald-500"
+                            : "bg-[#7A9E7E]"
+                          : isDarkModeEnabled
+                          ? "bg-gray-600"
+                          : "bg-gray-300"
                       }`}
                     />
                   ))}
                 </div>
-                <div className='flex justify-between w-full text-xs text-gray-600 mt-4'>
+                <div className={`flex justify-between w-full text-xs ${isDarkModeEnabled ? "text-gray-400" : "text-gray-600"} mt-4`}>
                   <span className={changesLevel === 0 ? "font-semibold text-[#7A9E7E]" : ""}>Fewer</span>
                   <span className={changesLevel === 1 ? "font-semibold text-[#7A9E7E]" : ""}>Standard</span>
                   <span className={changesLevel === 2 ? "font-semibold text-[#7A9E7E]" : ""}>More</span>
@@ -813,7 +807,7 @@ function App() {
           </div>
 
           {selectedStyle && (
-            <div className='mt-1 text-xs sm:text-sm text-gray-600 italic'>
+            <div className={`mt-1 text-xs sm:text-sm italic ${isDarkModeEnabled ? "text-gray-400" : "text-gray-600"}`}>
               {selectedStyle === standardStyle && "Standard - Maintains your original meaning with natural-sounding variations."}
               {selectedStyle === academicStyle &&
                 "Academic - Transforms your text into a more technical and scholarly tone with formal vocabulary and structure."}
@@ -830,11 +824,15 @@ function App() {
           )}
         </div>
 
-        <div className='flex flex-1 flex-col md:flex-row border-x border-b border-gray-200 bg-white rounded-b-lg shadow-sm overflow-hidden'>
-          <div className='flex-1 md:border-r border-b md:border-b-0 border-gray-200 flex flex-col'>
-            <div className='p-2 flex items-center bg-gray-50 border-b border-gray-200'>
-              <h2 className='font-medium text-gray-700 text-sm sm:text-base'>Original Text</h2>
-              <div className='ml-auto text-xs text-gray-500'>
+        <div
+          className={`flex flex-1 flex-col md:flex-row border-x border-b ${
+            isDarkModeEnabled ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"
+          } rounded-b-lg shadow-sm overflow-hidden`}
+        >
+          <div className={`flex-1 md:border-r border-b md:border-b-0 ${isDarkModeEnabled ? "border-gray-700" : "border-gray-200"} flex flex-col`}>
+            <div className={`p-2 flex items-center ${isDarkModeEnabled ? "bg-gray-900 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
+              <h2 className={`font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"} text-sm sm:text-base`}>Original Text</h2>
+              <div className={`ml-auto text-xs ${isDarkModeEnabled ? "text-gray-400" : "text-gray-500"}`}>
                 {getWordCount(prompt)} words / {prompt.length} characters ({prompt.replace(/\s/g, "").length} without spaces)
               </div>
             </div>
@@ -842,13 +840,15 @@ function App() {
               <textarea
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
-                className='w-full text-black text-lg h-full p-2 sm:p-3 focus:outline-none resize-none'
-                placeholder={"Enter your text here to paraphrase..."}
+                className={`w-full h-full p-2 sm:p-3 focus:outline-none resize-none ${
+                  isDarkModeEnabled ? "bg-gray-800 text-white placeholder-gray-400" : "text-black"
+                }`}
+                placeholder='Enter your text here to paraphrase...'
               />
               <span
-                className={`absolute bottom-0 right-0 m-2 px-1 rounded backdrop-blur-sm bg-white/60 text-sm ${
-                  prompt.replace(/\s/g, "").length > inputCharacterLimit ? "text-red-600" : "text-gray-400"
-                }`}
+                className={`absolute bottom-0 right-0 m-2 px-1 rounded backdrop-blur-sm text-sm ${
+                  prompt.replace(/\s/g, "").length > inputCharacterLimit ? "text-red-500" : isDarkModeEnabled ? "text-gray-400" : "text-gray-400"
+                } ${isDarkModeEnabled ? "bg-black/30" : "bg-white/60"}`}
               >
                 {prompt.replace(/\s/g, "").length} / {inputCharacterLimit} characters
               </span>
@@ -858,8 +858,8 @@ function App() {
                   <button
                     onClick={handlePaste}
                     className={`flex items-center gap-2 px-3 sm:px-4 py-2 ${
-                      isDarkModeEnabled ? "bg-[#3A6B5C] hover:bg-[#234028]" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
-                    }  text-white rounded transition-colors pointer-events-auto text-sm sm:text-base`}
+                      isDarkModeEnabled ? "bg-emerald-700 hover:bg-emerald-600" : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                    } text-white rounded transition-colors pointer-events-auto text-sm sm:text-base`}
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
@@ -883,11 +883,11 @@ function App() {
           </div>
 
           <div className='flex-1 flex flex-col'>
-            <div className='p-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center'>
-              <h2 className='font-medium text-gray-700 text-sm sm:text-base'>Paraphrased Text</h2>
+            <div className={`p-2 flex items-center ${isDarkModeEnabled ? "bg-gray-900 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
+              <h2 className={`font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"} text-sm sm:text-base`}>Paraphrased Text</h2>
               <div className='flex items-center flex-wrap justify-end'>
                 {promptResult && (
-                  <div className='text-xs text-gray-500 mr-2'>
+                  <div className={`text-xs ${isDarkModeEnabled ? "text-gray-400" : "text-gray-500"} mr-2`}>
                     {isEditing ? getWordCount(editedText) : getWordCount(promptResult)} words / {isEditing ? editedText.length : promptResult.length}{" "}
                     <span className='hidden sm:inline'>characters</span>
                     <span className='inline sm:hidden'>chars</span> ({(isEditing ? editedText : promptResult).replace(/\s/g, "").length}{" "}
@@ -908,7 +908,9 @@ function App() {
                         }
                         setIsEditing(!isEditing);
                       }}
-                      className='text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center min-w-[4rem]'
+                      className={`text-sm ${
+                        isDarkModeEnabled ? "text-emerald-400 hover:text-emerald-300" : "text-[#7A9E7E] hover:text-[#6B8E71]"
+                      } flex items-center min-w-[4rem]`}
                     >
                       {isEditing ? (
                         <>
@@ -941,7 +943,9 @@ function App() {
                           navigator.clipboard.writeText(promptResult);
                           setCopied(true);
                         }}
-                        className='text-sm text-[#7A9E7E] hover:text-[#6B8E71] flex items-center min-w-[4rem]'
+                        className={`text-sm ${
+                          isDarkModeEnabled ? "text-emerald-400 hover:text-emerald-300" : "text-[#7A9E7E] hover:text-[#6B8E71]"
+                        } flex items-center min-w-[4rem]`}
                       >
                         {copied ? (
                           <>
@@ -973,11 +977,20 @@ function App() {
                 )}
               </div>
             </div>
-            <div className='flex-1 p-2 sm:p-3 overflow-y-auto bg-white min-h-60 md:min-h-0 max-h-[calc(50vh)] xs:max-w-[calc(80vw)] md:max-w-[calc(40vw)]'>
+            <div
+              className={`flex-1 p-2 sm:p-3 overflow-y-auto ${
+                isDarkModeEnabled ? "bg-gray-800" : "bg-white"
+              } min-h-60 md:min-h-0 max-h-[calc(50vh)] xs:max-w-[calc(80vw)] md:max-w-[calc(40vw)]`}
+            >
               {isLoading ? (
-                <div className='flex items-center justify-center h-full text-gray-500'>
+                <div className={`flex items-center justify-center h-full ${isDarkModeEnabled ? "text-gray-400" : "text-gray-500"}`}>
                   <div className='text-center flex items-center justify-center'>
-                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128' className='w-15 animate-pulse h-15  object-contain' fill='green'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 128 128'
+                      className='w-15 animate-pulse h-15 object-contain'
+                      fill={isDarkModeEnabled ? "#3A6B5C" : "#7A9E7E"}
+                    >
                       <path d='M110.6 38.3H106v-3.5c0-1-.8-1.7-1.7-1.8H70.8c-2.7 0-5.2 1.2-6.8 3.3-1.6-2.1-4.1-3.3-6.8-3.3H23.7c-1 0-1.7.8-1.7 1.8v3.5h-4.6c-1 0-1.8.8-1.8 1.8v57c0 1 .8 1.7 1.8 1.8h93.1c1 0 1.7-.8 1.8-1.8V40c0-.9-.8-1.7-1.7-1.7zm-39.8-1.8h31.7v51.9H70.8c-2.9 0-4.6 1.4-5 1.6V41.6c0-.4 0-.7-.1-1.1.5-2.2 2.6-4 5.1-4zm-45.3 0h31.7c2.6 0 4.7 1.9 5 4.1 0 .4-.1.7-.1 1.1V90c-.3-.1-2.1-1.6-5-1.6H25.5V36.5zm-6.3 5.3H22v48.3c0 1 .8 1.8 1.8 1.8h33.5c2 0 3.9 1.1 4.8 3.4H19.2V41.8zm89.6 53.5H66c.8-2.2 2.8-3.4 4.8-3.4h33.5c1 0 1.8-.8 1.8-1.8V41.8h2.8l-.1 53.5z' />
                       <path d='M32.7 50h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H32.7c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8zM32.7 59.3h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H32.7c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8zM32.7 68.7h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H32.7c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8zM32.7 78h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H32.7c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8zM72.8 50h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H72.8c-1 0-1.8.8-1.8 1.8s.9 1.8 1.8 1.8zM72.8 59.3h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H72.8c-1 0-1.8.8-1.8 1.8s.9 1.8 1.8 1.8zM72.8 68.7h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H72.8c-1 0-1.8.8-1.8 1.8s.9 1.8 1.8 1.8zM72.8 78h22.5c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8H72.8c-1 0-1.8.8-1.8 1.8s.9 1.8 1.8 1.8z' />
                     </svg>
@@ -989,11 +1002,13 @@ function App() {
                   <textarea
                     value={editedText}
                     onChange={e => setEditedText(e.target.value)}
-                    className='w-full h-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#7A9E7E] resize-none'
+                    className={`w-full h-full p-2 border rounded focus:outline-none focus:ring-2 resize-none ${
+                      isDarkModeEnabled ? "bg-gray-800 border-gray-600 focus:ring-emerald-500 text-white" : "border-gray-300 focus:ring-[#7A9E7E]"
+                    }`}
                     autoFocus
                   />
                 ) : (
-                  <div className='prose text-lg text-black prose-sm max-w-none whitespace-pre-line'>
+                  <div className={`prose text-lg max-w-none whitespace-pre-line ${isDarkModeEnabled ? "text-gray-100" : "text-black"}`}>
                     {promptResult.split("\n\n").map((paragraph, pIndex) => (
                       <div key={pIndex} className='mb-4'>
                         {paragraph.split(/(?<=\.)\s+/).map((sentence, sIndex) => {
@@ -1001,7 +1016,9 @@ function App() {
                           return (
                             <span
                               key={sIndex}
-                              className='bg-blue-50 rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border border-gray-100/50 hover:bg-red-50 inline leading-[1.8]'
+                              className={`rounded-[3px] mx-[1px] px-[3px] m-0.5 mr-1 border ${
+                                isDarkModeEnabled ? "bg-gray-700 border-gray-600 hover:bg-gray-600" : "bg-blue-50 border-gray-100/50 hover:bg-red-50"
+                              } inline leading-[1.8]`}
                             >
                               {sentenceText.split(/\s+/).map((word, wordIndex) => {
                                 let globalWordIndex = 0;
@@ -1019,7 +1036,9 @@ function App() {
                                 return (
                                   <span
                                     key={wordIndex}
-                                    className={prompt && isDifferent ? "text-blue-500 cursor-pointer" : "cursor-pointer"}
+                                    className={`cursor-pointer ${
+                                      prompt && isDifferent ? (isDarkModeEnabled ? "text-emerald-400" : "text-blue-500") : ""
+                                    }`}
                                     onClick={e => {
                                       if (!prompt) return;
                                       setClickedWord({
@@ -1048,7 +1067,11 @@ function App() {
                   </div>
                 )
               ) : (
-                <div className='flex items-center justify-center h-full text-gray-400 text-center text-sm sm:text-base'>
+                <div
+                  className={`flex items-center justify-center h-full ${
+                    isDarkModeEnabled ? "text-gray-400" : "text-gray-400"
+                  } text-center text-sm sm:text-base`}
+                >
                   Your paraphrased text will appear here
                 </div>
               )}
@@ -1057,7 +1080,7 @@ function App() {
         </div>
       </main>
       <div className='max-w-7xl mx-auto pb-1'>
-        <span className='text-xs font-medium text-gray-500 block text-center'>
+        <span className={`text-xs font-medium ${isDarkModeEnabled ? "text-gray-400" : "text-gray-500"} block text-center`}>
           The official word limit is {inputCharacterLimit} characters - however, extremely lengthy inputs may reduce the quality of my response
           because I might lose focus, therefore a maximum of 1000 characters is recommended.
         </span>
@@ -1072,7 +1095,9 @@ function App() {
             }}
           />
           <div
-            className='fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50'
+            className={`fixed rounded-lg shadow-lg z-50 ${
+              isDarkModeEnabled ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white border-gray-200"
+            }`}
             style={{
               maxWidth: "min(90vw, 500px)",
               width: "auto",
@@ -1090,15 +1115,17 @@ function App() {
             <div className='p-3'>
               {clickedRephraseSentence ? (
                 <div className='flex flex-col gap-3' style={{ minWidth: "300px" }}>
-                  <div className='text-sm font-medium text-gray-700'>
-                    <span className='font-semibold text-[#7A9E7E]'>Original:</span>
-                    <div className='italic mt-1 whitespace-normal break-words max-w-full'>{getCurrentSentence()}</div>
+                  <div className={`text-sm font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"}`}>
+                    <span className={`font-semibold ${isDarkModeEnabled ? "text-emerald-400" : "text-[#7A9E7E]"}`}>Original:</span>
+                    <div className={`italic mt-1 whitespace-normal break-words max-w-full ${isDarkModeEnabled ? "text-gray-300" : "text-gray-600"}`}>
+                      {getCurrentSentence()}
+                    </div>
                   </div>
-                  <div className='text-sm font-medium text-gray-700'>
-                    <span className='font-semibold text-[#7A9E7E]'>Rephrased options:</span>
+                  <div className={`text-sm font-medium ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"}`}>
+                    <span className={`font-semibold ${isDarkModeEnabled ? "text-emerald-400" : "text-[#7A9E7E]"}`}>Rephrased options:</span>
                     {isSentenceLoading ? (
                       <div className='flex items-center justify-center py-2'>
-                        <svg className='animate-spin h-4 w-4 mr-2 text-[#7A9E7E]' viewBox='0 0 24 24'>
+                        <svg className={`animate-spin h-4 w-4 mr-2 ${isDarkModeEnabled ? "text-emerald-400" : "text-[#7A9E7E]"}`} viewBox='0 0 24 24'>
                           <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
                           <path
                             className='opacity-75'
@@ -1113,7 +1140,11 @@ function App() {
                         {sentenceRephrases.map((rephrase, index) => (
                           <div
                             key={index}
-                            className='p-2 bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded cursor-pointer transition-colors whitespace-normal break-words'
+                            className={`p-2 rounded cursor-pointer transition-colors whitespace-normal break-words ${
+                              isDarkModeEnabled
+                                ? "bg-gray-700 hover:bg-emerald-600 hover:text-white"
+                                : "bg-gray-100 hover:bg-[#7A9E7E] hover:text-white"
+                            }`}
                             onClick={() => {
                               replaceSentence(rephrase);
                               setClickedRephraseSentence(false);
@@ -1124,25 +1155,29 @@ function App() {
                         ))}
                       </div>
                     ) : (
-                      <div className='text-red-500 text-xs py-1'>Failed to generate rephrases</div>
+                      <div className={`text-xs py-1 ${isDarkModeEnabled ? "text-red-400" : "text-red-500"}`}>Failed to generate rephrases</div>
                     )}
                   </div>
                   <button
                     onClick={() => setClickedRephraseSentence(false)}
-                    className='text-[#7A9E7E] hover:text-[#6B8E71] text-sm underline self-start'
+                    className={`text-sm underline self-start ${
+                      isDarkModeEnabled ? "text-emerald-400 hover:text-emerald-300" : "text-[#7A9E7E] hover:text-[#6B8E71]"
+                    }`}
                   >
                     ← Back to synonyms
                   </button>
                 </div>
               ) : (
                 <>
-                  <div className='text-sm font-medium text-gray-700 mb-2'>
-                    <span className='font-semibold text-[#7A9E7E]'>
-                      {clickedWord.word} <span className='text-black'>synonyms:</span>
+                  <div className={`text-sm font-medium mb-2 ${isDarkModeEnabled ? "text-gray-300" : "text-gray-700"}`}>
+                    <span className={`font-semibold ${isDarkModeEnabled ? "text-emerald-400" : "text-[#7A9E7E]"}`}>
+                      {clickedWord.word} <span className={isDarkModeEnabled ? "text-gray-100" : "text-black"}>synonyms:</span>
                     </span>
                     <button
                       onClick={() => setClickedRephraseSentence(true)}
-                      className='float-right bg-[#7A9E7E] hover:bg-[#6B8E71] text-xs p-1 rounded text-white'
+                      className={`float-right text-xs p-1 rounded ${
+                        isDarkModeEnabled ? "bg-emerald-600 hover:bg-emerald-500 text-white" : "bg-[#7A9E7E] hover:bg-[#6B8E71] text-white"
+                      }`}
                     >
                       Rephrase Sentence
                     </button>
@@ -1150,7 +1185,12 @@ function App() {
                   <div className='flex flex-wrap gap-1.5'>
                     {clickedWordSynonyms === "Loading..." ? (
                       <div className='flex items-center justify-center w-full py-2'>
-                        <svg className='animate-spin h-4 w-4 mr-2 text-[#7A9E7E]' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'>
+                        <svg
+                          className={`animate-spin h-4 w-4 mr-2 ${isDarkModeEnabled ? "text-emerald-400" : "text-[#7A9E7E]"}`}
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                        >
                           <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
                           <path
                             className='opacity-75'
@@ -1161,12 +1201,16 @@ function App() {
                         Loading...
                       </div>
                     ) : clickedWordSynonyms === "Failed to load synonyms" ? (
-                      <div className='text-red-500 text-xs py-1'>Failed to load synonyms</div>
+                      <div className={`text-xs py-1 ${isDarkModeEnabled ? "text-red-400" : "text-red-500"}`}>Failed to load synonyms</div>
                     ) : (
                       clickedWordSynonyms.split(", ").map((synonym, index) => (
                         <button
                           key={index}
-                          className='px-2.5 py-1 text-sm bg-gray-100 hover:bg-[#7A9E7E] hover:text-white rounded-full transition-colors'
+                          className={`px-2.5 py-1 text-sm rounded-full transition-colors ${
+                            isDarkModeEnabled
+                              ? "bg-gray-700 text-gray-300 hover:bg-emerald-600 hover:text-white"
+                              : "bg-gray-100 text-gray-700 hover:bg-[#7A9E7E] hover:text-white"
+                          }`}
                           onClick={() => {
                             replaceWordWithSynonym(clickedWord.word, synonym);
                             setClickedWord(null);
