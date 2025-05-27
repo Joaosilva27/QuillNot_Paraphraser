@@ -95,7 +95,10 @@ function App() {
   const [editedText, setEditedText] = useState("");
   const [dailyUsageCount, setDailyUsageCount] = useState(0);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState<boolean>(false);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    return savedTheme === "dark";
+  });
   const inputCharacterLimit = 1500;
 
   useEffect(() => {
@@ -375,6 +378,10 @@ function App() {
       unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", isDarkModeEnabled ? "dark" : "light");
+  }, [isDarkModeEnabled]);
 
   const clearAll = () => {
     setPrompt("");
