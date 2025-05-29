@@ -1,6 +1,6 @@
 # QuillNot - Paraphraser
 
-QuillNot is an AI-powered paraphrasing app I created out of annoyance with QuillBot's 150-word limit for free users. I wanted a tool that was completely free, without any sign-ups, data collection, or annoying ads. So, I built my own.
+QuillNot is an AI-powered paraphrasing app I created out of annoyance with QuillBot's 150-word limit for free users. I wanted a tool that was completely free, without data collection, or annoying ads. So, I built my own.
 
 Unlike QuillBot, this tool automatically saves your input and output as you make changes, so you never have to worry about losing your work.
 
