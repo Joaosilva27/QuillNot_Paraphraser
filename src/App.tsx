@@ -75,7 +75,7 @@ function App() {
   const [moreChanges] = useState("IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible.");
   const [isAiBypasserEnabled, setIsAiBypasserEnabled] = useState(false);
   const [isAiBypasserDisclamerClosed, setIsAiBypasserDisclaimerClosed] = useState(false);
-  const [selectedChanges, setSelectedChanges] = useState(fewerChanges);
+  const [selectedChanges, setSelectedChanges] = useState(standardChanges);
   const [changesLevel, setChangesLevel] = useState(0);
   const [customDescription, setCustomDescription] = useState("");
   const [clickedWord, setClickedWord] = useState<{
