@@ -94,6 +94,7 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState("");
   const [dailyUsageCount, setDailyUsageCount] = useState(0);
+  const [_totalParaphrases, setTotalParaphrases] = useState(0);
   const [dailyLimitReached, setDailyLimitReached] = useState(false);
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -190,14 +191,24 @@ function App() {
       const today = new Date().toDateString();
 
       const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists() && userDoc.data().date === today) {
-        const currentCount = userDoc.data().count;
-        setDailyUsageCount(currentCount);
-        if (currentCount >= 100) {
-          setDailyLimitReached(true);
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+
+        setTotalParaphrases(data.totalParaphrases || 0);
+
+        if (data.date === today) {
+          const currentCount = data.count;
+          setDailyUsageCount(currentCount);
+          if (currentCount >= 100) {
+            setDailyLimitReached(true);
+          }
+        } else {
+          setDailyUsageCount(0);
+          setDailyLimitReached(false);
         }
       } else {
         setDailyUsageCount(0);
+        setTotalParaphrases(0);
         setDailyLimitReached(false);
       }
     } catch (error) {
