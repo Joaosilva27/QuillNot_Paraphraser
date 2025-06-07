@@ -836,7 +836,7 @@ function App() {
               <textarea
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
-                className={`w-full h-full p-2 sm:p-3 focus:outline-none resize-none ${
+                className={`w-full h-full p-2 sm:p-3 focus:outline-none resize-none text-lg ${
                   isDarkModeEnabled ? "bg-gray-800 text-white placeholder-gray-400" : "text-black"
                 }`}
                 placeholder='Enter your text here to paraphrase...'
