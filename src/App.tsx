@@ -99,7 +99,7 @@ function App() {
     const savedTheme = localStorage.getItem("theme");
     return savedTheme === "dark";
   });
-  const inputCharacterLimit = 1500;
+  const inputCharacterLimit = 5000;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
