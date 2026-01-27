@@ -32,8 +32,8 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-  const FastModel = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+  const FastModel = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
   const [userCount, setUserCount] = useState(0);
   const [uniqueUsers, setUniqueUsers] = useState<number>();
