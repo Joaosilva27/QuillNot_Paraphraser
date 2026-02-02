@@ -31,9 +31,29 @@ function App() {
     throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
   }
 
-  const openrouter = new OpenRouter({
-    apiKey: apiKey,
-  });
+  const callOpenRouter = async (messages: { role: string; content: string }[]) => {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://quillnot.site",
+        "X-Title": "QuillNot",
+      },
+      body: JSON.stringify({
+        model: "tngtech/deepseek-r1t-chimera:free",
+        messages,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || "OpenRouter request failed");
+    }
+
+    return response.json();
+  };
 
   const [userCount, setUserCount] = useState(0);
   const [uniqueUsers, setUniqueUsers] = useState<number>();
@@ -339,18 +359,7 @@ function App() {
           
           Provide your paraphrased version:`;
 
-        const completion = await openrouter.chat.send({
-          model: "tngtech/deepseek-r1t-chimera:free",
-          messages: [
-            {
-              role: "user",
-              content: promptInstructions,
-            },
-          ],
-          temperature: 0.7,
-          stream: false,
-        });
-
+        const completion = await callOpenRouter([{ role: "user", content: promptInstructions }]);
         const responseText = completion.choices[0].message.content || "";
         const processedText = responseText
           .replace(/(\n){3,}/g, "\n\n")
@@ -432,18 +441,7 @@ function App() {
           Do not add * before or after a word, unless the word given has them
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
 
-        const result = await openrouter.chat.send({
-          model: "tngtech/deepseek-r1t-chimera:free",
-          messages: [
-            {
-              role: "user",
-              content: promptInstructions,
-            },
-          ],
-          temperature: 0.7,
-          stream: false,
-        });
-
+        const result = await callOpenRouter([{ role: "user", content: promptInstructions }]);
         const responseText = result.choices[0].message.content || "";
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
@@ -510,18 +508,7 @@ function App() {
         
         Sentence: "${sentence}"`;
 
-      const result = await openrouter.chat.send({
-        model: "tngtech/deepseek-r1t-chimera:free",
-        messages: [
-          {
-            role: "user",
-            content: instruction,
-          },
-        ],
-        temperature: 0.7,
-        stream: false,
-      });
-
+      const result = await callOpenRouter([{ role: "user", content: instruction }]);
       const responseText = result.choices[0].message.content || "";
 
       const rephrases = responseText
