@@ -32,8 +32,8 @@ function App() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-  const FastModel = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const [userCount, setUserCount] = useState(0);
   const [uniqueUsers, setUniqueUsers] = useState<number>();
@@ -48,10 +48,10 @@ function App() {
   const [humanizeStyle] = useState("Human, meaning you must re-write the text in a more human, authentic way.");
   const [formalStyle] = useState("Formal, meaning you must sound more sophisticated.");
   const [expandStyle] = useState(
-    "Extended, meaning you must rephrase this text using a higher word count while maintaining its meaning and not making a lot of changes."
+    "Extended, meaning you must rephrase this text using a higher word count while maintaining its meaning and not making a lot of changes.",
   );
   const [shortStyle] = useState(
-    "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes."
+    "Shortened, meaning you must rephrase this text using a lower word count while maintaining its meaning and not making a lot of changes.",
   );
   const [selectedStyle, setSelectedStyle] = useState(standardStyle);
   const [fewerChanges] = useState(
@@ -69,7 +69,7 @@ function App() {
       "- Only use the most common synonyms " +
       "- Never change more than one word per clause " +
       "- Preserve all prefixes/suffixes " +
-      "Prioritize keeping the text IDENTICAL over any 'improvements'"
+      "Prioritize keeping the text IDENTICAL over any 'improvements'",
   );
   const [standardChanges] = useState("");
   const [moreChanges] = useState("IMPORTANT: You will make a lot of changes to the original text; Make as many changes as possible.");
@@ -240,7 +240,7 @@ function App() {
             isAuthenticatedUser: identifier.startsWith("email_"),
             ...(userId && auth.currentUser?.email ? { email: auth.currentUser.email } : {}),
           },
-          { merge: true }
+          { merge: true },
         );
       } catch (error) {
         console.error("User tracking error:", error);
@@ -262,7 +262,7 @@ function App() {
       },
       error => {
         console.error("Error fetching unique users:", error);
-      }
+      },
     );
 
     const unsubscribeUserUsage = onSnapshot(
@@ -273,7 +273,7 @@ function App() {
       },
       error => {
         console.error("Error fetching user usage:", error);
-      }
+      },
     );
 
     return () => {
@@ -373,7 +373,7 @@ function App() {
         if (error.code !== "cancelled") {
           console.error("Firestore error:", error);
         }
-      }
+      },
     );
 
     return () => {
@@ -645,8 +645,8 @@ function App() {
                     ? "bg-gray-600 text-gray-400"
                     : "bg-gray-400"
                   : isDarkModeEnabled
-                  ? "bg-emerald-700 hover:bg-emerald-600"
-                  : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
+                    ? "bg-emerald-700 hover:bg-emerald-600"
+                    : "bg-[#7A9E7E] hover:bg-[#6B8E71]"
               } text-white transition-colors flex items-center`}
             >
               {isLoading ? (
@@ -681,8 +681,8 @@ function App() {
                 isAiBypasserEnabled
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : isDarkModeEnabled
-                  ? "border border-blue-500 text-blue-400 hover:bg-gray-700"
-                  : "border border-blue-500 text-blue-500 hover:bg-blue-50"
+                    ? "border border-blue-500 text-blue-400 hover:bg-gray-700"
+                    : "border border-blue-500 text-blue-500 hover:bg-blue-50"
               }`}
             >
               {isAiBypasserEnabled ? "AI Bypasser: ON" : "AI Bypasser Mode"}
@@ -728,8 +728,8 @@ function App() {
                           ? "bg-emerald-700 text-white"
                           : "bg-[#7A9E7E] text-white"
                         : isDarkModeEnabled
-                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     } transition-colors`}
                   >
                     {style.name}
@@ -744,8 +744,8 @@ function App() {
                           ? "bg-emerald-700 text-white"
                           : "bg-[#7A9E7E] text-white"
                         : isDarkModeEnabled
-                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     } transition-colors`}
                   >
                     Custom
