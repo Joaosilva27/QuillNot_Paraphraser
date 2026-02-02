@@ -12,6 +12,7 @@
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^4.6.1",
     "@google/generative-ai": "^0.24.0",
+    "@openrouter/sdk": "^0.5.1",
     "@tailwindcss/vite": "^4.0.14",
     "counterapi": "^1.129.1",
     "firebase": "^11.6.0",
