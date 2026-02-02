@@ -326,49 +326,43 @@ function App() {
         setIsLoading(true);
 
         const promptInstructions = `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
-          1. The original meaning and intent
-          2. The same language as the input
-          3. The same sentence types
-          4. The original technicality and complexity level
+1. The original meaning and intent
+2. The same language as the input  
+3. The same sentence types
+4. The original technicality and complexity level
 
-          Strips all <think>...</think> blocks from the model output
-    and returns only the actual answer.
+Key requirements:
+- Preserve 100% of the original meaning
+- NEVER ADD ASTERISKS "**" unless present in original
+- Maintain paragraph structure
+- Keep specialized terminology unchanged
+- Only change wording when it improves clarity
+- DO NOT EXPLAIN YOUR REASONING
+- DO NOT SHOW YOUR THOUGHT PROCESS
+- OUTPUT ONLY THE FINAL PARAPHRASED TEXT AFTER "FINAL PARAPHRASE:"
 
-          Key requirements:
-          - Preserve 100% of the original meaning
-          - IMPORTANT MUST DO!!!! NEVER!!!! EVER!!!!!! ADD ASTERISKS "**" before or after a word, UNLESS the prompt given has them - THIS IS AN ABSOLUTE MUST. 
-          - IMPORTANT!! If the text given has any symbol like for example quotes "" at the start or end of a sentence, YOU MUST KEEP THEM. If the text given does not, do not add your own symbols.
-          - Maintain the original paragraph structure
-          - Keep specialized terminology unchanged
-          - Retain all proper nouns and technical terms
-          - Only change wording when it improves clarity without altering meaning
+Style guidance: ${selectedStyle || "natural without changing meaning"}
 
-          Style guidance: ${selectedStyle || "natural without changing the original meaning"}
+Change level: ${selectedChanges}
 
-          Change level: ${selectedChanges}
+Original text to paraphrase: ${prompt}
 
-          Paraphrase the following text. DO NOT explain, DO NOT comment, DO NOT show reasoning. ONLY output the final paraphrased text: ${prompt}
+${isAiBypasserEnabled ? "IMPORTANT: Make this sound human-written with natural flow and imperfections" : ""}
 
-          <| Assistant |><think>\n\n</think>\n\n
-
-          ${
-            isAiBypasserEnabled
-              ? `You MUST reduce patterns that AI detectors look for.
-                  Rewrite the following text so that it sounds like it was written by a human:
-                  casual, natural, and varied. Avoid the overly smooth, robotic, or overly formal tone that AI-generated writing often has.
-                  Use natural sentence structure, contractions, occasional informal phrasing, and human-like rhythm.
-                  Break up long sentences, vary the structure, and use some imperfections if needed.`
-              : ""
-          }
-          
-          Provide your paraphrased version:`;
+FINAL PARAPHRASE:`;
 
         const completion = await callOpenRouter([{ role: "user", content: promptInstructions }]);
-        const responseText = completion.choices[0].message.content || "";
-        const processedText = responseText
+        const fullResponse = completion.choices[0].message.content || "";
+
+        // Extract only the text after "FINAL PARAPHRASE:" delimiter
+        const finalOutput = fullResponse.split("FINAL PARAPHRASE:")[1]?.trim() || fullResponse;
+
+        const processedText = finalOutput
           .replace(/(\n){3,}/g, "\n\n")
           .replace(/(\S)\n(\S)/g, "$1 $2")
+          .replace(/^["']+|["']+$/g, "") // Remove surrounding quotes if any
           .trim();
+
         setPromptResult(processedText);
         setSavedOutput(processedText);
         localStorage.setItem("output", processedText);
