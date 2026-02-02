@@ -7,7 +7,6 @@ import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { OpenRouter } from "@openrouter/sdk";
 
 function App() {
   const apiKey = import.meta.env.VITE_API_KEY;
