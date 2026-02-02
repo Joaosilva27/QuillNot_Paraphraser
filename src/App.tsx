@@ -331,7 +331,8 @@ function App() {
           3. The same sentence types
           4. The original technicality and complexity level
 
-          You MUST ONLY REPLY WITH THE PARAPHRASING ANSWER, NOTHING ELSE. THAT IS YOUR ONLY JOB. 
+          Strips all <think>...</think> blocks from the model output
+    and returns only the actual answer.
 
           Key requirements:
           - Preserve 100% of the original meaning
