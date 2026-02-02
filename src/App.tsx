@@ -347,7 +347,7 @@ function App() {
 
           Change level: ${selectedChanges}
 
-          Input text to paraphrase: ${prompt}
+          Paraphrase the following text. DO NOT explain, DO NOT comment, DO NOT show reasoning. ONLY output the final paraphrased text: ${prompt}
 
           <| Assistant |><think>\n\n</think>\n\n
 
