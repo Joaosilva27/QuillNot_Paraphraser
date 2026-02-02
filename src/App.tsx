@@ -331,6 +331,8 @@ function App() {
           3. The same sentence types
           4. The original technicality and complexity level
 
+          You MUST ONLY REPLY WITH THE PARAPHRASING ANSWER, NOTHING ELSE. THAT IS YOUR ONLY JOB. 
+
           Key requirements:
           - Preserve 100% of the original meaning
           - IMPORTANT MUST DO!!!! NEVER!!!! EVER!!!!!! ADD ASTERISKS "**" before or after a word, UNLESS the prompt given has them - THIS IS AN ABSOLUTE MUST. 
