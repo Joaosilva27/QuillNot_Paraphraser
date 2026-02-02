@@ -349,6 +349,8 @@ function App() {
 
           Input text to paraphrase: ${prompt}
 
+          <| Assistant |><think>\n\n</think>\n\n
+
           ${
             isAiBypasserEnabled
               ? `You MUST reduce patterns that AI detectors look for.
