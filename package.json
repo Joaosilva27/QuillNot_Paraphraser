@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.0.14",
     "counterapi": "^1.129.1",
     "firebase": "^11.6.0",
+    "openai": "^6.17.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",

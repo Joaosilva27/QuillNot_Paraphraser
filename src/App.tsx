@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
 import "./App.css";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, serverTimestamp } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -8,6 +7,7 @@ import GithubIcon from "./images/github.png";
 import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { OpenRouter } from "@openrouter/sdk";
 
 function App() {
   const apiKey = import.meta.env.VITE_API_KEY;
@@ -31,9 +31,9 @@ function App() {
     throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-  const FastModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const openrouter = new OpenRouter({
+    apiKey: apiKey,
+  });
 
   const [userCount, setUserCount] = useState(0);
   const [uniqueUsers, setUniqueUsers] = useState<number>();
@@ -337,10 +337,21 @@ function App() {
               : ""
           }
           
-
           Provide your paraphrased version:`;
-        const result = await model.generateContent(promptInstructions);
-        const responseText = result.response.text();
+
+        const completion = await openrouter.chat.send({
+          model: "tngtech/deepseek-r1t-chimera:free",
+          messages: [
+            {
+              role: "user",
+              content: promptInstructions,
+            },
+          ],
+          temperature: 0.7,
+          stream: false,
+        });
+
+        const responseText = completion.choices[0].message.content || "";
         const processedText = responseText
           .replace(/(\n){3,}/g, "\n\n")
           .replace(/(\S)\n(\S)/g, "$1 $2")
@@ -420,8 +431,20 @@ function App() {
           The synonyms must have the same case as the word provided.
           Do not add * before or after a word, unless the word given has them
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
-        const result = await FastModel.generateContent(promptInstructions);
-        const responseText = result.response.text();
+
+        const result = await openrouter.chat.send({
+          model: "tngtech/deepseek-r1t-chimera:free",
+          messages: [
+            {
+              role: "user",
+              content: promptInstructions,
+            },
+          ],
+          temperature: 0.7,
+          stream: false,
+        });
+
+        const responseText = result.choices[0].message.content || "";
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
           else if (original === original.toLowerCase()) return synonym.toLowerCase();
@@ -487,8 +510,19 @@ function App() {
         
         Sentence: "${sentence}"`;
 
-      const result = await FastModel.generateContent(instruction);
-      const responseText = result.response.text();
+      const result = await openrouter.chat.send({
+        model: "tngtech/deepseek-r1t-chimera:free",
+        messages: [
+          {
+            role: "user",
+            content: instruction,
+          },
+        ],
+        temperature: 0.7,
+        stream: false,
+      });
+
+      const responseText = result.choices[0].message.content || "";
 
       const rephrases = responseText
         .split("\n")
