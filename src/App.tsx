@@ -453,7 +453,7 @@ function App() {
           .replace(/["\\*]/g, "")
           .split(",")
           .slice(0, 12)
-          .map(s => matchCase(originalWord, s.trim()))
+          .map((s: string) => matchCase(originalWord, s.trim()))
           .join(", ");
         setClickedWordSynonyms(cleanedSynonyms);
       } catch (err) {
@@ -513,8 +513,8 @@ function App() {
 
       const rephrases = responseText
         .split("\n")
-        .map(line => line.replace(/^\d+\.\s*/, "").trim())
-        .filter(line => line.length > 0)
+        .map((line: string) => line.replace(/^\d+\.\s*/, "").trim())
+        .filter((line: string) => line.length > 0)
         .slice(0, 6);
 
       setSentenceRephrases(rephrases);
