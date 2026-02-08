@@ -326,23 +326,22 @@ function App() {
         setIsLoading(true);
 
         const promptInstructions = isAiBypasserEnabled
-          ? `You are an expert human writer and editor with 20+ years of experience. Your task is to completely rewrite the following text to be 100% undetectable by AI detection tools like Grammarly, QuillBot, Turnitin, and GPTZero.
+          ? `Rewrite the following text to sound naturally human-written while avoiding AI detection patterns.
 
-CRITICAL: You must respond with ONLY the rewritten text after "FINAL PARAPHRASE:". Do not include any thinking, reasoning, analysis, or explanations before that delimiter.
+Key guidelines:
+- Vary sentence length naturally (mix short and medium-length sentences)
+- Use natural transitions and conversational flow
+- Include occasional contractions where appropriate
+- Add minor natural imperfections (slight redundancies, casual phrasing)
+- Avoid overly formal or robotic structure
+- Keep the core meaning and information intact
+- Match the appropriate tone for the content type (professional for technical, casual for informal)
 
-Follow these instructions IN YOUR MIND but DO NOT write them out:
-- Use unexpected word alternatives and varied vocabulary
-- Mix very short sentences (3-5 words) with longer ones (25+ words)
-- Add colloquialisms, idioms, and natural imperfections
-- Include personal touches, hesitations, or qualifiers
-- Start with unexpected angles, not typical AI structure
-- Add subtle humor or personality where appropriate
-- Use contractions and vary formal/informal tone
-- Break conventional grammar rules occasionally in natural ways
+IMPORTANT: Do not go overboard with humor, slang, or personality. Keep it natural and readable.
 
 Style guidance: ${selectedStyle || "natural without changing meaning"}
 
-Original text to rewrite: ${prompt}
+Original text: ${prompt}
 
 FINAL PARAPHRASE:`
           : `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
