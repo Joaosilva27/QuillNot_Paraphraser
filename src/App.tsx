@@ -328,7 +328,7 @@ function App() {
         const promptInstructions = isAiBypasserEnabled
           ? `You are an expert human writer and editor with 20+ years of experience. Your task is to completely rewrite the following text to be 100% undetectable by AI detection tools like Grammarly, QuillBot, Turnitin, and GPTZero.
 
-CRITICAL: You must respond with ONLY the rewritten text. Do not include any thinking, reasoning, analysis, or explanations. Jump directly to the final output.
+CRITICAL: You must respond with ONLY the rewritten text after "FINAL PARAPHRASE:". Do not include any thinking, reasoning, analysis, or explanations before that delimiter.
 
 Follow these instructions IN YOUR MIND but DO NOT write them out:
 - Use unexpected word alternatives and varied vocabulary
@@ -344,7 +344,7 @@ Style guidance: ${selectedStyle || "natural without changing meaning"}
 
 Original text to rewrite: ${prompt}
 
-RESPOND WITH ONLY THE REWRITTEN TEXT - NO THINKING, NO ANALYSIS, NO PREAMBLE:`
+FINAL PARAPHRASE:`
           : `You are an expert paraphrasing tool. Your task is to rewrite the provided text while strictly maintaining:
 1. The original meaning and intent
 2. The same language as the input  
@@ -372,9 +372,8 @@ FINAL PARAPHRASE:`;
         const completion = await callOpenRouter([{ role: "user", content: promptInstructions }]);
         const fullResponse = completion.choices[0].message.content || "";
 
-        // Extract only the text after "FINAL PARAPHRASE:" delimiter for standard mode
-        // For AI bypasser mode, use the full response directly
-        const finalOutput = isAiBypasserEnabled ? fullResponse.trim() : fullResponse.split("FINAL PARAPHRASE:")[1]?.trim() || fullResponse;
+        // Extract only the text after "FINAL PARAPHRASE:" delimiter
+        const finalOutput = fullResponse.split("FINAL PARAPHRASE:")[1]?.trim() || fullResponse;
 
         const processedText = finalOutput
           .replace(/(\n){3,}/g, "\n\n")
