@@ -9,7 +9,7 @@ import Coffee from "./Coffee";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 function App() {
-  const apiKey = import.meta.env.VITE_API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -27,31 +27,29 @@ function App() {
   const [user, setUser] = useState<any>(null);
 
   if (!apiKey) {
-    throw new Error("API key is missing. Please set REACT_APP_API_KEY in your environment.");
+    throw new Error("Gemini API key is missing. Please set VITE_GEMINI_API_KEY in your environment.");
   }
 
-  const callOpenRouter = async (messages: { role: string; content: string }[]) => {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const callGemini = async (prompt: string): Promise<string> => {
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://quillnot.site",
-        "X-Title": "QuillNot",
+        "x-goog-api-key": apiKey,
       },
-      body: JSON.stringify({
-        model: "tngtech/deepseek-r1t-chimera:free",
-        messages,
-        temperature: 0.7,
-      }),
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
     });
 
+    const result = await response.json();
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "OpenRouter request failed");
+      throw new Error(result.error?.message || `Gemini request failed (${response.status})`);
     }
 
-    return response.json();
+    const text = result.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("").trim();
+    if (!text) {
+      throw new Error(result.promptFeedback?.blockReason || "Gemini returned no text.");
+    }
+    return text;
   };
 
   const [userCount, setUserCount] = useState(0);
@@ -368,8 +366,7 @@ Original text to paraphrase: ${prompt}
 
 FINAL PARAPHRASE:`;
 
-        const completion = await callOpenRouter([{ role: "user", content: promptInstructions }]);
-        const fullResponse = completion.choices[0].message.content || "";
+        const fullResponse = await callGemini(promptInstructions);
 
         // Extract only the text after "FINAL PARAPHRASE:" delimiter
         const finalOutput = fullResponse.split("FINAL PARAPHRASE:")[1]?.trim() || fullResponse;
@@ -456,8 +453,7 @@ FINAL PARAPHRASE:`;
           Do not add * before or after a word, unless the word given has them
           IMPORTANT: - ONLY SYNONYMS, NO EXTRA TEXT`;
 
-        const result = await callOpenRouter([{ role: "user", content: promptInstructions }]);
-        const responseText = result.choices[0].message.content || "";
+        const responseText = await callGemini(promptInstructions);
         const matchCase = (original: string, synonym: string) => {
           if (original === original.toUpperCase()) return synonym.toUpperCase();
           else if (original === original.toLowerCase()) return synonym.toLowerCase();
@@ -523,8 +519,7 @@ FINAL PARAPHRASE:`;
         
         Sentence: "${sentence}"`;
 
-      const result = await callOpenRouter([{ role: "user", content: instruction }]);
-      const responseText = result.choices[0].message.content || "";
+      const responseText = await callGemini(instruction);
 
       const rephrases = responseText
         .split("\n")
