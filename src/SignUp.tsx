@@ -7,6 +7,7 @@ import { useAuth } from "./AuthContext";
 
 export default function SignUp() {
   const [isHovering, setIsHovering] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
   const { signInWithGoogle, currentUser } = useAuth();
 
   // if user is already logged in, redirect to the app
@@ -16,10 +17,19 @@ export default function SignUp() {
 
   const handleSignIn = async () => {
     try {
+      setSignInError(null);
       await signInWithGoogle();
       // redirect happens automatically thanks to the condition above
     } catch (error) {
       console.error("Failed to sign in:", error);
+      const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "unknown";
+      if (code === "auth/unauthorized-domain") {
+        setSignInError("This website is not authorized for Google sign-in. Add its domain in Firebase Authentication settings.");
+      } else if (code === "auth/popup-blocked") {
+        setSignInError("Your browser blocked the sign-in popup. Allow popups for this site and try again.");
+      } else {
+        setSignInError(`Google sign-in failed (${code}). Check the browser console for details.`);
+      }
     }
   };
 
@@ -118,6 +128,11 @@ export default function SignUp() {
                 </svg>
                 {isHovering ? "Continue with Google" : "Sign in with Google"}
               </button>
+              {signInError && (
+                <p role='alert' className='mt-3 text-sm text-red-700'>
+                  {signInError}
+                </p>
+              )}
             </div>
           </div>
 
