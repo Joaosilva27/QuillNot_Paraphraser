@@ -8,6 +8,8 @@ import QuillNotIcon from "./images/QuillNotIcon.png";
 import Coffee from "./Coffee";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
+const GEMINI_MODELS = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash", "gemini-3.1-flash-lite"];
+
 function App() {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
@@ -31,25 +33,37 @@ function App() {
   }
 
   const callGemini = async (prompt: string): Promise<string> => {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-    });
+    const modelErrors: string[] = [];
 
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result.error?.message || `Gemini request failed (${response.status})`);
+    for (const model of GEMINI_MODELS) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey,
+          },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error?.message || `${model} request failed (${response.status})`);
+        }
+
+        const text = result.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("").trim();
+        if (!text) {
+          throw new Error(result.promptFeedback?.blockReason || `Gemini returned no text from ${model}.`);
+        }
+        return text;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        modelErrors.push(`${model}: ${message}`);
+        console.warn(`Gemini request failed for ${model}; trying the next model.`, error);
+      }
     }
 
-    const text = result.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("").trim();
-    if (!text) {
-      throw new Error(result.promptFeedback?.blockReason || "Gemini returned no text.");
-    }
-    return text;
+    throw new Error(`All Gemini models failed. ${modelErrors.join(" | ")}`);
   };
 
   const [userCount, setUserCount] = useState(0);
